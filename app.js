@@ -36,7 +36,9 @@ app.use(flash());
 require('./routes/login.js')(app, passport);
 
 var articles = require('./routes/articles');
+var products = require('./routes/products');
 app.use('/api/articles', articles);
+app.use('/mds/api/products', products);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

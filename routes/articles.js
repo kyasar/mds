@@ -8,32 +8,6 @@ var log             = require('../libs/log')(module);
 var express = require('express');
 var router = express.Router();
 
-router.get('/users/:id', function(req, res) {
-    log.info('Searching for user with id:', req.params.id);
-    return UserModel.findOne({_id:req.params.id}, function(err, users) {
-        if (!err) {
-            return res.send(users);
-        } else {
-            res.statusCode = 500;
-            log.error('Internal error(%d): %s',res.statusCode,err.message);
-            return res.send({ error: 'Server error' });
-        }
-    });
-});
-
-router.get('/users', function(req, res) {
-    return UserModel.find( function(err, users) {
-        if (!err) {
-            return res.send(users);
-        } else {
-            res.statusCode = 500;
-            log.error('Internal error(%d): %s',res.statusCode,err.message);
-            return res.send({ error: 'Server error' });
-        }
-    });
-});
-
-
 router.post('/users', function(req, res) {
     var user
         = new UserModel({

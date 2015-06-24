@@ -2,8 +2,6 @@
  * Created by kadir on 24.06.2015.
  */
 var mongoose    = require('mongoose');
-var crypto = require('crypto');
-
 var Schema = mongoose.Schema;
 
 var Product = new Schema({

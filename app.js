@@ -27,7 +27,8 @@ var passport = require('passport');
 var flash = require('connect-flash');
 
 require('./libs/passport')(passport); // pass passport for configuration
-app.use(session({ secret: 'ilovescotchscotchyscotchscotch', cookie:{maxAge:60000} })); // session secret
+app.use(session({ secret: config.get('secret'),
+  cookie:{maxAge: config.get('session-timeout')} })); // session secret
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -38,7 +39,7 @@ require('./routes/login.js')(app, passport);
 var articles = require('./routes/articles');
 var products = require('./routes/products');
 app.use('/api/articles', articles);
-app.use('/mds/api/products', products);
+app.use('/mds/api/', products);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -47,10 +48,8 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-// error handlers
-
-// development error handler
-// will print stacktrace
+// Error Handlers
+// Development error handler will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);

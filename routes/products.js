@@ -13,7 +13,7 @@ var router  = express.Router();
 // ---------------------------------------------------------
 // authentication (no middleware necessary since this isnt authenticated)
 // ---------------------------------------------------------
-// http://localhost:8080/api/authenticate
+// http://localhost:8080/mds/api/authenticate
 router.post('/authenticate', function(req, res) {
 
     // find the user
@@ -45,11 +45,12 @@ router.post('/authenticate', function(req, res) {
 
 // ---------------------------------------------------------
 // route middleware to authenticate and check token
+// a middleware with no mount path; gets executed for every request to the app
 // ---------------------------------------------------------
 router.use(function(req, res, next) {
 
     // check header or url parameters or post parameters for token
-    var token = req.body.token || req.param('token') || req.headers['x-access-token'];
+    var token = req.body.token || req.query.token || req.headers['x-access-token'];
     // decode token
     if (token) {
         // verifies secret and checks exp
@@ -57,9 +58,12 @@ router.use(function(req, res, next) {
             if (err) {
                 return res.json({ success: false, message: 'Failed to authenticate token.' });
             } else {
-                // if everything is good, save to request for use in other routes
-                // decoded.user contains user retrieved from db
+                // a middleware (function) can access to the request object (req), the response object (res),
+                // and the next middleware in line in the request-response cycle of an Express application
+                // if everything is good, save User to request for use in other routes
+                // -> decoded.user contains user retrieved from db
                 req.decoded = decoded;
+                // Auth is OK, pass control to the next middleware
                 next();
             }
         });

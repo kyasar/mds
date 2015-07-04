@@ -11,7 +11,7 @@ var express = require('express');
 var router  = express.Router();
 
 // ---------------------------------------------------------
-// authentication (no middleware necessary since this isnt authenticated)
+// authentication (no middleware necessary since this is not authenticated)
 // ---------------------------------------------------------
 // http://localhost:8080/mds/api/authenticate
 router.post('/authenticate', function(req, res) {
@@ -24,7 +24,6 @@ router.post('/authenticate', function(req, res) {
         if (!user) {
             res.json({ success: false, message: 'Authentication failed. User not found.' });
         } else if (user) {
-
             // check if password matches
             if (!user.validPassword(req.body.password)) {
                 res.json({ success: false, message: 'Authentication failed. Wrong password.' });
@@ -84,7 +83,7 @@ router.get('/products/', function(req, res) {
             return res.send(products);
         } else {
             res.statusCode = 500;
-            log.error('Internal error(%d): %s',res.statusCode,err.message);
+            log.error('Internal error(%d): %s', res.statusCode, err.message);
             return res.send({ error: 'Server error' });
         }
     });
@@ -98,7 +97,7 @@ router.get('/products/:barcode', function(req, res) {
             return res.send(product);
         } else {
             res.statusCode = 500;
-            log.error('Internal error(%d): %s',res.statusCode,err.message);
+            log.error('Internal error(%d): %s', res.statusCode, err.message);
             return res.send({ error: 'Server error' });
         }
     });

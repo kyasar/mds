@@ -16,22 +16,28 @@ var router  = express.Router();
 // http://localhost:8080/mds/api/authenticate
 router.post('/authenticate', function(req, res) {
 
+    log.info("User loginType: ", req.loginType);
+    if (req.loginType == "fb") {
+        query = {'facebook.id' : req.id};
+    } else if (req.loginType == "g+") {
+        query = {'google.id' : req.id};
+    } else {
+        query = {'_id' : req.id};
+    }
     // find the user
-    User.findOne({
-        'local.email': req.body.email
-    }, function(err, user) {
+    User.findOne(query, function(err, user) {
         if (err) throw err;
         if (!user) {
             res.json({ success: false, message: 'Authentication failed. User not found.' });
         } else if (user) {
             // check if password matches
-            if (!user.validPassword(req.body.password)) {
-                res.json({ success: false, message: 'Authentication failed. Wrong password.' });
+            if (config.API_KEY == req.body.password) {
+                res.json({ success: false, message: 'Authentication failed. Wrong API_KEY.' });
             } else {
                 // if user is found and password is right
                 // create a token
                 // Note! first param must be a JSON
-                var token = jwt.sign({'user':user}, config.get('secret'), { expiresInMinutes: 1 });
+                var token = jwt.sign({'user':user}, config.get('secret'), { expiresInMinutes: 30 });
                 res.json({
                     success: true,
                     message: 'Enjoy your token!',

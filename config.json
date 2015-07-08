@@ -4,5 +4,6 @@
     "uri": "mongodb://localhost/mddb"
   },
   "secret" : "dopamin2014@mdserver",
-  "session-timeout" : 60000
+  "session-timeout" : 60000,
+  "API_KEY" : "15b240618c19d0cb36d0778d52253177"
 }

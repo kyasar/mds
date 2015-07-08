@@ -12,6 +12,7 @@ var User = new Schema({
     email            : { type: String},
     points           : { type: Number, default: 0 },
     signDate         : { type: Date, default: Date.now },
+    loginType        : { type: String},
     local            : {
         password     : String
     },

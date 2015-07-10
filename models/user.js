@@ -18,16 +18,13 @@ var User = new Schema({
     },
     facebook         : {
         id           : String,
-        token        : String
     },
     twitter          : {
         id           : String,
-        token        : String,
         username     : String   // twitter username?
     },
     google           : {
         id           : String,
-        token        : String
     }
 });
 

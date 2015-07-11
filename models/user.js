@@ -14,17 +14,18 @@ var User = new Schema({
     signDate         : { type: Date, default: Date.now },
     loginType        : { type: String},
     local            : {
+        id           : {type: String},
         password     : String
     },
     facebook         : {
-        id           : String,
+        id           : String
     },
     twitter          : {
         id           : String,
         username     : String   // twitter username?
     },
     google           : {
-        id           : String,
+        id           : String
     }
 });
 

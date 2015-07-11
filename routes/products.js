@@ -21,8 +21,8 @@ router.post('/authenticate', function(req, res) {
         query = {'facebook.id' : req.id};
     } else if (req.loginType == "g+") {
         query = {'google.id' : req.id};
-    } else {
-        query = {'_id' : req.id};
+    } else if (req.loginType == "local") {
+        query = {'local.id' : req.id};
     }
     // find the user
     User.findOne(query, function(err, user) {

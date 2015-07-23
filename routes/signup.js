@@ -21,7 +21,7 @@ router.post('/fb', function(req, res) {
         'firstName' : req.body.firstName,
         'lastName' : req.body.lastName,
         'email': req.body.email,
-        'facebook.id'   : req.body.id,
+        'facebook.id'   : req.body.id
     });
 
     UserModel.findOne({'facebook.id': req.body.id}, function (err, user) {
@@ -65,7 +65,7 @@ router.post('/google', function(req, res) {
         'firstName' : req.body.firstName,
         'lastName' : req.body.lastName,
         'email': req.body.email,
-        'google.id'   : req.body.id,
+        'google.id'   : req.body.id
     });
 
     if (newUser.google.id == "") {

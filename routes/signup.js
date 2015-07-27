@@ -119,7 +119,7 @@ router.post('/social', function(req, res) {
 
     var queryUser;
 
-    if (req.body.social == "fb") {
+    if (req.body.social == "facebook") {
         log.info("New user signing up with facebook account.");
         newUser.facebook.id = req.body.id;
         queryUser = {'facebook.id' : req.body.id}

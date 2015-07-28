@@ -130,6 +130,7 @@ router.post('/social', function(req, res) {
     } else {
         log.info("New user signing up with own details.");
         //TODO: get username and password
+        return res.send({status: 'fail', error : "No Local signup yet. Use social media."});
     }
 
     if (!req.body.id) {

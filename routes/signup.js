@@ -132,7 +132,7 @@ router.post('/social', function(req, res) {
         //TODO: get username and password
     }
 
-    if (newUser.google.id == "" || newUser.facebook.id == "") {
+    if (!req.body.id) {
         log.info("User id not specified !");
         return res.send({status: 'fail', error : "No id specified."});
     } else {

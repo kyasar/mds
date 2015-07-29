@@ -107,36 +107,34 @@ router.post('/google', function(req, res) {
 router.post('/social', function(req, res) {
     log.info('name: ', req.body.firstName, ' ', req.body.lastName);
     log.info('email: ', req.body.email);
-    //log.info('id: ', req.body.id);
+    log.info('social: ', req.body.social);
 
+    var queryUser;
     var newUser
         = new UserModel({
         'firstName' : req.body.firstName,
         'lastName' : req.body.lastName,
         'email': req.body.email
-        //'google.id'   : req.body.id
     });
-
-    var queryUser;
-
-    if (req.body.social == "facebook") {
-        log.info("New user signing up with facebook account.");
-        newUser.facebook.id = req.body.id;
-        queryUser = {'facebook.id' : req.body.id}
-    } else if (req.body.social == "google") {
-        log.info("New user signing up with google account.");
-        newUser.google.id = req.body.id;
-        queryUser = {'google.id' : req.body.id}
-    } else {
-        log.info("New user signing up with own details.");
-        //TODO: get username and password
-        return res.send({status: 'fail', error : "No Local signup yet. Use social media."});
-    }
 
     if (!req.body.id) {
         log.info("User id not specified !");
         return res.send({status: 'fail', error : "No id specified."});
     } else {
+        if (req.body.social == "FACEBOOK_USER") {
+            log.info("User signing up with facebook account id: ", req.body.id);
+            newUser.facebook.id = req.body.id;
+            queryUser = {'facebook.id' : req.body.id}
+        } else if (req.body.social == "GOOGLE_USER") {
+            log.info("User signing up with google account id: ", req.body.id);
+            newUser.google.id = req.body.id;
+            queryUser = {'google.id' : req.body.id}
+        } else {
+            log.info("New user signing up with own details.");
+            log.err("No Local signup yet. Use social media.");
+            //TODO: get username and password
+            return res.send({status: 'fail', error : "No Local signup yet. Use social media."});
+        }
 
         UserModel.findOne(queryUser, function (err, user) {
             if (user) {

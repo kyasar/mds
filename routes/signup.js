@@ -10,7 +10,6 @@ var router  = express.Router();
 // ---------------------------------------------------------
 // authentication (no middleware necessary since this is not authenticated)
 // ---------------------------------------------------------
-
 router.post('/social', function(req, res) {
     log.info('name: ', req.body.firstName, ' ', req.body.lastName);
     log.info('email: ', req.body.email);
@@ -21,21 +20,22 @@ router.post('/social', function(req, res) {
         = new UserModel({
         'firstName' : req.body.firstName,
         'lastName' : req.body.lastName,
-        'email': req.body.email
+        'email': req.body.email,
+        'social.id' : req.body.id,
+        'loginType' : req.body.social
     });
 
-    if (!req.body.id) {
-        log.info("User id not specified !");
+    if (!req.body.id || !req.body.social) {
+        log.info("User ID or Login Type not specified !");
         return res.send({status: 'fail', error : "No id specified."});
     } else {
+        // social ID and type must be entered
+        queryUser = {'social.id' : req.body.id, 'loginType' : req.body.social};
+
         if (req.body.social == "FACEBOOK_USER") {
             log.info("User signing up with facebook account id: ", req.body.id);
-            newUser.facebook.id = req.body.id;
-            queryUser = {'facebook.id' : req.body.id}
         } else if (req.body.social == "GOOGLE_USER") {
             log.info("User signing up with google account id: ", req.body.id);
-            newUser.google.id = req.body.id;
-            queryUser = {'google.id' : req.body.id}
         } else {
             log.info("New user signing up with own details.");
             log.err("No Local signup yet. Use social media.");

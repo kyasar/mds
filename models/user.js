@@ -13,19 +13,10 @@ var User = new Schema({
     points           : { type: Number, default: 0 },
     signDate         : { type: Date, default: Date.now },
     loginType        : { type: String},
-    local            : {
+    password         : { type: String}, // for only local users
+    social           : {
         id           : {type: String},
-        password     : String
-    },
-    facebook         : {
-        id           : String
-    },
-    twitter          : {
-        id           : String,
-        username     : String   // twitter username?
-    },
-    google           : {
-        id           : String
+        username     : {type: String}  // twitter username?
     }
 });
 

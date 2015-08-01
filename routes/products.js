@@ -16,30 +16,40 @@ var router  = express.Router();
 // http://localhost:8080/mds/api/authenticate
 router.post('/authenticate', function(req, res) {
 
-    log.info("User loginType: ", req.loginType);
-    if (req.loginType == "fb") {
-        query = {'facebook.id' : req.id};
-    } else if (req.loginType == "g+") {
-        query = {'google.id' : req.id};
-    } else if (req.loginType == "local") {
-        query = {'local.id' : req.id};
+    if (!req.body.id || !req.body.social) {
+        log.info("User ID or Login Type not specified !");
+        return res.send({status: 'fail', error : "No id specified."});
     }
+
+    query = {'social.id' : req.body.id, 'loginType' : req.body.social};
+
+    log.info("User loginType: ", req.body.social);
+    if (req.body.social == "FACEBOOK_USER") {
+        log.info("User loging in with facebook account id: ", req.body.id);
+    } else if (req.body.social == "GOOGLE_USER") {
+        log.info("User loging in with google account id: ", req.body.id);
+    } else {
+        //TODO: get username and password
+        return res.send({status: 'fail', error : "No Local signup yet. Use social media."});
+    }
+
     // find the user
     User.findOne(query, function(err, user) {
         if (err) throw err;
         if (!user) {
-            res.json({ success: false, message: 'Authentication failed. User not found.' });
+            res.json({ status: 'fail', message: 'Authentication failed. User not found.' });
         } else if (user) {
             // check if password matches
             if (config.API_KEY == req.body.password) {
-                res.json({ success: false, message: 'Authentication failed. Wrong API_KEY.' });
+                res.json({ status: 'fail', message: 'Authentication failed. Wrong API_KEY.' });
             } else {
                 // if user is found and password is right
                 // create a token
                 // Note! first param must be a JSON
+                log.info("User ", user.firstName, " ", user.lastName, " getting a Token..");
                 var token = jwt.sign({'user':user}, config.get('secret'), { expiresInMinutes: 30 });
                 res.json({
-                    success: true,
+                    status: 'success',
                     message: 'Enjoy your token!',
                     token: token
                 });
@@ -83,7 +93,6 @@ router.use(function(req, res, next) {
 });
 
 router.get('/products/', function(req, res) {
-    log.info('user email: ', req.decoded.user.local.email);
     return ProductModel.find( function(err, products) {
         if (!err) {
             return res.send(products);
@@ -96,7 +105,6 @@ router.get('/products/', function(req, res) {
 });
 
 router.get('/products/:barcode', function(req, res) {
-    log.info('user email: ', req.decoded.user.local.email);
     log.info('Searching for product with barcode:', req.params.barcode);
     return ProductModel.find({ barcodeNumber : req.params.barcode }, function(err, product) {
         if (!err) {

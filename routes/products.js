@@ -153,8 +153,9 @@ Gets a JSON object containing market details and products which will be matched 
 Saves the market if not existing in DB, then associates the products with their prices
 Method: POST, Content-Type: Application/JSON
  */
+
 router.post('/market/', function(req, res) {
-    log.info("Market req id: ", req.body.market.id, " provider: ", req.body.market.provider);
+    log.info("Market req id: ", req.body.market.id, " products: ", req.body.products);
 
     if (!req.body.market.id || !req.body.market.provider) {
         log.info("Market ID or Login Type not specified !");
@@ -164,19 +165,43 @@ router.post('/market/', function(req, res) {
             = new MarketModel({
             'name'     : req.body.market.name,
             'id'       : req.body.market.id,
-            'provider' : req.body.market.provider
+            'provider' : req.body.market.provider,
+            'products' : req.body.products
         });
         // social ID and type must be entered
         MarketModel.findOne({'id' : newMarket.id, 'provider' : newMarket.provider}, function (err, market) {
             if (market) {
                 //TODO: token must be updated!
                 log.info("Market has already signed up with id: ", market.id);
-                return res.send({status: 'OK', market: market});
+                log.info("Products in market: ", market.products);
+                mergeMarketProducts(market, req.body.products);
+                market.name = "kadir";
+                log.info("name: ", market.name, " new products: ", market.products);
+
+                /* Update market with new products */
+                market.save(function (err) {
+                    if (!err) {
+                        log.info("Market updated.");
+                        return res.send({ status: 'OK', user : market });
+                    } else {
+                        console.log(err);
+                        if(err.name == 'ValidationError') {
+                            res.statusCode = 400;
+                            res.send({status: 'fail',  error: 'Validation error' });
+                        } else {
+                            res.statusCode = 500;
+                            res.send({status: 'fail',  error: 'Server error' });
+                        }
+                        log.error('Internal error(%d): %s', res.statusCode, err.message);
+                    }
+                });
+
+                //return res.send({status: 'OK', market: market});
             } else if (!market) {
                 log.info("market not found! Creating new with id: ", newMarket.id);
                 newMarket.save(function (err) {
                     if (!err) {
-                        log.info("User created.");
+                        log.info("Market created.");
                         return res.send({ status: 'OK', user : newMarket });
                     } else {
                         console.log(err);
@@ -198,5 +223,25 @@ router.post('/market/', function(req, res) {
         });
     }
 });
+
+var _ = require('underscore');
+
+function mergeMarketProducts(market, products) {
+    var product;
+    log.info("products len: ", products.length);
+    for (var i = 0; i < products.length; i++) {
+
+        log.info("Merging product: ", products[i].barcode);
+        product = _.find(market.products, function(p) {
+            return products[i].barcode == p.barcode;
+        });
+
+        if (product) {
+            log.info("product: ", product.barcode, " price: ", product.price);
+            product.price = products[i].price;
+        }
+    }
+    log.info("new products: ", market.products);
+}
 
 module.exports = router;

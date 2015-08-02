@@ -91,7 +91,7 @@ router.use(function(req, res, next) {
             // if there is no token
             // return an error
             return res.status(403).send({
-                success: false,
+                status: 'fail',
                 message: 'No token provided.'
             });
         }
@@ -105,7 +105,7 @@ router.get('/products/', function(req, res) {
         } else {
             res.statusCode = 500;
             log.error('Internal error(%d): %s', res.statusCode, err.message);
-            return res.send({ error: 'Server error' });
+            return res.send({status: 'fail', error: 'Server error' });
         }
     });
 });
@@ -118,7 +118,7 @@ router.get('/products/:barcode', function(req, res) {
         } else {
             res.statusCode = 500;
             log.error('Internal error(%d): %s', res.statusCode, err.message);
-            return res.send({ error: 'Server error' });
+            return res.send({status: 'fail', error: 'Server error' });
         }
     });
 });
@@ -138,10 +138,10 @@ router.post('/products/', function(req, res) {
             console.log(err);
             if(err.name == 'ValidationError') {
                 res.statusCode = 400;
-                res.send({ error: 'Validation error' });
+                res.send({status: 'fail', error: 'Validation error' });
             } else {
                 res.statusCode = 500;
-                res.send({ error: 'Server error' });
+                res.send({status: 'fail', error: 'Server error' });
             }
             log.error('Internal error(%d): %s', res.statusCode, err.message);
         }

@@ -4,8 +4,6 @@
 var mongoose    = require('mongoose');
 var log         = require('./log')(module);
 var config      = require('./config');
-var crypto = require('crypto');
-var user        = require('../models/user.js');
 
 mongoose.connect(config.get('mongoose:uri'));
 var db = mongoose.connection;
@@ -18,10 +16,10 @@ db.once('open', function callback () {
     log.info("Connected to DB!");
 });
 
-var ArticleModel = require('../models/article.js').ArticleModel;
 var UserModel = require('../models/user.js').UserModel;
 var ProductModel = require('../models/product.js').ProductModel;
+var MarketModel = require('../models/market.js').MarketModel;
 
-module.exports.ArticleModel = ArticleModel;
 module.exports.UserModel = UserModel;
 module.exports.ProductModel = ProductModel;
+module.exports.MarketModel = MarketModel;

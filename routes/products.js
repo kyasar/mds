@@ -156,7 +156,6 @@ Method: POST, Content-Type: Application/JSON
  */
 
 router.post('/market/', function(req, res) {
-    //log.info("Market req id: ", req.body.market.id, " products: ", req.body.products);
 
     if (!req.body.market.id || !req.body.market.provider) {
         log.info("Market ID or Login Type not specified !");
@@ -172,13 +171,7 @@ router.post('/market/', function(req, res) {
         // social ID and type must be entered
         MarketModel.findOne({'id' : newMarket.id, 'provider' : newMarket.provider}, function (err, market) {
             if (market) {
-                //TODO: token must be updated!
                 log.info("Market has already signed up with id: ", market.id);
-                //log.info("Products in market: ", market.products);
-                //mergeMarketProducts(market, req.body.products);
-                //market.name = "Yasaroglu";
-                //market.products = mergeMarketProducts(market, req.body.products);
-                //log.info("name: ", market.name, " new products: ", market.products);
 
                 for (var i = 0; i < req.body.products.length; i++) {
 
@@ -191,7 +184,7 @@ router.post('/market/', function(req, res) {
                         log.info("Product already sold in Market, with price: ", product.price, " new: ", req.body.products[i].price);
 
                         MarketModel.update({'id' : market.id, 'products.barcode' : product.barcode },
-                            {'$set' : { "products.$.price" : req.body.products[i].price } },
+                            {'$set' : { 'products.$.price' : req.body.products[i].price } },
                             function (err) {
                                 if (!err) {
                                     log.info("Market updated.");
@@ -213,7 +206,7 @@ router.post('/market/', function(req, res) {
                         log.info("Product new in this market, adding the product..");
 
                         MarketModel.update({'id' : market.id },
-                            {'$addToSet' : { "products" : req.body.products[i] } },
+                            {'$addToSet' : { 'products' : req.body.products[i] } },
                             function (err) {
                                 if (!err) {
                                     log.info("Market updated.");
@@ -233,8 +226,9 @@ router.post('/market/', function(req, res) {
                     }
                 }
 
-                /* Update market with new products*/
+                // return the found and updated market
                 return res.send({status: 'OK'});
+
             } else if (!market) {
                 log.info("market not found! Creating new with id: ", newMarket.id);
                 newMarket.save(function (err) {

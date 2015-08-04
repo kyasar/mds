@@ -12,30 +12,30 @@ var router  = express.Router();
 // ---------------------------------------------------------
 router.post('/social', function(req, res) {
     log.info('name: ', req.body.firstName, ' ', req.body.lastName);
-    log.info('email: ', req.body.email);
-    log.info('social: ', req.body.social);
+    log.info('social_id: ', req.body.social_id, ' loginType: ', req.body.loginType);
 
     var queryUser;
     var newUser
         = new UserModel({
         'firstName' : req.body.firstName,
-        'lastName' : req.body.lastName,
-        'email': req.body.email,
-        'social.id' : req.body.id,
-        'loginType' : req.body.social
+        'lastName'  : req.body.lastName,
+        'email'     : req.body.email,
+        'username'  : req.body.username,
+        'social_id' : req.body.social_id,
+        'loginType' : req.body.loginType
     });
 
-    if (!req.body.id || !req.body.social) {
+    if (!req.body.social_id || !req.body.loginType) {
         log.info("User ID or Login Type not specified !");
         return res.send({status: 'fail', error : "No id specified."});
     } else {
         // social ID and type must be entered
-        queryUser = {'social.id' : req.body.id, 'loginType' : req.body.social};
+        queryUser = {'social_id' : req.body.social_id, 'loginType' : req.body.loginType};
 
-        if (req.body.social == "FACEBOOK_USER") {
-            log.info("User signing up with facebook account id: ", req.body.id);
-        } else if (req.body.social == "GOOGLE_USER") {
-            log.info("User signing up with google account id: ", req.body.id);
+        if (req.body.loginType == "FACEBOOK") {
+            log.info("User signing up with facebook account id: ", req.body.social_id);
+        } else if (req.body.loginType == "GOOGLE") {
+            log.info("User signing up with google account id: ", req.body.social_id);
         } else {
             log.info("New user signing up with own details.");
             log.err("No Local signup yet. Use social media.");
@@ -46,10 +46,10 @@ router.post('/social', function(req, res) {
         UserModel.findOne(queryUser, function (err, user) {
             if (user) {
                 //TODO: token must be updated!
-                log.info("User has already signed up with Social account id: ", req.body.id);
+                log.info("User has already signed up with Social account id: ", user.social_id);
                 return res.send({status: 'OK', user: user});
             } else if (!user) {
-                log.info("User not found! Creating new with Social account id: ", req.body.id);
+                log.info("User not found! Creating new with Social account id: ", newUser.social_id);
                 newUser.save(function (err) {
                     if (!err) {
                         log.info("User created.");

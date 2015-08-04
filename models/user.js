@@ -7,17 +7,14 @@ var bcrypt   = require('bcrypt-nodejs');
 var Schema = mongoose.Schema;
 
 var User = new Schema({
-    firstName        : { type: String},
-    lastName         : { type: String},
-    email            : { type: String},
+    firstName        : { type: String },
+    lastName         : { type: String },
+    email            : { type: String },
+    loginType        : { type: String },
+    password         : { type: String }, // for only local users
+    social_id        : { type: String },
     points           : { type: Number, default: 0 },
-    signDate         : { type: Date, default: Date.now },
-    loginType        : { type: String},
-    password         : { type: String}, // for only local users
-    social           : {
-        id           : {type: String},
-        username     : {type: String}  // twitter username?
-    }
+    signDate         : { type: Date, default: Date.now }
 });
 
 // methods ======================

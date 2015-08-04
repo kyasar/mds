@@ -12,6 +12,18 @@ var _ = require('underscore');
 var express = require('express');
 var router  = express.Router();
 
+router.get('/test', function(req, res) {
+    return User.findOne({}, function(err, user) {
+        if (!err) {
+            return res.send(user);
+        } else {
+            res.statusCode = 500;
+            log.error('Internal error(%d): %s', res.statusCode, err.message);
+            return res.send({status: 'fail', error: 'Server error' });
+        }
+    });
+});
+
 // ---------------------------------------------------------
 // authentication (no middleware necessary since this is not authenticated)
 // ---------------------------------------------------------

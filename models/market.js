@@ -9,6 +9,7 @@ var Market = new Schema({
     id       : { type: String, index: true, required: true },
     provider : { type: String, required: true },
     modified : { type: Date, default: Date.now },
+    vicinity : { type: String },
     /* This array contains the the products that are sold in this market
      * De-normalized database
      */

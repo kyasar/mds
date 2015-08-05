@@ -169,15 +169,16 @@ Method: POST, Content-Type: Application/JSON
 
 router.post('/market/', function(req, res) {
 
-    if (!req.body.market.id || !req.body.market.provider) {
+    if (!req.body.id || !req.body.provider) {
         log.info("Market ID or Login Type not specified !");
         return res.send({status: 'fail', error : "No id specified."});
     } else {
         var newMarket
             = new MarketModel({
-            'name'     : req.body.market.name,
-            'id'       : req.body.market.id,
-            'provider' : req.body.market.provider,
+            'name'     : req.body.name,
+            'id'       : req.body.id,
+            'provider' : req.body.provider,
+            'vicinity' : req.body.vicinity,
             'products' : req.body.products
         });
         // social ID and type must be entered

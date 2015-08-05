@@ -125,9 +125,9 @@ router.get('/products/', function(req, res) {
 
 router.get('/products/:barcode', function(req, res) {
     log.info('Searching for product with barcode:', req.params.barcode);
-    return ProductModel.find({ barcodeNumber : req.params.barcode }, function(err, product) {
+    return ProductModel.findOne({ barcode : req.params.barcode }, function(err, product) {
         if (!err) {
-            return res.send(product);
+            return res.send({status: 'OK', product: product});
         } else {
             res.statusCode = 500;
             log.error('Internal error(%d): %s', res.statusCode, err.message);

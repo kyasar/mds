@@ -197,7 +197,9 @@ router.post('/market/', function(req, res) {
                         log.info("Product already sold in Market, with price: ", product.price, " new: ", req.body.products[i].price);
 
                         MarketModel.update({'id' : market.id, 'products.barcode' : product.barcode },
-                            {'$set' : { 'products.$.price' : req.body.products[i].price } },
+                            {'$set' : { 'products.$.price' : req.body.products[i].price,
+                                        'products.$.user' : req.body.user
+                                    } },
                             function (err) {
                                 if (!err) {
                                     log.info("Market updated.");
@@ -217,8 +219,8 @@ router.post('/market/', function(req, res) {
 
                     } else {
                         log.info("Product new in this market, adding the product..");
-
-                        MarketModel.update({'id' : market.id },
+                        req.body.products[i].user = req.body.user;
+                        MarketModel.update({ 'id' : market.id },
                             {'$addToSet' : { 'products' : req.body.products[i] } },
                             function (err) {
                                 if (!err) {

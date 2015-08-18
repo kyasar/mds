@@ -181,6 +181,16 @@ router.post('/market/', function(req, res) {
             'vicinity' : req.body.vicinity,
             'products' : req.body.products
         });
+
+        var userID = req.body.userID;
+
+        var respond = {
+            'status' : "OK",
+            'new_products' : 0, // new products associated with the market
+            'new_market'   : 0, // is that first check-in for this market?
+            'products'     : 0  // how many product updates?
+        };
+
         // social ID and type must be entered
         MarketModel.findOne({'id' : newMarket.id, 'provider' : newMarket.provider}, function (err, market) {
             if (market) {
@@ -195,7 +205,7 @@ router.post('/market/', function(req, res) {
 
                     if (product) {
                         log.info("Product already sold in Market, with price: ", product.price, " new: ", req.body.products[i].price);
-
+                        respond.products += 1;
                         MarketModel.update({'id' : market.id, 'products.barcode' : product.barcode },
                             {'$set' : { 'products.$.price' : req.body.products[i].price,
                                         'products.$.user' : req.body.user
@@ -220,6 +230,7 @@ router.post('/market/', function(req, res) {
                     } else {
                         log.info("Product new in this market, adding the product..");
                         req.body.products[i].user = req.body.user;
+                        respond.new_products += 1;
                         MarketModel.update({ 'id' : market.id },
                             {'$addToSet' : { 'products' : req.body.products[i] } },
                             function (err) {
@@ -242,14 +253,16 @@ router.post('/market/', function(req, res) {
                 }
 
                 // return the found and updated market
-                return res.send({status: 'OK'});
+                //return res.send({status: 'OK'});
 
             } else if (!market) {
                 log.info("market not found! Creating new with id: ", newMarket.id);
+                respond.new_market += 1;
+                respond.new_products += newMarket.products.length;
                 newMarket.save(function (err) {
                     if (!err) {
                         log.info("Market created.");
-                        return res.send({ status: 'OK', user : newMarket });
+                        //return res.send({ status: 'OK', user : newMarket });
                     } else {
                         console.log(err);
                         if(err.name == 'ValidationError') {
@@ -267,6 +280,38 @@ router.post('/market/', function(req, res) {
                 log.error('Internal error(%d): %s', res.statusCode, err.message);
                 return res.send({status: 'fail', error: 'Server error'});
             }
+
+            var points = respond.new_market * 5 + respond.new_products * 2 + respond.products;
+
+
+            // find the user
+            User.findById(userID, function(err, user) {
+                if (err) throw err;
+                if (!user) {
+                    res.json({ status: 'fail', message: 'User not found.' });
+                } else if (user) {
+                    //TODO: Add points to User account
+                    log.info("user: ", user.firstName, " earned ", points, " points.");
+                    User.findOneAndUpdate(newMarket.userID,
+                        { $inc : { 'points' : points } },
+                        function (err) {
+                            if (!err) {
+                                log.info("User ", userID, " earned ", points, " points..");
+                                res.send(respond);
+                            } else {
+                                console.log(err);
+                                if(err.name == 'ValidationError') {
+                                    res.statusCode = 400;
+                                    res.send({status: 'fail', error: 'Validation error' });
+                                } else {
+                                    res.statusCode = 500;
+                                    res.send({status: 'fail', error: 'Server error' });
+                                }
+                                log.error('Internal error(%d): %s', res.statusCode, err.message);
+                            }
+                        });
+                }
+            });
         });
     }
 });

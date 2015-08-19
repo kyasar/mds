@@ -5,5 +5,8 @@
   },
   "secret" : "dopamin2014@mdserver",
   "session-timeout" : 60000,
-  "API_KEY" : "15b240618c19d0cb36d0778d52253177"
+  "API_KEY" : "15b240618c19d0cb36d0778d52253177",
+  "coeff_np" : 2,
+  "coeff_nm" : 5,
+  "coeff_p"  : 1
 }

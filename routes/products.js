@@ -187,8 +187,11 @@ router.post('/market/', function(req, res) {
         var respond = {
             'status' : "OK",
             'new_products' : 0, // new products associated with the market
+            'coeff_np'     : config.get('coeff_np'),
             'new_market'   : 0, // is that first check-in for this market?
-            'products'     : 0  // how many product updates?
+            'coeff_nm'     : config.get('coeff_nm'),
+            'products'     : 0,  // how many product updates?
+            'coeff_p'      : config.get('coeff_p')
         };
 
         // social ID and type must be entered
@@ -281,8 +284,9 @@ router.post('/market/', function(req, res) {
                 return res.send({status: 'fail', error: 'Server error'});
             }
 
-            var points = respond.new_market * 5 + respond.new_products * 2 + respond.products;
-
+            var points = respond.new_market * config.get('coeff_nm')
+                + respond.new_products * config.get('coeff_np')
+                + respond.products * config.get('coeff_p');
 
             // find the user
             User.findById(userID, function(err, user) {

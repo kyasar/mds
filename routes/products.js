@@ -24,6 +24,19 @@ router.get('/test', function(req, res) {
     });
 });
 
+router.get('/products/', function(req, res) {
+    log.info('Searching for product with name:', req.query.search);
+    return ProductModel.find({ $text : { $search : req.query.search } }, function(err, products) {
+        if (!err) {
+            return res.send({status: 'OK', product: products});
+        } else {
+            res.statusCode = 500;
+            log.error('Internal error(%d): %s', res.statusCode, err.message);
+            return res.send({status: 'fail', error: 'Server error' });
+        }
+    });
+});
+
 // ---------------------------------------------------------
 // authentication (no middleware necessary since this is not authenticated)
 // ---------------------------------------------------------

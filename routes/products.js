@@ -182,8 +182,8 @@ Method: POST, Content-Type: Application/JSON
 
 router.post('/market/', function(req, res) {
 
-    if (!req.body.id || !req.body.provider) {
-        log.info("Market ID or Login Type not specified !");
+    if (!req.body.id || !req.body.userID) {
+        log.info("Market ID or User ID not specified !");
         return res.send({status: 'fail', error : "No id specified."});
     } else {
         var newMarket

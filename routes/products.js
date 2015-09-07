@@ -11,6 +11,7 @@ var config  = require('../libs/config');
 var _ = require('underscore');
 var express = require('express');
 var router  = express.Router();
+var async = require('async');
 
 router.get('/test', function(req, res) {
     return User.findOne({}, function(err, user) {
@@ -37,6 +38,10 @@ router.get('/products/', function(req, res) {
     });
 });
 
+/*
+ SCAN method, scans the markets given in markets fields of JSON request for given
+ products list, Returns the markets contaning products with their prices
+ */
 router.post('/scan/', function(req, res) {
 
     if (!req.body.markets || !req.body.products) {
@@ -44,42 +49,71 @@ router.post('/scan/', function(req, res) {
         return res.send({status: 'fail', error : "No list specified."});
     }
 
-    var respond = {};
+    var respond = {status : 'OK', markets : []};
 
-    for (var i = 0; i < req.body.markets.length; i++) {
-        log.info("Scanning market: ", req.body.markets[i].id);
-        MarketModel.findOne({'id': req.body.markets[i].id}, function (err, market) {
-            if (market) {
-                log.info("Market found in the system with id: ", market.id);
+    async.series([
+        /*
+            First task, scans the given market list for given product list
+         */
+        function(callback) {
+            async.eachSeries(req.body.markets, function(m, callback) {
+                //log.info("Scanning market: ", m.id);
+                MarketModel.findOne({'id': m.id}, function (err, market) {
+                    if (market) {
+                        log.info("Market found in the system with id: ", market.id);
 
-                for (var i = 0; i < req.body.products.length; i++) {
+                        for (var j = 0; j < req.body.products.length; j++) {
 
-                    product = _.find(market.products, function (p) {
-                        return req.body.products[i].barcode == p.barcode;
-                    });
+                            product = _.find(market.products, function (p) {
+                                return req.body.products[j].barcode == p.barcode;
+                            });
 
-                    if (product) {
-                        log.info("Product (", product.barcode, ") found in this market (",
-                            market.id, ") Price: ", product.price);
+                            if (product) {
+                                respond.markets.push(market);
+                                log.info("Product (", product.barcode, ") found in this market (",
+                                    market.id, ") Price: ", product.price);
+                            }
+                        }
                     }
+                    else if (!market) {
+                        log.info("Market NOT found in the system  with id: ", m.id);
+                    }
+                    else {
+                        res.statusCode = 500;
+                        log.error('Internal error(%d): %s', res.statusCode, err.message);
+                        return res.send({status: 'fail', error: 'Server error'});
+                    }
+                    callback(err);
+                });
+            }, function(err) {
+                if (err) {
+                    res.statusCode = 500;
+                    res.send({status: 'fail', error: 'Server error'});
                 }
-            }
-            else if (!market) {
-                log.info("Market NOT found in the system !");
-            }
-            else {
-                res.statusCode = 500;
-                log.error('Internal error(%d): %s', res.statusCode, err.message);
-                return res.send({status: 'fail', error: 'Server error'});
-            }
-        });
-    }
+                log.info('done');
+                callback();
+            });
+        },
 
-    for (var i = 0; i < req.body.products.length; i++) {
-        log.info(req.body.products[i].barcode);
-    }
-
-    return res.send({status: 'OK'});
+        /* This task is run after First task is finished
+         * And, it just logs the product list */
+        function(callback) {
+            for (var i = 0; i < req.body.products.length; i++) {
+                log.info("Product #", i, ": ", req.body.products[i].barcode);
+            }
+            callback();
+        }
+    ],
+        /*
+            Last callback, returns the respond containing markets that includes given products
+         */
+        function(err) {
+        if (err) {
+            res.statusCode = 500;
+            res.send({status: 'fail', error: 'Server error'});
+        }
+        res.send(respond);
+    });
 });
 
 // ---------------------------------------------------------

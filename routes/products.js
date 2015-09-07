@@ -37,6 +37,51 @@ router.get('/products/', function(req, res) {
     });
 });
 
+router.post('/scan/', function(req, res) {
+
+    if (!req.body.markets || !req.body.products) {
+        log.info("Market List or Product List not specified !");
+        return res.send({status: 'fail', error : "No list specified."});
+    }
+
+    var respond = {};
+
+    for (var i = 0; i < req.body.markets.length; i++) {
+        log.info("Scanning market: ", req.body.markets[i].id);
+        MarketModel.findOne({'id': req.body.markets[i].id}, function (err, market) {
+            if (market) {
+                log.info("Market found in the system with id: ", market.id);
+
+                for (var i = 0; i < req.body.products.length; i++) {
+
+                    product = _.find(market.products, function (p) {
+                        return req.body.products[i].barcode == p.barcode;
+                    });
+
+                    if (product) {
+                        log.info("Product (", product.barcode, ") found in this market (",
+                            market.id, ") Price: ", product.price);
+                    }
+                }
+            }
+            else if (!market) {
+                log.info("Market NOT found in the system !");
+            }
+            else {
+                res.statusCode = 500;
+                log.error('Internal error(%d): %s', res.statusCode, err.message);
+                return res.send({status: 'fail', error: 'Server error'});
+            }
+        });
+    }
+
+    for (var i = 0; i < req.body.products.length; i++) {
+        log.info(req.body.products[i].barcode);
+    }
+
+    return res.send({status: 'OK'});
+});
+
 // ---------------------------------------------------------
 // authentication (no middleware necessary since this is not authenticated)
 // ---------------------------------------------------------

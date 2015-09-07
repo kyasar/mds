@@ -62,6 +62,7 @@ router.post('/scan/', function(req, res) {
                     if (market) {
                         log.info("Market found in the system with id: ", market.id);
 
+                        var products = [];
                         for (var j = 0; j < req.body.products.length; j++) {
 
                             product = _.find(market.products, function (p) {
@@ -69,10 +70,18 @@ router.post('/scan/', function(req, res) {
                             });
 
                             if (product) {
-                                respond.markets.push(market);
                                 log.info("Product (", product.barcode, ") found in this market (",
                                     market.id, ") Price: ", product.price);
+                                // Just include product barcode and price
+                                var p = {'barcode' : product.barcode, 'price' : product.price}
+                                products.push(p);
                             }
+                        }
+
+                        // Does this market contain the products?
+                        if (products.length != 0) {
+                            var market = {'id' : market.id, 'products' : products};
+                            respond.markets.push(market);
                         }
                     }
                     else if (!market) {

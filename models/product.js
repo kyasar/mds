@@ -7,9 +7,10 @@ var Schema = mongoose.Schema;
 var Product = new Schema({
     name: { type: String, required: true },
     // we will query with barcode number frequently, so let it be indexed
-    barcodeNumber: { type: String, index: true, required: true },
+    barcode: { type: String, index: true, required: true },
     barcodeType: {type: String},
-    modified: { type: Date, default: Date.now }
+    modified: { type: Date, default: Date.now },
+    encodedPhoto : {type: String}
 });
 
 var ProductModel = mongoose.model('Product', Product);

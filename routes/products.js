@@ -237,16 +237,46 @@ router.get('/products/:barcode', function(req, res) {
     });
 });
 
+var fs = require('fs');
+
+// function to create file from base64 encoded string
+function base64_decode(base64str) {
+    // create buffer object from base64 encoded string, it is important to tell the constructor that the string is base64 encoded
+    var bitmap = new Buffer(base64str, 'base64');
+    // write buffer to file
+    fs.writeFileSync('kadir.jpg', bitmap);
+    log.info('******** File created from base64 encoded string ********');
+}
+
 router.post('/products/', function(req, res) {
+    if (!req.body.name || !req.body.barcode) {
+        log.info("Product name or barcode not specified !");
+        return res.send({status: 'fail', error : "No name or barcode specified."});
+    }
+    log.info('New product: ', req.body.name, ' ', req.body.barcode);
     var product
         = new ProductModel({
-        barcodeNumber: req.body.barcode,
-        name: req.body.name
+        barcode: req.body.barcode,
+        name: req.body.name,
+        encodedPhoto: req.body.encodedPhoto
     });
 
-    product.save(function (err) {
+    var productUpdateObj = {};
+    productUpdateObj.name = product.name;
+    productUpdateObj.barcode = product.barcode;
+    productUpdateObj.modified = new Date().toISOString()
+
+    if (req.body.encodedPhoto) {
+        log.info("New product comes with its photo..");
+        productUpdateObj.encodedPhoto = product.encodedPhoto;
+        // base64_decode(req.body.encodedPhoto)
+    }
+
+    ProductModel.findOneAndUpdate({ 'barcode': product.barcode }
+        , { $set: productUpdateObj }
+        , { upsert: true }, function (err) {
         if (!err) {
-            log.info("product created");
+            log.info("product created !");
             return res.send({ status: 'OK', product : product });
         } else {
             console.log(err);

@@ -14,7 +14,8 @@ var User = new Schema({
     password         : { type: String }, // for only local users
     social_id        : { type: String },
     points           : { type: Number, default: 0 },
-    signDate         : { type: Date, default: Date.now }
+    signDate         : { type: Date, default: Date.now },
+    shopLists        : []
 });
 
 // methods ======================

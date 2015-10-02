@@ -25,9 +25,14 @@ router.get('/test', function(req, res) {
     });
 });
 
+/*
+ Search for products that matches the query string
+ Return fields name, barcode (modified?) (image later?)
+ */
 router.get('/products/', function(req, res) {
     log.info('Searching for product with name:', req.query.search);
-    return ProductModel.find({ $text : { $search : req.query.search } }, function(err, products) {
+    return ProductModel.find({ $text : { $search : req.query.search } },
+        function(err, products) {
         if (!err) {
             return res.send({status: 'OK', product: products});
         } else {
@@ -35,7 +40,7 @@ router.get('/products/', function(req, res) {
             log.error('Internal error(%d): %s', res.statusCode, err.message);
             return res.send({status: 'fail', error: 'Server error' });
         }
-    });
+    }).select({name: 1, barcode: 1, _id: 0});
 });
 
 /*

@@ -15,6 +15,8 @@ var User = new Schema({
     social_id        : { type: String },
     points           : { type: Number, default: 0 },
     signDate         : { type: Date, default: Date.now },
+    verification     : { type: Boolean, default: false},
+    verifyToken      : { type: String},
     shopLists        : []
 });
 

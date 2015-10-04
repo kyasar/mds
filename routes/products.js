@@ -133,7 +133,6 @@ router.post('/scan/', function(req, res) {
 // ---------------------------------------------------------
 // authentication (no middleware necessary since this is not authenticated)
 // ---------------------------------------------------------
-// http://localhost:8080/mds/api/authenticate
 router.post('/authenticate', function(req, res) {
 
     if (!req.body.id || !req.body.social) {

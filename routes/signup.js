@@ -121,8 +121,13 @@ router.post('/local', function(req, res) {
         UserModel.findOne(queryUser, function (err, user) {
             if (user) {
                 //TODO: token must be updated!
-                log.info("User has already signed up with account id: ", user._id);
-                return res.send({status: 'OK', user: user});
+                if (user.verification == true) {
+                    log.info("User has already signed up and Verified");
+                    return res.send({status: 'ALREADY'});
+                } else {
+                    log.info("User has already signed up and but not Verified");
+                    return res.send({status: 'NOT_VERIFIED'});
+                }
             } else if (!user) {
                 log.info("User not found! Creating it..");
 
@@ -131,26 +136,26 @@ router.post('/local', function(req, res) {
                     if (!err) {
                         host = req.get('host');
                         link = "http://" + req.get('host') + "/mds/signup/verify?id=" + newUser._id.toString() + "&token=" +  newUser.verifyToken;
-                        console.log("link: " + link);
+                        //console.log("link: " + link);
                         mailOptions = {
                             from    : "Markod",
                             to      : newUser.email,
                             subject : "Please confirm your Email account",
                             html    : "Hello,<br> Welcome to Markod !!<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
                         };
-                        console.log(mailOptions);
+                        //console.log(mailOptions);
                         smtpTransport.sendMail(mailOptions, function(error, response){
-                            if(error){
+                            if (error) {
                                 console.log(error);
                                 res.end({error: 'Mail error'});
-                            }else{
+                            } else {
                                 log.info("User created. Verification email sent. Res: " + response.message);
-                                return res.send({ status: 'OK', user : newUser });
+                                return res.send({ status: 'OK'});
                             }
                         });
                     } else {
                         console.log(err);
-                        if(err.name == 'ValidationError') {
+                        if (err.name == 'ValidationError') {
                             res.statusCode = 400;
                             res.send({ error: 'Validation error' });
                         } else {

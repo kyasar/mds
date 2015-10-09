@@ -301,7 +301,6 @@ Gets a JSON object containing market details and products which will be matched 
 Saves the market if not existing in DB, then associates the products with their prices
 Method: POST, Content-Type: Application/JSON
  */
-
 router.post('/market/', function(req, res) {
 
     if (!req.body.id || !req.body.userID) {
@@ -423,34 +422,27 @@ router.post('/market/', function(req, res) {
                 + respond.new_products * config.get('coeff_np')
                 + respond.products * config.get('coeff_p');
 
-            // find the user
-            User.findById(userID, function(err, user) {
-                if (err) throw err;
-                if (!user) {
-                    res.json({ status: 'fail', message: 'User not found.' });
-                } else if (user) {
-                    //TODO: Add points to User account
-                    log.info("user: ", user.firstName, " earned ", points, " points.");
-                    User.findOneAndUpdate(newMarket.userID,
-                        { $inc : { 'points' : points } },
-                        function (err) {
-                            if (!err) {
-                                log.info("User ", userID, " earned ", points, " points..");
-                                res.send(respond);
-                            } else {
-                                console.log(err);
-                                if(err.name == 'ValidationError') {
-                                    res.statusCode = 400;
-                                    res.send({status: 'fail', error: 'Validation error' });
-                                } else {
-                                    res.statusCode = 500;
-                                    res.send({status: 'fail', error: 'Server error' });
-                                }
-                                log.error('Internal error(%d): %s', res.statusCode, err.message);
-                            }
-                        });
-                }
-            });
+            //TODO: Add points to User account
+            User.findByIdAndUpdate(userID,
+                { $inc : { 'points' : points } },
+                {new: true, upsert : false },  // Return updated object, Do not insert if not exists
+                function (err, user) {
+                    if (!err) {
+                        log.info("User: ", user.firstName, " earned ", points, " points.");
+                        log.info("User: ", user._id.toString(), " earned ", points, " points..");
+                        res.send(respond);
+                    } else {
+                        console.log(err);
+                        if(err.name == 'ValidationError') {
+                            res.statusCode = 400;
+                            res.send({status: 'fail', error: 'Validation error' });
+                        } else {
+                            res.statusCode = 500;
+                            res.send({status: 'fail', error: 'Server error' });
+                        }
+                        log.error('Internal error(%d): %s', res.statusCode, err.message);
+                    }
+                });
         });
     }
 })

@@ -177,6 +177,35 @@ router.post('/local', function(req, res) {
 // ---------------------------------------------------------
 // authentication (no middleware necessary since this is not authenticated)
 // ---------------------------------------------------------
+router.post('/login', function(req, res) {
+    if (!req.body.email || !req.body.password || req.body.loginType != "LOCAL") {
+        log.info("User ID or Login Type not specified !");
+        return res.send({status: 'fail', error : "No id specified."});
+    } else {
+        log.info('name: ', req.body.email, ' ', req.body.password);
+        // social ID and type must be entered
+        queryUser = {'email' : req.body.email, 'password' : req.body.password};
+
+        UserModel.findOne(queryUser, function (err, user) {
+            if (user) {
+                //TODO: token must be updated!
+                log.info("User found with Social account id: ", user.social_id);
+                return res.send({status: 'OK', user: user});
+            } else if (!user) {
+                log.info("User not found!");
+                return res.send({status: 'fail', error: 'No such user'});
+            } else {
+                res.statusCode = 500;
+                log.error('Internal error(%d): %s', res.statusCode, err.message);
+                return res.send({error: 'Server error'});
+            }
+        });
+    }
+});
+
+// ---------------------------------------------------------
+// authentication (no middleware necessary since this is not authenticated)
+// ---------------------------------------------------------
 router.post('/social', function(req, res) {
     log.info('name: ', req.body.firstName, ' ', req.body.lastName);
     log.info('social_id: ', req.body.social_id, ' loginType: ', req.body.loginType);

@@ -253,9 +253,9 @@ function base64_decode(base64str) {
 }
 
 router.post('/products/', function(req, res) {
-    if (!req.body.name || !req.body.barcode) {
+    if (!req.body.name || !req.body.barcode || !req.body.userID) {
         log.info("Product name or barcode not specified !");
-        return res.send({status: 'fail', error : "No name or barcode specified."});
+        return res.send({status: 'fail', error : "No name or barcode or user specified."});
     }
     log.info('New product: ', req.body.name, ' ', req.body.barcode);
     var product
@@ -281,7 +281,30 @@ router.post('/products/', function(req, res) {
         , { upsert: true }, function (err) {
         if (!err) {
             log.info("product created !");
-            return res.send({ status: 'OK', product : product });
+
+            var points = config.get('coeff_ap');
+
+            User.findByIdAndUpdate(req.body.userID,
+                { $inc : { 'points' : points } },
+                {new: true, upsert : false },  // Return updated object, Do not insert if not exists
+                function (err, user) {
+                    if (!err) {
+                        log.info("User: ", user.firstName, " earned ", points, " points.");
+                        log.info("User: ", user._id.toString(), " has ", user.points, " points.");
+                        res.send({ status: 'OK', user : user });
+                    } else {
+                        console.log(err);
+                        if(err.name == 'ValidationError') {
+                            res.statusCode = 400;
+                            res.send({status: 'fail', error: 'Validation error' });
+                        } else {
+                            res.statusCode = 500;
+                            res.send({status: 'fail', error: 'Server error' });
+                        }
+                        log.error('Internal error(%d): %s', res.statusCode, err.message);
+                    }
+                });
+            //return res.send({ status: 'OK', product : product });
         } else {
             console.log(err);
             if(err.name == 'ValidationError') {
@@ -450,13 +473,14 @@ router.post('/market/', function(req, res) {
 /*
 User info can be updated; ie Shoplists.
  */
-
+var sleep = require('sleep');
 router.post('/user-update/', function(req, res) {
     if (!req.body._id || !req.body.shopLists) {
         log.info("User Id is not specified !");
         return res.send({status: 'fail', error : "No Id specified."});
     }
-
+    sleep.sleep(5);
+    log.info("User: ", req.body._id, " shoplist: ", req.body.shopLists);
     User.findByIdAndUpdate(req.body._id
         , {'$set' : { 'shopLists' : req.body.shopLists } }  // Use $set to change shopList completely, $addToSet aggregate them!
         , {new: true, upsert : false }  // Return updated object, Do not insert if not exists

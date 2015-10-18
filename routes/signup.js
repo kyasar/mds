@@ -180,7 +180,7 @@ router.post('/local', function(req, res) {
 router.post('/login', function(req, res) {
     if (!req.body.email || !req.body.password || req.body.loginType != "LOCAL") {
         log.info("User ID or Login Type not specified !");
-        return res.send({status: 'fail', error : "No id specified."});
+        return res.send({status: 'FAIL', error : "No id specified."});
     } else {
         log.info('name: ', req.body.email, ' ', req.body.password);
         // social ID and type must be entered
@@ -189,15 +189,19 @@ router.post('/login', function(req, res) {
         UserModel.findOne(queryUser, function (err, user) {
             if (user) {
                 //TODO: token must be updated!
-                log.info("User found with Social account id: ", user.social_id);
-                return res.send({status: 'OK', user: user});
+                log.info("User found with Social account id: ", user._id.toString());
+                if (user.verification) {
+                    return res.send({status: 'OK', user: user});
+                } else {
+                    return res.send({status: 'NOT_VERIFIED'});
+                }
             } else if (!user) {
                 log.info("User not found!");
-                return res.send({status: 'fail', error: 'No such user'});
+                return res.send({status: 'NO_USER'});
             } else {
                 res.statusCode = 500;
                 log.error('Internal error(%d): %s', res.statusCode, err.message);
-                return res.send({error: 'Server error'});
+                return res.send({status: 'FAIL', error: 'Server error'});
             }
         });
     }

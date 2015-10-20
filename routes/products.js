@@ -147,7 +147,8 @@ router.use(function(req, res, next) {
             // verifies secret and checks exp
             jwt.verify(token, config.get('secret'), function(err, decoded) {
                 if (err) {
-                    return res.json({ success: false, message: 'Failed to authenticate token.' });
+                    log.info("Token expired :(");
+                    return res.json({ status: 'EXPIRED', message: 'Failed to authenticate token.' });
                 } else {
                     // a middleware (function) can access to the request object (req), the response object (res),
                     // and the next middleware in line in the request-response cycle of an Express application
@@ -159,10 +160,11 @@ router.use(function(req, res, next) {
                 }
             });
         } else {
+            log.info("No token provided :(");
             // if there is no token
             // return an error
             return res.status(403).send({
-                status: 'fail',
+                status: 'NOTOKEN',
                 message: 'No token provided.'
             });
         }

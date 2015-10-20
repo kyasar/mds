@@ -71,19 +71,19 @@ router.post('/authenticate', function(req, res) {
         User.findOne(query, function(err, user) {
             if (err) throw err;
             if (!user) {
-                res.json({ status: 'fail', message: 'Authentication failed. User not found.' });
+                res.json({ status: 'FAIL', message: 'Authentication failed. User not found.' });
             } else if (user) {
                 // check if password matches
                 if (config.API_KEY == req.body.key) {
-                    res.json({ status: 'fail', message: 'Authentication failed. Wrong API_KEY.' });
+                    res.json({ status: 'FAIL', message: 'Authentication failed. Wrong API_KEY.' });
                 } else {
                     // if user is found and password is right
                     // create a token
                     // Note! first param must be a JSON
                     log.info("User ", user.firstName, " ", user.lastName, " getting a Token..");
-                    var token = jwt.sign({'user':user}, config.get('secret'), { expiresInMinutes: 30 });
+                    var token = jwt.sign({'user':user}, config.get('secret'), { expiresInMinutes: 2 });
                     res.json({
-                        status: 'success',
+                        status: 'OK',
                         message: 'Enjoy your token!',
                         token: token
                     });

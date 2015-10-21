@@ -163,7 +163,7 @@ router.use(function(req, res, next) {
             log.info("No token provided :(");
             // if there is no token
             // return an error
-            return res.status(403).send({
+            return res.json({
                 status: 'NOTOKEN',
                 message: 'No token provided.'
             });

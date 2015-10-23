@@ -150,6 +150,7 @@ router.use(function(req, res, next) {
                     log.info("Token expired :(");
                     return res.json({ status: 'EXPIRED', message: 'Failed to authenticate token.' });
                 } else {
+                    log.info("Token OK :)");
                     // a middleware (function) can access to the request object (req), the response object (res),
                     // and the next middleware in line in the request-response cycle of an Express application
                     // if everything is good, save User to request for use in other routes

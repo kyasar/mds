@@ -322,21 +322,21 @@ router.post('/social', function(req, res) {
     log.info('name: ', req.body.firstName, ' ', req.body.lastName);
     log.info('social_id: ', req.body.social_id, ' loginType: ', req.body.loginType);
 
-    var queryUser;
-    var newUser
-        = new UserModel({
-        'firstName' : req.body.firstName,
-        'lastName'  : req.body.lastName,
-        'email'     : req.body.email,
-        'username'  : req.body.username,
-        'social_id' : req.body.social_id,
-        'loginType' : req.body.loginType
-    });
-
     if (!req.body.social_id || !req.body.loginType) {
         log.info("User ID or Login Type not specified !");
         return res.send({status: 'fail', error : "No id specified."});
     } else {
+        //let queryUser;
+        var newUser
+            = new UserModel({
+            'firstName' : req.body.firstName,
+            'lastName'  : req.body.lastName,
+            'email'     : req.body.email,
+            'username'  : req.body.username,
+            'social_id' : req.body.social_id,
+            'loginType' : req.body.loginType
+        });
+
         // social ID and type must be entered
         queryUser = {'social_id' : req.body.social_id, 'loginType' : req.body.loginType};
 

@@ -249,10 +249,16 @@ router.post('/local', function(req, res) {
 // authentication (no middleware necessary since this is not authenticated)
 // ---------------------------------------------------------
 router.post('/login', function(req, res) {
-    if (!req.body.email || !req.body.password || req.body.loginType != "LOCAL") {
-        log.info("User ID or Login Type not specified !");
+    if (req.body.loginType == "") {
+        log.info("Login Type not specified !");
         return res.send({status: 'FAIL', error : "No id specified."});
-    } else {
+    }
+
+    if (req.body.loginType == "LOCAL") {
+        if (!req.body.email || !req.body.password) {
+            log.info("User ID/Password not specified !");
+            return res.send({status: 'FAIL', error : "No id specified."});
+        }
         log.info('name: ', req.body.email, ' ', req.body.password);
         // social ID and type must be entered
         queryUser = {'email' : req.body.email, 'password' : req.body.password};
@@ -275,7 +281,38 @@ router.post('/login', function(req, res) {
                 return res.send({status: 'FAIL', error: 'Server error'});
             }
         });
+    } else if (req.body.loginType == "FACEBOOK") {
+        /*
+        TODO: Only User's social ID is not enough to secure!
+        Hint: DB ID is also be required
+         */
+        if (!req.body.social_id) {
+            log.info("Social ID not specified !");
+            return res.send({status: 'FAIL', error : "No id specified."});
+        }
+
+        queryUser = {'social_id' : req.body.social_id, 'loginType' : req.body.loginType};
+
+        UserModel.findOne(queryUser, function (err, user) {
+            if (user) {
+                //TODO: token must be updated!
+                log.info("User found with Social account id: ", user._id.toString());
+                if (user.verification) {
+                    return res.send({status: 'OK', user: user});
+                } else {
+                    return res.send({status: 'NOT_VERIFIED'});
+                }
+            } else if (!user) {
+                log.info("User not found!");
+                return res.send({status: 'NO_USER'});
+            } else {
+                res.statusCode = 500;
+                log.error('Internal error(%d): %s', res.statusCode, err.message);
+                return res.send({status: 'FAIL', error: 'Server error'});
+            }
+        });
     }
+
 });
 
 // ---------------------------------------------------------

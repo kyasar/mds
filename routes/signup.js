@@ -68,26 +68,31 @@ router.post('/authenticate', function(req, res) {
         query = {'social_id' : req.body.social_id, 'loginType' : req.body.loginType};
 
         // find the user
-        User.findOne(query, function(err, user) {
-            if (err) throw err;
-            if (!user) {
-                res.json({ status: 'FAIL', message: 'Authentication failed. User not found.' });
-            } else if (user) {
+        UserModel.findOne(query, function(err, user) {
+            if (user) {
+                log.info("User found: ", user._id.toString());
                 // check if password matches
-                if (config.API_KEY == req.body.key) {
-                    res.json({ status: 'FAIL', message: 'Authentication failed. Wrong API_KEY.' });
+                if (config.API_KEY == req.body.api_key) {
+                    log.info("api key error");
+                    res.json({status: 'FAIL', message: 'Authentication failed. Wrong API_KEY.'});
                 } else {
                     // if user is found and password is right
                     // create a token
                     // Note! first param must be a JSON
                     log.info("User ", user.firstName, " ", user.lastName, " getting a Token..");
-                    var token = jwt.sign({'user':user}, config.get('secret'), { expiresInMinutes: 2 });
+                    var token = jwt.sign({'user': user}, config.get('secret'), {expiresInMinutes: 2});
                     res.json({
                         status: 'OK',
                         message: 'Enjoy your token!',
                         token: token
                     });
                 }
+            } else if (!user) {
+                res.json({status: 'FAIL', message: 'Authentication failed. User not found.'});
+            }
+            else {
+                res.statusCode = 500;
+                res.send({status: 'FAIL', error: 'Server error' });
             }
         });
 

@@ -80,7 +80,7 @@ router.post('/authenticate', function(req, res) {
                     // create a token
                     // Note! first param must be a JSON
                     log.info("User ", user.firstName, " ", user.lastName, " getting a Token..");
-                    var token = jwt.sign({'user': user}, config.get('secret'), {expiresInMinutes: 2});
+                    var token = jwt.sign({'user': user}, config.get('secret'), {expiresInMinutes: 30});
                     res.json({
                         status: 'OK',
                         message: 'Enjoy your token!',

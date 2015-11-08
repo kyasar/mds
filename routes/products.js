@@ -25,6 +25,34 @@ router.get('/test', function(req, res) {
     });
 });
 
+// ---------------------------------------------------------
+// route middleware to authenticate and check token
+// a middleware with no mount path; gets executed for every request to the app
+// ---------------------------------------------------------
+router.use(function(req, res, next) {
+
+    // check header or url parameters or post parameters for token
+    var key = req.body.api_key || req.query.api_key;
+
+    if (key) {
+        // verifies API key
+        if (config.get("API_KEY") == key) {
+            // Auth is OK, pass control to the next middleware
+            next();
+        } else {
+            log.info("API key wrong :(");
+            return res.json({ status: 'FAIL'});
+        }
+    } else {
+        log.info("No API key provided :(");
+        // if there is no token
+        // return an error
+        return res.json({
+            status: 'FAIL'
+        });
+    }
+});
+
 /*
  Search for products that matches the query string
  Return fields name, barcode (modified?) (image later?)
@@ -43,9 +71,22 @@ router.get('/products/', function(req, res) {
     }).select({name: 1, barcode: 1, _id: 0});
 });
 
+router.get('/products/:barcode', function(req, res) {
+    log.info('Searching for product with barcode: ', req.params.barcode);
+    return ProductModel.findOne({ barcode : req.params.barcode }, function(err, product) {
+        if (!err) {
+            return res.send({status: 'OK', product: product});
+        } else {
+            res.statusCode = 500;
+            log.error('Internal error(%d): %s', res.statusCode, err.message);
+            return res.send({status: 'fail', error: 'Server error' });
+        }
+    }).select({name: 1, barcode: 1, _id: 0});
+});
+
 /*
  SCAN method, scans the markets given in markets fields of JSON request for given
- products list, Returns the markets contaning products with their prices
+ products list, Returns the markets containing products with their prices
  */
 router.post('/scan/', function(req, res) {
 
@@ -176,19 +217,6 @@ router.get('/products/', function(req, res) {
     return ProductModel.find( function(err, products) {
         if (!err) {
             return res.send(products);
-        } else {
-            res.statusCode = 500;
-            log.error('Internal error(%d): %s', res.statusCode, err.message);
-            return res.send({status: 'fail', error: 'Server error' });
-        }
-    });
-});
-
-router.get('/products/:barcode', function(req, res) {
-    log.info('Searching for product with barcode:', req.params.barcode);
-    return ProductModel.findOne({ barcode : req.params.barcode }, function(err, product) {
-        if (!err) {
-            return res.send({status: 'OK', product: product});
         } else {
             res.statusCode = 500;
             log.error('Internal error(%d): %s', res.statusCode, err.message);

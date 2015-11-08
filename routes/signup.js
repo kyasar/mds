@@ -40,7 +40,7 @@ router.post('/authenticate', function(req, res) {
             if (user) {
                 log.info("User found: ", user._id.toString());
                 // check if password matches
-                if (config.API_KEY == req.body.api_key) {
+                if (config.get("API_KEY") != req.body.api_key) {
                     res.json({ status: 'FAIL', message: 'Authentication failed. Wrong API_KEY.' });
                 } else {
                     // if user is found and password is right
@@ -72,7 +72,7 @@ router.post('/authenticate', function(req, res) {
             if (user) {
                 log.info("User found: ", user._id.toString());
                 // check if password matches
-                if (config.API_KEY == req.body.api_key) {
+                if (config.get("API_KEY") != req.body.api_key) {
                     log.info("api key error");
                     res.json({status: 'FAIL', message: 'Authentication failed. Wrong API_KEY.'});
                 } else {

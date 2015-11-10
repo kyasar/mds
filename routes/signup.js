@@ -26,6 +26,99 @@ var smtpTransport = nodemailer.createTransport("SMTP", {
 });
 var mailOptions, host, link;
 
+router.get('/verify', function(req, res) {
+    console.log(req.protocol + "://" + req.get('host'));
+
+    if (!req.query.id || !req.query.token) {
+        log.info("No Id or Token specified.");
+        return res.send({status: 'fail', error : "No Id or Token specified."});
+    }
+
+    if ((req.protocol + "://" + req.get('host')) == ("http://" + host))
+    {
+        console.log("Searching for user id: ", req.query.id);
+
+        UserModel.findById(req.query.id, function (err, user) {
+            if (user) {
+                log.info("User found: ", user._id.toString());
+
+                jwt.verify(req.query.token, config.get('secret'), function(err, decoded) {
+                    if (err) {
+                        log.info("Token NOT verified !!");
+
+                        UserModel.findByIdAndRemove(req.query.id, function(err) {
+                            if (!err) {
+                                log.info("User deleted to get new token to be verified.");
+                            } else {
+                                log.error("User could not be deleted! Fatal Error.");
+                            }
+                            return res.send({status: 'fail', error: 'Token not verified. Timed out.'});
+                        });
+
+                    } else {
+                        log.info("Token verified. OK.");
+
+                        UserModel.findByIdAndUpdate(req.query.id,
+                            { $set : { 'verification' : true }, $unset : { 'verifyToken' : "" } },
+                            { new: true, upsert : false },  // Return updated object, Do not insert if not exists
+                            function (err, user) {
+                                if (!err) {
+                                    log.info("User Verified.");
+                                    return res.send({ status: 'OK', user : user });
+                                } else {
+                                    console.log(err);
+                                    if(err.name == 'ValidationError') {
+                                        res.statusCode = 400;
+                                        res.send({status: 'fail', error: 'Validation error' });
+                                    } else {
+                                        res.statusCode = 500;
+                                        res.send({status: 'fail', error: 'Server error' });
+                                    }
+                                    log.error('Internal error(%d): %s', res.statusCode, err.message);
+                                }
+                            });
+                    }
+                });
+            } else if (!user) {
+                log.info("User not found !!");
+                return res.send({status: 'fail', error: 'User not found.'});
+            }
+        });
+    }
+    else
+    {
+        return res.send({status: 'fail', error: 'Request is from unknown source.'});
+    }
+});
+
+// ---------------------------------------------------------
+// route middleware to authenticate and check API key
+// a middleware with no mount path; gets executed for every request to the app
+// ---------------------------------------------------------
+router.use(function(req, res, next) {
+
+    // check header or url parameters or post parameters for token
+    var key = req.body.api_key || req.query.api_key;
+
+    if (key) {
+        // verifies API key
+        if (config.get("API_KEY") == key) {
+            // Auth is OK, pass control to the next middleware
+            next();
+        } else {
+            log.info("API key wrong :(");
+            return res.json({ status: 'FAIL'});
+        }
+    } else {
+        log.info("No API key provided :(");
+        // if there is no token
+        // return an error
+        return res.json({
+            status: 'FAIL'
+        });
+    }
+});
+
 // ---------------------------------------------------------
 // authentication (no middleware necessary since this is not authenticated)
 // ---------------------------------------------------------
@@ -102,71 +195,6 @@ router.post('/authenticate', function(req, res) {
     }
 });
 
-router.get('/verify', function(req, res) {
-    console.log(req.protocol + "://" + req.get('host'));
-
-    if (!req.query.id || !req.query.token) {
-        log.info("No Id or Token specified.");
-        return res.send({status: 'fail', error : "No Id or Token specified."});
-    }
-
-    if ((req.protocol + "://" + req.get('host')) == ("http://" + host))
-    {
-        console.log("Searching for user id: ", req.query.id);
-
-        UserModel.findById(req.query.id, function (err, user) {
-            if (user) {
-                log.info("User found: ", user._id.toString());
-
-                jwt.verify(req.query.token, config.get('secret'), function(err, decoded) {
-                    if (err) {
-                        log.info("Token NOT verified !!");
-
-                        UserModel.findByIdAndRemove(req.query.id, function(err) {
-                           if (!err) {
-                               log.info("User deleted to get new token to be verified.");
-                           } else {
-                               log.error("User could not be deleted! Fatal Error.");
-                           }
-                            return res.send({status: 'fail', error: 'Token not verified. Timed out.'});
-                        });
-
-                    } else {
-                        log.info("Token verified. OK.");
-
-                        UserModel.findByIdAndUpdate(req.query.id,
-                            { $set : { 'verification' : true }, $unset : { 'verifyToken' : "" } },
-                            { new: true, upsert : false },  // Return updated object, Do not insert if not exists
-                            function (err, user) {
-                                if (!err) {
-                                    log.info("User Verified.");
-                                    return res.send({ status: 'OK', user : user });
-                                } else {
-                                    console.log(err);
-                                    if(err.name == 'ValidationError') {
-                                        res.statusCode = 400;
-                                        res.send({status: 'fail', error: 'Validation error' });
-                                    } else {
-                                        res.statusCode = 500;
-                                        res.send({status: 'fail', error: 'Server error' });
-                                    }
-                                    log.error('Internal error(%d): %s', res.statusCode, err.message);
-                                }
-                            });
-                    }
-                });
-            } else if (!user) {
-                log.info("User not found !!");
-                return res.send({status: 'fail', error: 'User not found.'});
-            }
-        });
-    }
-    else
-    {
-        return res.send({status: 'fail', error: 'Request is from unknown source.'});
-    }
-});
-
 // ---------------------------------------------------------
 // Registering a user without a Social account
 // ---------------------------------------------------------
@@ -207,7 +235,7 @@ router.post('/local', function(req, res) {
             } else if (!user) {
                 log.info("User not found! Creating it..");
 
-                newUser.verifyToken = jwt.sign({'user':newUser}, config.get('secret'), { expiresInMinutes: 1 });
+                newUser.verifyToken = jwt.sign({'user':newUser}, config.get('secret'), { expiresInMinutes: 1440 });
                 newUser.save(function (err) {
                     if (!err) {
                         host = req.get('host');

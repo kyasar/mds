@@ -26,7 +26,7 @@ router.get('/test', function(req, res) {
 });
 
 // ---------------------------------------------------------
-// route middleware to authenticate and check token
+// route middleware to authenticate and check API key
 // a middleware with no mount path; gets executed for every request to the app
 // ---------------------------------------------------------
 router.use(function(req, res, next) {
@@ -225,9 +225,8 @@ router.get('/products/', function(req, res) {
     });
 });
 
-var fs = require('fs');
-
 // function to create file from base64 encoded string
+var fs = require('fs');
 function base64_decode(base64str) {
     // create buffer object from base64 encoded string, it is important to tell the constructor that the string is base64 encoded
     var bitmap = new Buffer(base64str, 'base64');

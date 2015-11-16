@@ -68,12 +68,12 @@ app.use(function(err, req, res, next) {
   });
 });
 
-/*
 app.listen(config.get('port'), function(){
   log.info('Express server listening on port ' + config.get('port'));
 });
-*/
 
+
+/*
 var https = require('https');
 var fs = require('fs');
 https.createServer({
@@ -82,5 +82,6 @@ https.createServer({
   }, app).listen(config.get('port'), function() {
     log.info('Express server listening on port ' + config.get('port'));
 });
+*/
 
 module.exports = app;

@@ -2,6 +2,7 @@
  * Created by kadir on 02.08.2015.
  */
 var mongoose    = require('mongoose');
+var geojson = require('geojson');
 var Schema = mongoose.Schema;
 
 var Market = new Schema({
@@ -10,6 +11,15 @@ var Market = new Schema({
     provider : { type: String, required: true },
     modified : { type: Date, default: Date.now },
     vicinity : { type: String },
+    location: {
+        'type': {
+            type: String,
+            required: false,
+            enum: ['Point', 'LineString', 'Polygon'],
+            default: 'Point'
+        },
+        coordinates: [Number]
+    },
     /* This array contains the the products that are sold in this market
      * De-normalized database
      */

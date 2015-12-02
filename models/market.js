@@ -2,7 +2,6 @@
  * Created by kadir on 02.08.2015.
  */
 var mongoose    = require('mongoose');
-var geojson = require('geojson');
 var Schema = mongoose.Schema;
 
 var Market = new Schema({

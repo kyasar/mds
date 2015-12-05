@@ -402,7 +402,6 @@ router.post('/market/', function(req, res) {
 
             } else if (!market) {
                 log.info("market not found! Creating new with id: ", newMarket.id);
-                log.info("market: ", newMarket.toString());
                 respond.new_market += 1;
                 respond.new_products += newMarket.products.length;
                 newMarket.save(function (err) {

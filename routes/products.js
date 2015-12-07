@@ -321,7 +321,7 @@ router.post('/market/', function(req, res) {
             'provider' : req.body.provider,
             'vicinity' : req.body.vicinity,
             'products' : req.body.products,
-            'loc'      : req.body['loc'].split(',')
+            'loc.coordinates'      : req.body['loc'].split(',')
         });
 
         log.info("market: ", newMarket.id);

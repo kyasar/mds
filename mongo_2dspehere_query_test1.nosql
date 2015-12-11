@@ -1,0 +1,16 @@
+# This file contains MongoDB GeoSpatial Query examples
+Query format:
+{
+  $near: {
+     $geometry: {
+        type: "Point" ,
+        coordinates: [ <longitude> , <latitude> ]
+     },
+     $maxDistance: <distance in meters>,
+     $minDistance: <distance in meters>
+  }
+}
+
+Note: Order is in [long, lat]
+
+db.markets.find({ loc : { $near : { $geometry : { type : "Point" , coordinates : [32.80209, 39.89395] }, $maxDistance : 2000 } } }, { name : 1, loc : 1, _id : 0 });

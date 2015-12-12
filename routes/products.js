@@ -313,7 +313,11 @@ router.post('/market/', function(req, res) {
         log.info("Market ID or User ID not specified !");
         return res.send({status: 'fail', error : "No id specified."});
     } else {
-        log.info("LOC: ", req.body['loc'].split(',').toString() );
+
+        /*var arr = req.body['loc'].split(',');
+        for (var i=0; i<arr.length; i++) {
+            log.info("LOC: ", arr[i] );
+        }*/
         var newMarket
             = new MarketModel({
             'name'     : req.body.name,
@@ -321,7 +325,7 @@ router.post('/market/', function(req, res) {
             'provider' : req.body.provider,
             'vicinity' : req.body.vicinity,
             'products' : req.body.products,
-            'loc.coordinates'      : req.body['loc'].split(',')
+            'loc.coordinates'      : req.body['loc'].split(',').reverse()
         });
 
         log.info("market: ", newMarket.id);

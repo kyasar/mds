@@ -17,7 +17,8 @@ var User = new Schema({
     signDate         : { type: Date, default: Date.now },
     verification     : { type: Boolean, default: false},
     verifyToken      : { type: String},
-    shopLists        : []
+    shopLists        : [],
+    follows          : []
 });
 
 // methods ======================

@@ -475,96 +475,29 @@ router.post('/user-update/', function(req, res) {
         return res.send({status: 'fail', error : "No data specified."});
     }
 
-    // sleep.sleep(5);
-    if (req.body.shopLists)
-    {
-        log.info("User: ", req.body._id, " shoplist: ", req.body.shopLists);
-        User.findByIdAndUpdate(req.body._id
-            , {'$set': {'shopLists': req.body.shopLists}}  // Use $set to change shopList completely, $addToSet aggregate them!
-            , {new: true, upsert: false}  // Return updated object, Do not insert if not exists
-            , function (err, user) {
-                if (user) {
-                    log.info("user updated !");
-                    return res.send({status: 'OK', user: user});
-                } else if (err) {
-                    console.log(err);
-                    if (err.name == 'ValidationError') {
-                        res.statusCode = 400;
-                        res.send({status: 'fail', error: 'Validation error'});
-                    } else {
-                        res.statusCode = 500;
-                        res.send({status: 'fail', error: 'Server error'});
-                    }
-                    log.error('Internal error(%d): %s', res.statusCode, err.message);
+    log.info("User: ", req.body._id, " shoplist: ", req.body.shopLists);
+    User.findByIdAndUpdate(req.body._id
+        , {'$set': {'shopLists': req.body.shopLists}}  // Use $set to change shopList completely, $addToSet aggregate them!
+        , {new: true, upsert: false}  // Return updated object, Do not insert if not exists
+        , function (err, user) {
+            if (user) {
+                log.info("user updated !");
+                return res.send({status: 'OK', user: user});
+            } else if (err) {
+                console.log(err);
+                if (err.name == 'ValidationError') {
+                    res.statusCode = 400;
+                    res.send({status: 'fail', error: 'Validation error'});
                 } else {
-                    log.info("user not found !");
-                    return res.send({status: 'fail', error: "User not found."});
-                }
-            });
-    }
-
-    if (req.body.markets)
-    {
-        log.info("User: ", req.body._id, " markets: ", req.body.markets);
-
-        async.series([
-                /*
-                 First task, scans the given market list for given product list
-                 */
-                function(callback) {
-                    async.eachSeries(req.body.markets, function(m, callback) {
-
-                        //for (var i=0; i < req.body.markets.length; i++)
-                        //{
-                            log.info("User: ", req.body._id, " market: ", m.id);
-                            User.findByIdAndUpdate(req.body._id
-                                , {'$addToSet': {'follows': m}}  // Use $set to change shopList completely, $addToSet aggregate them!
-                                , {new: true, upsert: false}  // Return updated object, Do not insert if not exists
-                                , function (err, user) {
-                                    if (user) {
-                                        log.info("user updated !");
-                                        //return res.send({status: 'OK', user: user});
-                                    } else if (err) {
-                                        console.log(err);
-                                        if (err.name == 'ValidationError') {
-                                            res.statusCode = 400;
-                                            res.send({status: 'fail', error: 'Validation error'});
-                                        } else {
-                                            res.statusCode = 500;
-                                            res.send({status: 'fail', error: 'Server error'});
-                                        }
-                                        log.error('Internal error(%d): %s', res.statusCode, err.message);
-                                    } else {
-                                        log.info("user not found !");
-                                        return res.send({status: 'fail', error: "User not found."});
-                                    }
-                                    callback(err);
-                                });
-                        //}
-                    }, function(err) {
-                        if (err) {
-                            res.statusCode = 500;
-                            res.send({status: 'fail', error: 'Server error'});
-                        }
-                        log.info('done');
-                        callback();
-                    });
-                }
-            ],
-            /*
-             Last callback, returns the respond containing markets that includes given products
-             */
-            function(err) {
-                if (err) {
                     res.statusCode = 500;
                     res.send({status: 'fail', error: 'Server error'});
                 }
-                res.send({'status': 'OK'});
+                log.error('Internal error(%d): %s', res.statusCode, err.message);
+            } else {
+                log.info("user not found !");
+                return res.send({status: 'fail', error: "User not found."});
             }
-        );  // Sync series finished here
-
-
-    } // if market follows to update
+        });
 });
 
 module.exports = router;

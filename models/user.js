@@ -18,7 +18,7 @@ var User = new Schema({
     verification     : { type: Boolean, default: false},
     verifyToken      : { type: String},
     shopLists        : [],
-    follows          : []
+    following        : []
 });
 
 // methods ======================

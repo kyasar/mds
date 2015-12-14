@@ -25,7 +25,8 @@ var Market = new Schema({
     /* This array contains the the products that are sold in this market
      * De-normalized database
      */
-    products : []
+    products : [],
+    followers: []
 });
 
 Market.index({loc : '2dsphere'});

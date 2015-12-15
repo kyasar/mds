@@ -458,7 +458,7 @@ router.post('/market/', function(req, res) {
                 });
         });
     }
-})
+});
 
 /*
 User info can be updated; ie Shoplists.

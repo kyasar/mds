@@ -309,7 +309,7 @@ Method: POST, Content-Type: Application/JSON
  */
 router.post('/market/', function(req, res) {
 
-    if (!req.body.id || !req.body.userID) {
+    if (!req.body.maps_id || !req.body.userID) {
         log.info("Market ID or User ID not specified !");
         return res.send({status: 'fail', error : "No id specified."});
     } else {
@@ -321,7 +321,7 @@ router.post('/market/', function(req, res) {
         var newMarket
             = new MarketModel({
             'name'     : req.body.name,
-            'id'       : req.body.id,
+            'id'       : req.body.maps_id,
             'provider' : req.body.provider,
             'vicinity' : req.body.vicinity,
             'products' : req.body.products,

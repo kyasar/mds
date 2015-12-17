@@ -36,6 +36,10 @@ app.use(flash());
 // load our routes and pass in our app and fully configured passport
 require('./routes/login.js')(app, passport);
 
+app.get('/', function(req, res) {
+      return res.send({status: 'OK !'});
+});
+
 app.use('/mds/api/', require('./routes/products'));
 app.use('/mds/api/market/', require('./routes/markets'));
 app.use('/mds/signup/', require('./routes/signup'));

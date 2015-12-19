@@ -18,15 +18,20 @@ markodApp.controller('productSearchCtrl', function($scope, $http) {
         });
         */
 
-    $scope.queryProducts = function() {
-        console.log("REQ: /mds/api/products?api_key=test&search=" + $scope.searchText);
-        $http.get('/mds/api/products?api_key=test&search=' + $scope.searchText)
+    $scope.queryProducts = function(searchText) {
+        console.log("REQ: /mds/api/products?api_key=test&search=" + searchText);
+        console.log("VAL: " + searchText);
+        return $http.get('/mds/api/products?api_key=test&search=' + searchText)
             .success(function(data) {
                 $scope.products = data.product;
                 console.log(data);
             })
             .error(function(data) {
                 console.log('Error: ' + data);
+            })
+            .then(function(response) {
+                console.log("THEN: " + response.data.product);
+                return response.data.product;
             });
     };
 

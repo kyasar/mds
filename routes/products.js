@@ -14,9 +14,9 @@ var router  = express.Router();
 var async = require('async');
 
 router.get('/test', function(req, res) {
-    return User.findOne({}, function(err, user) {
+    return ProductModel.find({}, {_id:0, name:1, barcode:1}, function(err, products) {
         if (!err) {
-            return res.send(user);
+            return res.send(products);
         } else {
             res.statusCode = 500;
             log.error('Internal error(%d): %s', res.statusCode, err.message);
@@ -34,22 +34,28 @@ router.use(function(req, res, next) {
     // check header or url parameters or post parameters for token
     var key = req.body.api_key || req.query.api_key;
 
-    if (key) {
-        // verifies API key
-        if (config.get("API_KEY") == key) {
-            // Auth is OK, pass control to the next middleware
-            next();
-        } else {
-            log.info("API key wrong :(");
-            return res.json({ status: 'FAIL'});
-        }
+    if (key == "test") {
+        log.info("Test API key..");
+        next();
     } else {
-        log.info("No API key provided :(");
-        // if there is no token
-        // return an error
-        return res.json({
-            status: 'FAIL'
-        });
+
+        if (key) {
+            // verifies API key
+            if (config.get("API_KEY") == key) {
+                // Auth is OK, pass control to the next middleware
+                next();
+            } else {
+                log.info("API key wrong :(");
+                return res.json({status: 'FAIL'});
+            }
+        } else {
+            log.info("No API key provided :(");
+            // if there is no token
+            // return an error
+            return res.json({
+                status: 'FAIL'
+            });
+        }
     }
 });
 

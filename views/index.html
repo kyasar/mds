@@ -22,6 +22,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.js"></script>
     <script src="javascripts/core.js"></script>
 
 </head>
@@ -57,8 +58,10 @@
                     <!-- BIND THIS VALUE TO searchText IN ANGULAR -->
                     <input type="text" id="id_productSearchBox"
                            class="form-control input-lg text-center"
-                           placeholder="bal, çikolata, deterjan .." ng-change="queryProducts()" ng-model="searchText">
-                    <p> {{searchText}} </p>
+                           placeholder="bal, çikolata, deterjan .."
+                           ng-change="queryProducts()"
+                           ng-model="searchText">
+                    <!-- <p> {{searchText}} </p> -->
 
                 </div>
 

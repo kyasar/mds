@@ -2,9 +2,9 @@
  * Created by kadir on 17.12.2015.
  */
 // public/core.js
-var scotchTodo = angular.module('markodMP', []);
+var markodApp = angular.module('markodMP', ["ui.bootstrap"]);
 
-function productSearchCtrl($scope, $http) {
+markodApp.controller('productSearchCtrl', function($scope, $http) {
     $scope.searchText = "";
 
     /*
@@ -55,4 +55,4 @@ function productSearchCtrl($scope, $http) {
             });
     };
 
-}
+});

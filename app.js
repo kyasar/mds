@@ -36,13 +36,17 @@ app.use(flash());
 // load our routes and pass in our app and fully configured passport
 require('./routes/login.js')(app, passport);
 
-app.get('/', function(req, res) {
-      return res.send({status: 'OK !'});
-});
-
 app.use('/mds/api/', require('./routes/products'));
 app.use('/mds/api/market/', require('./routes/markets'));
 app.use('/mds/signup/', require('./routes/signup'));
+
+// =====================================
+// HOME PAGE (with login links) ========
+// =====================================
+app.get('/', function(req, res) {
+  res.sendfile('./views/index.html'); // load the index.ejs file
+  //res.send({ret:'ok'});
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

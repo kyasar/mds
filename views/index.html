@@ -2,13 +2,13 @@
 <!doctype html>
 
 <!-- ASSIGN OUR ANGULAR MODULE -->
-<html ng-app="scotchTodo">
+<html ng-app="markodMP">
 <head>
     <!-- META -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
 
-    <title>Node/Angular Todo App</title>
+    <title>Markod App</title>
 
     <!-- SCROLLS -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
@@ -20,12 +20,13 @@
 
     <!-- SPELLS -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
     <script src="javascripts/core.js"></script>
 
 </head>
 <!-- SET THE CONTROLLER AND GET ALL TODOS -->
-<body ng-controller="mainController">
+<body ng-controller="productSearchCtrl">
 <div class="container">
 
     <!-- HEADER AND TODO COUNT -->
@@ -34,13 +35,13 @@
     </div>
 
     <!-- TODO LIST -->
-    <div id="todo-list" class="row">
+    <div id="product-list" class="row">
         <div class="col-sm-4 col-sm-offset-4">
 
             <!-- LOOP OVER THE TODOS IN $scope.todos -->
-            <div class="checkbox" ng-repeat="todo in todos">
+            <div class="checkbox" ng-repeat="product in products">
                 <label>
-                    <input type="checkbox" ng-click="deleteTodo(todo._id)"> {{ todo.text }}
+                    <input type="checkbox" ng-click="deleteTodo(product.barcode)"> {{ product.name }}
                 </label>
             </div>
 
@@ -53,12 +54,16 @@
             <form>
                 <div class="form-group">
 
-                    <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
-                    <input type="text" class="form-control input-lg text-center" placeholder="I want to buy a puppy that will love me forever" ng-model="formData.text">
+                    <!-- BIND THIS VALUE TO searchText IN ANGULAR -->
+                    <input type="text" id="id_productSearchBox"
+                           class="form-control input-lg text-center"
+                           placeholder="bal, çikolata, deterjan .." ng-change="queryProducts()" ng-model="searchText">
+                    <p> {{searchText}} </p>
+
                 </div>
 
                 <!-- createToDo() WILL CREATE NEW TODOS -->
-                <button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Add</button>
+                <!--<button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Add</button>-->
             </form>
         </div>
     </div>

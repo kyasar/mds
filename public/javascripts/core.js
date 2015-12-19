@@ -2,20 +2,33 @@
  * Created by kadir on 17.12.2015.
  */
 // public/core.js
-var scotchTodo = angular.module('scotchTodo', []);
+var scotchTodo = angular.module('markodMP', []);
 
-function mainController($scope, $http) {
-    $scope.formData = {};
+function productSearchCtrl($scope, $http) {
+    $scope.searchText = "";
 
-    // when landing on the page, get all todos and show them
-    $http.get('/api/todos')
+    /*
+    $http.get('/mds/api/test')
         .success(function(data) {
-            $scope.todos = data;
+            $scope.products = data;
             console.log(data);
         })
         .error(function(data) {
             console.log('Error: ' + data);
         });
+        */
+
+    $scope.queryProducts = function() {
+        console.log("REQ: /mds/api/products?api_key=test&search=" + $scope.searchText);
+        $http.get('/mds/api/products?api_key=test&search=' + $scope.searchText)
+            .success(function(data) {
+                $scope.products = data.product;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            });
+    };
 
     // when submitting the add form, send the text to the node API
     $scope.createTodo = function() {

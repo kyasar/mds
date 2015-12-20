@@ -29,21 +29,9 @@
 
     <!-- HEADER AND TODO COUNT -->
     <div class="jumbotron text-center">
-        <h1>I'm a Todo-aholic <span class="label label-info">{{ todos.length }}</span></h1>
-    </div>
-
-    <!-- TODO LIST -->
-    <div id="product-list" class="row">
-        <div class="col-sm-4 col-sm-offset-4">
-
-            <!-- LOOP OVER THE TODOS IN $scope.todos -->
-            <div class="checkbox" ng-repeat="product in products">
-                <label>
-                    <input type="checkbox" ng-click="deleteTodo(product.barcode)"> {{ product.name }}
-                </label>
-            </div>
-
-        </div>
+        <h1>Welcome to markod !</h1>
+        <br>
+        <h1><span class="label label-info">{{ products.length }}</span></h1>
     </div>
 
     <!-- FORM TO CREATE TODOS -->
@@ -57,10 +45,11 @@
                     <input type="text" id="id_productSearchBox"
                            class="form-control"
                            placeholder="bal, çikolata, deterjan .."
-                           uib-typeahead="product for product in queryProducts($viewValue) | limitTo:3"
+                           uib-typeahead="product as product.name for product in queryProducts($viewValue) | limitTo:3"
                            ng-model="searchText"
                            typeahead-loading="loadingLocations"
                            typeahead-template-url="templates/product-tmpl.html"
+                           typeahead-on-select="onProductSelect($item,$model,$label)"
                            typeahead-min-length="2">
                     <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
 

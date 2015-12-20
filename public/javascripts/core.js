@@ -35,29 +35,10 @@ markodApp.controller('productSearchCtrl', function($scope, $http) {
             });
     };
 
-    // when submitting the add form, send the text to the node API
-    $scope.createTodo = function() {
-        $http.post('/api/todos', $scope.formData)
-            .success(function(data) {
-                $scope.formData = {}; // clear the form so our user is ready to enter another
-                $scope.todos = data;
-                console.log(data);
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-            });
-    };
-
-    // delete a todo after checking it
-    $scope.deleteTodo = function(id) {
-        $http.delete('/api/todos/' + id)
-            .success(function(data) {
-                $scope.todos = data;
-                console.log(data);
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-            });
+    $scope.onProductSelect = function(item, model, label) {
+        console.log("item : " + JSON.stringify(item));
+        console.log("model: " + JSON.stringify(model));
+        console.log("label: " + label);
     };
 
 });

@@ -7,6 +7,12 @@ a {
   color: #00B7FF;
 }
 
+.dropdown-menu{
+  width: -moz-calc(100% - 28px);
+  width: -webkit-calc(100% - 28px);
+  width: calc(100% - 28px);
+}
+
 html                    { overflow-y:scroll; }
 body                    { padding-top:50px; }
 #todo-list              { margin-bottom:30px; }

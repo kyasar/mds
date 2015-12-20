@@ -57,15 +57,13 @@
                     <input type="text" id="id_productSearchBox"
                            class="form-control"
                            placeholder="bal, çikolata, deterjan .."
-                           uib-typeahead="product as product.name for product in queryProducts($viewValue) | limitTo:3"
+                           uib-typeahead="product for product in queryProducts($viewValue) | limitTo:3"
                            ng-model="searchText"
                            typeahead-loading="loadingLocations"
-                           typeahead-no-results="noResults"
+                           typeahead-template-url="templates/product-tmpl.html"
                            typeahead-min-length="2">
                     <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
-                    <div ng-show="noResults">
-                        <i class="glyphicon glyphicon-remove"></i> No Results Found
-                    </div>
+
                     <!-- <pre>{{products | json}}</pre> -->
                     <!-- <p> {{searchText}} </p> -->
 

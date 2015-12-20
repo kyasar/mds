@@ -18,6 +18,26 @@ markodApp.controller('productSearchCtrl', function($scope, $http) {
         });
         */
 
+    // current location
+    $scope.loc = { lat: 40, lon: -73 };
+    $scope.gotoCurrentLocation = function () {
+        console.log("GOTO Curr loc");
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var c = position.coords;
+                $scope.gotoLocation(c.latitude, c.longitude);
+            });
+            return true;
+        }
+        return false;
+    };
+    $scope.gotoLocation = function (lat, lon) {
+        if ($scope.lat != lat || $scope.lon != lon) {
+            $scope.loc = { lat: lat, lon: lon };
+            if (!$scope.$$phase) $scope.$apply("loc");
+        }
+    };
+
     $scope.queryProducts = function(searchText) {
         console.log("REQ: /mds/api/products?api_key=test&search=" + searchText);
         console.log("VAL: " + searchText);

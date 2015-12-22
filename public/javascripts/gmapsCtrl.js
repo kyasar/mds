@@ -17,7 +17,7 @@ gmapsCtrl.controller('gmapsCtrl', function($scope, $http) {
 
     $scope.showResult = function () {
         return $scope.error == "";
-    }
+    };
 
     $scope.mapOptions = {
         center: new google.maps.LatLng($scope.lat, $scope.lng),
@@ -25,6 +25,9 @@ gmapsCtrl.controller('gmapsCtrl', function($scope, $http) {
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
+    /*
+    This callback function is invoked when current location is acquired
+     */
     $scope.showPosition = function (position) {
         $scope.lat = position.coords.latitude;
         $scope.lng = position.coords.longitude;
@@ -36,7 +39,7 @@ gmapsCtrl.controller('gmapsCtrl', function($scope, $http) {
         var latlng = new google.maps.LatLng($scope.lat, $scope.lng);
         $scope.model.myMap.setCenter(latlng);
         //$scope.myMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: latlng }));
-    }
+    };
 
     $scope.showError = function (error) {
         switch (error.code) {
@@ -64,7 +67,7 @@ gmapsCtrl.controller('gmapsCtrl', function($scope, $http) {
         else {
             $scope.error = "Geolocation is not supported by this browser.";
         }
-    }
+    };
 
     $scope.getLocation();
 });

@@ -43,39 +43,47 @@
             <h1>Welcome to markod !</h1>
             <br>
         </div>
-        <div id="map_canvas" style="height: 50vw;" ui-map="model.myMap" class="jumbotron" ui-options="mapOptions"></div>
-    </div>
+        <div id="map_canvas" style="height: 25vw;" ui-map="model.myMap" class="jumbotron" ui-options="mapOptions"></div>
+        <br>
 
-    <!-- FORM TO CREATE TODOS -->
-    <div id="todo-form" class="row"  ng-controller="productCtrl">
-        <div class="col-sm-8 col-sm-offset-2 text-center">
-            <form>
-                <div class="form-group">
+        <!-- FORM TO CREATE TODOS -->
+        <div id="todo-form" class="row"  ng-controller="productCtrl">
+            <div class="col-sm-8 col-sm-offset-2 text-center">
+                <form>
+                    <div class="form-group">
 
-                    <!-- BIND THIS VALUE TO searchText IN ANGULAR -->
+                        <!-- BIND THIS VALUE TO searchText IN ANGULAR -->
 
-                    <input type="text" id="id_productSearchBox"
-                           class="form-control"
-                           placeholder="bal, çikolata, deterjan .."
-                           uib-typeahead="product as product.name for product in queryProducts($viewValue) | limitTo:3"
-                           ng-model="searchText"
-                           typeahead-loading="loadingLocations"
-                           typeahead-template-url="templates/product-tmpl.html"
-                           typeahead-on-select="onProductSelect($item,$model,$label)"
-                           typeahead-min-length="2">
-                    <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+                        <input type="text" id="id_productSearchBox"
+                               class="form-control"
+                               placeholder="bal, çikolata, deterjan .."
+                               uib-typeahead="product as product.name for product in queryProducts($viewValue) | limitTo:3"
+                               ng-model="searchText"
+                               typeahead-loading="loadingLocations"
+                               typeahead-template-url="templates/product-tmpl.html"
+                               typeahead-on-select="onProductSelect($item,$model,$label)"
+                               typeahead-min-length="2">
+                        <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
 
-                    <!-- <pre>{{products | json}}</pre> -->
-                    <!-- <p> {{searchText}} </p> -->
+                        <!-- <pre>{{products | json}}</pre> -->
+                        <!-- <p> {{searchText}} </p> -->
 
-                </div>
+                    </div>
 
-                <!-- createToDo() WILL CREATE NEW TODOS -->
-                <!--<button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Add</button>-->
-            </form>
+                    <!-- createToDo() WILL CREATE NEW TODOS -->
+                    <!--<button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Add</button>-->
+                </form>
+            </div>
+
         </div>
-
+        
+        <br>
+        <h6>Lat: {{ lat }}, Long: {{ lng }}</h6>
+        <br>
     </div>
+
+
+
 
     <br>
 

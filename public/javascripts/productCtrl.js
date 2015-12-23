@@ -5,9 +5,8 @@
  * Created by kadir on 17.12.2015.
  */
 // public/core.js
-var productCtrl = angular.module('productCtrl', []);
 
-productCtrl.controller('productCtrl', function($scope, $http) {
+mainApp.controller('productCtrl', function($scope, $http) {
     $scope.searchText = "";
 
     /*
@@ -20,10 +19,6 @@ productCtrl.controller('productCtrl', function($scope, $http) {
      console.log('Error: ' + data);
      });
      */
-    //$scope.formData = {};
-    // Set initial coordinates to the center of the US
-    //$scope.formData.longitude = -98.350;
-    //$scope.formData.latitude = 39.500;
 
     $scope.queryProducts = function(searchText) {
         console.log("REQ: /mds/api/products?api_key=test&search=" + searchText);

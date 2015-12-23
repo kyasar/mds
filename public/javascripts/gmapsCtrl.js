@@ -1,9 +1,8 @@
 /**
  * Created by kadir on 21.12.2015.
  */
-var gmapsCtrl = angular.module('gmapsCtrl', ['ui.map', 'ui.event']);
 
-gmapsCtrl.controller('gmapsCtrl', function($scope, $http) {
+mainApp.controller('gmapsCtrl', function($scope, $http) {
     $scope.searchText = "";
 
     $scope.lat = "0";

@@ -16,6 +16,9 @@
 
     <!-- Google Maps API -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhujYJ3rPc_91Y5qi0ah7FHMKUkk9AOl0"></script>
+    <!--
+    <script src='//maps.googleapis.com/maps/api/js?sensor=false'></script>
+    -->
 
     <!-- Dependencies -->
     <script src="bower_components/angular/angular.js"></script>
@@ -23,6 +26,11 @@
     <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/angularjs-geolocation/dist/angularjs-geolocation.min.js"></script>
+    <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
+
+    <script src="bower_components/underscore/underscore-min.js"></script>
+    <script src="bower_components/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
+
     <script src="bower_components/angular-ui-map/ui-map.min.js"></script>
     <script src="bower_components/angular-ui-event/dist/event.min.js"></script>
 
@@ -37,13 +45,29 @@
 <body>
 <div class="container">
 
+    <!--
+    <div id="map_canvas" ng-controller="mapCtrl">
+        <ui-gmap-google-map center="map.center" zoom="map.zoom" options="options"></ui-gmap-google-map>
+    </div>
+    <br>
+    -->
     <!-- Google Map -->
     <div class="container" ng-controller="gmapsCtrl">
         <div class="text-center">
             <h1>Welcome to markod !</h1>
             <br>
         </div>
-        <div id="map_canvas" style="height: 25vw;" ui-map="model.myMap" class="jumbotron" ui-options="mapOptions"></div>
+        <div>
+            <div id="map_canvas" style="height: 400px;" ui-map="model.myMap" class="jumbotron"
+                 ui-options="mapOptions"
+                 ui-event="{'map-idle' : 'onMapIdle()'}"
+                 ui-event="{'map-click': 'showMarkets()'}">
+            </div>
+            <!--In addition to creating the markers on the map, div elements with existing google.maps.Marker object should be created to hook up with events -->
+            <div ng-repeat="marker in marketMarkers" ui-map-marker="marketMarkers[$index]"
+                 ui-event="{'map-click': 'markerClicked(marker)'}">
+            </div>
+        </div>
         <br>
 
         <!-- FORM TO CREATE TODOS -->

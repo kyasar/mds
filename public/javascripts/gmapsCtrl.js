@@ -10,7 +10,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
     $scope.accuracy = "0";
     $scope.error = "";
     $scope.model = { myMap: undefined };
-    $scope.myMarkers = [];
+    $scope.marketMarkers = [];
 
     console.log("gmaps ctrl..");
 
@@ -22,6 +22,28 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
         center: new google.maps.LatLng($scope.lat, $scope.lng),
         zoom: 15,
         mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    //Markers should be added after map is loaded
+    $scope.showMarkets = function() {
+        console.log("showMarkets func.")
+
+        $scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: new google.maps.LatLng(39.89395, 32.80209) }));
+        $scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: new google.maps.LatLng(39.89495, 32.80309) }));
+        //var latlng = new google.maps.LatLng(39.89395, 32.80209);
+        //$scope.model.myMap.setCenter(latlng);
+        //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: latlng }));
+    };
+
+    $scope.onMapIdle = function(m) {
+        console.log("onMapIdle func.");
+
+        $scope.showMarkets();
+    };
+
+    $scope.markerClicked = function(m) {
+        console.log("marker clicked.");
+        window.alert("clicked");
     };
 
     /*
@@ -37,7 +59,8 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
 
         var latlng = new google.maps.LatLng($scope.lat, $scope.lng);
         $scope.model.myMap.setCenter(latlng);
-        //$scope.myMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: latlng }));
+
+        $scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: latlng }));
     };
 
     $scope.showError = function (error) {
@@ -56,7 +79,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
                 break;
         }
         $scope.$apply();
-    }
+    };
 
     $scope.getLocation = function () {
         console.log("getting current location..");

@@ -13,7 +13,7 @@ var express = require('express');
 var router  = express.Router();
 var async = require('async');
 
-router.post('/nearby/', function(req, res) {
+router.get('/nearby/', function(req, res) {
     if (!req.query.long || !req.query.lat || !req.query.max_dist) {
         log.info("No Lat or Long info specified !");
         return res.send({status: 'fail', error: "No location specified."});

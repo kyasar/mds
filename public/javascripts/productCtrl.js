@@ -8,6 +8,7 @@
 
 mainApp.controller('productCtrl', function($scope, $http) {
     $scope.searchText = "";
+    $scope.mds = "http://localhost:8000";
 
     /*
      $http.get('/mds/api/test')
@@ -24,8 +25,7 @@ mainApp.controller('productCtrl', function($scope, $http) {
         console.log("REQ: /mds/api/products?api_key=test&search=" + searchText);
         console.log("VAL: " + searchText);
 
-
-        return $http.get('/mds/api/products?api_key=test&search=' + searchText)
+        return $http.get($scope.mds + '/mds/api/products?api_key=test&search=' + searchText)
             .success(function(data) {
                 $scope.products = data.product;
                 console.log(data);

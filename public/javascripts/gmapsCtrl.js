@@ -3,7 +3,8 @@
  */
 
 mainApp.controller('gmapsCtrl', function($scope, $http) {
-    $scope.searchText = "";
+    $scope.mds = "http://localhost:8000";
+    $scope.distance = 1000;
 
     $scope.lat = "0";
     $scope.lng = "0";
@@ -26,7 +27,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
 
     //Markers should be added after map is loaded
     $scope.showMarkets = function() {
-        console.log("showMarkets func.")
+        console.log("showMarkets func.");
 
         $scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: new google.maps.LatLng(39.89395, 32.80209) }));
         $scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: new google.maps.LatLng(39.89495, 32.80309) }));
@@ -46,6 +47,24 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
         window.alert("clicked");
     };
 
+    $scope.getNearbyMarkets = function(lat, long) {
+        var queryURL = $scope.mds + "/mds/api/market/nearby?" + "lat=" + lat + "&long=" + long + "&max_dist=" + $scope.distance + "&token=test&api_key=test";
+        console.log("REQ: " + queryURL);
+
+        return $http.get(queryURL)
+            .success(function(data) {
+                $scope.markets = data.markets;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            })
+            .then(function(response) {
+                console.log("THEN: " + response.data.product);
+                return response.data.product;
+            });
+    };
+
     /*
     This callback function is invoked when current location is acquired
      */
@@ -60,7 +79,9 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
         var latlng = new google.maps.LatLng($scope.lat, $scope.lng);
         $scope.model.myMap.setCenter(latlng);
 
-        $scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: latlng }));
+        $scope.getNearbyMarkets($scope.lat, $scope.lng, 600);
+
+        //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: latlng }));
     };
 
     $scope.showError = function (error) {

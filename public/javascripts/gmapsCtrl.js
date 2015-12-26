@@ -10,7 +10,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
     $scope.lng = "0";
     $scope.accuracy = "0";
     $scope.error = "";
-    $scope.model = { myMap: undefined };
+    $scope.myMap = undefined;
     $scope.marketMarkers = [];
 
     console.log("gmaps ctrl..");
@@ -31,19 +31,19 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
 
         $scope.markets.forEach(function(m) {
             console.log("M: " + m.name + " " + m.loc.coordinates[0] + " " + m.loc.coordinates[1]);
-            $scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap,
+            $scope.marketMarkers.push(new google.maps.Marker({ map: $scope.myMap,
                 position: new google.maps.LatLng(m.loc.coordinates[0], m.loc.coordinates[1]) }));
         });
 
-        //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: new google.maps.LatLng(39.89495, 32.80309) }));
+        //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.myMap, position: new google.maps.LatLng(39.89495, 32.80309) }));
         //var latlng = new google.maps.LatLng(39.89395, 32.80209);
-        //$scope.model.myMap.setCenter(latlng);
-        //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: latlng }));
+        //$scope.myMap.setCenter(latlng);
+        //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.myMap, position: latlng }));
     };
 
     $scope.onMapIdle = function(m) {
-        var newMapCenter = $scope.model.myMap.getCenter();
-        var zoom = $scope.model.myMap.getZoom();
+        var newMapCenter = $scope.myMap.getCenter();
+        var zoom = $scope.myMap.getZoom();
 
         console.log("onMapIdle func. zoom= " + zoom
             + " lat: " + newMapCenter.lat() + " long: " + newMapCenter.lng() );
@@ -106,9 +106,9 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
         console.log("lat: " + $scope.lat + " long: " + $scope.lng);
 
         var latlng = new google.maps.LatLng($scope.lat, $scope.lng);
-        $scope.model.myMap.setCenter(latlng);
+        $scope.myMap.setCenter(latlng);
 
-        //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: latlng }));
+        //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.myMap, position: latlng }));
     };
 
     $scope.showError = function (error) {

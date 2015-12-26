@@ -29,8 +29,13 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
     $scope.showMarkets = function() {
         console.log("showMarkets func.");
 
-        $scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: new google.maps.LatLng(39.89395, 32.80209) }));
-        $scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: new google.maps.LatLng(39.89495, 32.80309) }));
+        $scope.markets.forEach(function(m) {
+            console.log("M: " + m.name + " " + m.loc.coordinates[0] + " " + m.loc.coordinates[1]);
+            $scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap,
+                position: new google.maps.LatLng(m.loc.coordinates[0], m.loc.coordinates[1]) }));
+        });
+
+        //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: new google.maps.LatLng(39.89495, 32.80309) }));
         //var latlng = new google.maps.LatLng(39.89395, 32.80209);
         //$scope.model.myMap.setCenter(latlng);
         //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: latlng }));
@@ -39,7 +44,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
     $scope.onMapIdle = function(m) {
         console.log("onMapIdle func.");
 
-        $scope.showMarkets();
+        //$scope.showMarkets();
     };
 
     $scope.markerClicked = function(m) {
@@ -60,7 +65,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
                 console.log('Error: ' + data);
             })
             .then(function(response) {
-                console.log("THEN: " + response.data.product);
+                $scope.showMarkets();
                 return response.data.product;
             });
     };

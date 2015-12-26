@@ -40,8 +40,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
         //$scope.myMap.setCenter(latlng);
         //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.myMap, position: latlng }));
     };
-
-    /*
+    
     $scope.onMapIdle = function(m) {
         var newMapCenter = $scope.myMap.getCenter();
         var zoom = $scope.myMap.getZoom();
@@ -50,7 +49,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
             + " lat: " + newMapCenter.lat() + " long: " + newMapCenter.lng() );
 
         $scope.getNearbyMarkets(newMapCenter.lat(), newMapCenter.lng(), 500);
-    };*/
+    };
 
     $scope.markerClicked = function(m) {
         console.log("marker clicked.");

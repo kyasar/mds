@@ -41,6 +41,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
         //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.myMap, position: latlng }));
     };
 
+    /*
     $scope.onMapIdle = function(m) {
         var newMapCenter = $scope.myMap.getCenter();
         var zoom = $scope.myMap.getZoom();
@@ -49,7 +50,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
             + " lat: " + newMapCenter.lat() + " long: " + newMapCenter.lng() );
 
         $scope.getNearbyMarkets(newMapCenter.lat(), newMapCenter.lng(), 500);
-    };
+    };*/
 
     $scope.markerClicked = function(m) {
         console.log("marker clicked.");
@@ -61,18 +62,18 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
         for (var i = 0; i < $scope.marketMarkers.length; i++) {
             $scope.marketMarkers[i].setMap(map);
         }
-    }
+    };
 
     // Removes the markers from the map, but keeps them in the array.
     $scope.clearMarkers = function() {
         $scope.setMapOnAll(null);
-    }
+    };
 
     // Deletes all markers in the array by removing references to them.
     $scope.deleteMarkers = function() {
         $scope.clearMarkers();
         $scope.marketMarkers = [];
-    }
+    };
 
     $scope.getNearbyMarkets = function(lat, long) {
         $scope.deleteMarkers();
@@ -108,6 +109,12 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
         var latlng = new google.maps.LatLng($scope.lat, $scope.lng);
         $scope.myMap.setCenter(latlng);
 
+        /*
+        When zoom is changed by user, this callback will be invoked
+         */
+        $scope.myMap.addListener('zoom_changed', function() {
+            console.log('Zoom: ' + $scope.myMap.getZoom());
+        });
         //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.myMap, position: latlng }));
     };
 

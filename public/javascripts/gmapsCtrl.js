@@ -4,7 +4,7 @@
 
 mainApp.controller('gmapsCtrl', function($scope, $http) {
     $scope.mds = "http://localhost:8000";
-    $scope.distance = 1000;
+    $scope.distance = 500;
 
     $scope.lat = "0";
     $scope.lng = "0";
@@ -42,9 +42,13 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
     };
 
     $scope.onMapIdle = function(m) {
-        console.log("onMapIdle func.");
+        var newMapCenter = $scope.model.myMap.getCenter();
+        var zoom = $scope.model.myMap.getZoom();
 
-        //$scope.showMarkets();
+        console.log("onMapIdle func. zoom= " + zoom
+            + " lat: " + newMapCenter.lat() + " long: " + newMapCenter.lng() );
+
+        $scope.getNearbyMarkets(newMapCenter.lat(), newMapCenter.lng(), 500);
     };
 
     $scope.markerClicked = function(m) {
@@ -84,8 +88,6 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
         var latlng = new google.maps.LatLng($scope.lat, $scope.lng);
         $scope.model.myMap.setCenter(latlng);
 
-        $scope.getNearbyMarkets($scope.lat, $scope.lng, 600);
-
         //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.model.myMap, position: latlng }));
     };
 
@@ -109,6 +111,9 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
 
     $scope.getLocation = function () {
         console.log("getting current location..");
+        /*
+            HTML5 Geo-Location support
+         */
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition($scope.showPosition, $scope.showError);
         }

@@ -56,7 +56,27 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
         window.alert("clicked");
     };
 
+    // Sets the map on all markers in the array.
+    $scope.setMapOnAll = function (map) {
+        for (var i = 0; i < $scope.marketMarkers.length; i++) {
+            $scope.marketMarkers[i].setMap(map);
+        }
+    }
+
+    // Removes the markers from the map, but keeps them in the array.
+    $scope.clearMarkers = function() {
+        $scope.setMapOnAll(null);
+    }
+
+    // Deletes all markers in the array by removing references to them.
+    $scope.deleteMarkers = function() {
+        $scope.clearMarkers();
+        $scope.marketMarkers = [];
+    }
+
     $scope.getNearbyMarkets = function(lat, long) {
+        $scope.deleteMarkers();
+
         var queryURL = $scope.mds + "/mds/api/market/nearby?" + "lat=" + lat + "&long=" + long + "&max_dist=" + $scope.distance + "&token=test&api_key=test";
         console.log("REQ: " + queryURL);
 

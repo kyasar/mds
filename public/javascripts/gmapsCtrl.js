@@ -2,8 +2,8 @@
  * Created by kadir on 21.12.2015.
  */
 
-mainApp.controller('gmapsCtrl', function($scope, $http) {
-    $scope.mds = "http://localhost:8000";
+mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
+    $scope.mds = MainService.getServerURL();;
     $scope.distance = 500;
 
     $scope.lat = "0";
@@ -40,7 +40,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http) {
         //$scope.myMap.setCenter(latlng);
         //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.myMap, position: latlng }));
     };
-    
+
     $scope.onMapIdle = function(m) {
         var newMapCenter = $scope.myMap.getCenter();
         var zoom = $scope.myMap.getZoom();

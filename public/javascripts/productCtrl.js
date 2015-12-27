@@ -6,9 +6,9 @@
  */
 // public/core.js
 
-mainApp.controller('productCtrl', function($scope, $http) {
+mainApp.controller('productCtrl', function($scope, $http, MainService) {
     $scope.searchText = "";
-    $scope.mds = "http://localhost:8000";
+    $scope.mds = MainService.getServerURL();
 
     /*
      $http.get('/mds/api/test')

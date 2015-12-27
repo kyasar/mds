@@ -10,6 +10,8 @@ mainApp.controller('productCtrl', function($scope, $http, MainService) {
     $scope.searchText = "";
     $scope.mds = MainService.getServerURL();
 
+    console.log("products ctrl..");
+
     /*
      $http.get('/mds/api/test')
      .success(function(data) {

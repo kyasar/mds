@@ -22,8 +22,10 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
     $scope.mapOptions = {
         center: new google.maps.LatLng($scope.lat, $scope.lng),
         zoom: 15,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        minZoom: 12,
+        maxZoom: 16
+    };
 
     $scope.markerContentGenerator = function(marketName) {
         return "<div>" + marketName + "<br>" + "Price: $9.99" + "</div>";

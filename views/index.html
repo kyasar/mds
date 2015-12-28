@@ -46,73 +46,57 @@
 </head>
 <!-- SET THE CONTROLLER AND GET ALL TODOS -->
 <body>
-<div class="container">
 
-    <!--
-    <div id="map_canvas" ng-controller="mapCtrl">
-        <ui-gmap-google-map center="map.center" zoom="map.zoom" options="options"></ui-gmap-google-map>
+<div id="box" style="width: 100%; height: 100%;">
+
+<div id="div-header">
+    <!-- Fixed navbar-->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                </button>
+                <a class="navbar-brand" href="">Markod.com</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+
+<!-- Google Map -->
+<div id="main-div" ng-controller="gmapsCtrl">
+
+    <div id="map-canvas" ui-map="myMap"
+         ui-options="mapOptions"
+         ui-event="{'map-idle' : 'onMapIdle()'}"
+         ui-event="{'map-click': 'showMarkets()'}">
     </div>
-    <br>
-    -->
-    <!-- Google Map -->
-    <div class="container" ng-controller="gmapsCtrl">
-        <div class="text-center">
-            <h1>Welcome to markod !</h1>
-            <br>
-        </div>
-        <div>
-            <div id="map_canvas" style="height: 400px;" ui-map="myMap" class="jumbotron"
-                 ui-options="mapOptions"
-                 ui-event="{'map-idle' : 'onMapIdle()'}"
-                 ui-event="{'map-click': 'showMarkets()'}">
-            </div>
-            <!--In addition to creating the markers on the map, div elements with existing google.maps.Marker object should be created to hook up with events -->
-            <div ng-repeat="marker in marketMarkers" ui-map-marker="marketMarkers[$index]"
-                 ui-event="{'map-click': 'markerClicked(marker)'}">
-            </div>
-        </div>
-        <br>
-
-        <!-- FORM TO CREATE TODOS -->
-        <div id="todo-form" class="row"  ng-controller="productCtrl">
-            <div class="col-sm-8 col-sm-offset-2 text-center">
-                <form>
-                    <div class="form-group">
-
-                        <!-- BIND THIS VALUE TO searchText IN ANGULAR -->
-
-                        <input type="text" id="id_productSearchBox"
-                               class="form-control"
-                               placeholder="bal, çikolata, deterjan .."
-                               uib-typeahead="product as product.name for product in queryProducts($viewValue) | limitTo:3"
-                               ng-model="searchText"
-                               typeahead-loading="loadingLocations"
-                               typeahead-template-url="templates/product-tmpl.html"
-                               typeahead-on-select="onProductSelect($item,$model,$label)"
-                               typeahead-min-length="2">
-                        <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
-
-                        <!-- <pre>{{products | json}}</pre> -->
-                        <!-- <p> {{searchText}} </p> -->
-
-                    </div>
-
-                    <!-- createToDo() WILL CREATE NEW TODOS -->
-                    <!--<button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Add</button>-->
-                </form>
-            </div>
-
-        </div>
-        
-        <br>
-        <h6>Lat: {{ lat }}, Long: {{ lng }}</h6>
-        <br>
+    <!--In addition to creating the markers on the map, div elements with existing google.maps.Marker object should be created to hook up with events -->
+    <div ng-repeat="marker in marketMarkers" ui-map-marker="marketMarkers[$index]"
+         ui-event="{'map-click': 'markerClicked(marker)'}">
     </div>
+</div>
 
-
-
-
-    <br>
+<div id="div-footer">
+    <footer class="footer navbar-default navbar-fixed-bottom">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                </button>
+                <a class="navbar-brand" href="">Markod.com</a>
+            </div>
+        </div>
+    </footer>
+</div>
 
 </div>
 

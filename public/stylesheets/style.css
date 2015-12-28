@@ -1,8 +1,3 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
 a {
   color: #00B7FF;
 }
@@ -13,10 +8,24 @@ a {
   width: calc(100% - 28px);
 }
 
-html                    { overflow-y:scroll; }
-body                    { padding-top:50px; }
-#todo-list              { margin-bottom:30px; }
+html { height: 100% }
+body { height: 100%; font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
 
-.angular-google-map-container {
-  height : 400px;
+#main-div {
+  width: 100%;
+  height: 100%;
+  margin-top: 50px;
+  display:table;
+}
+
+#map-canvas {
+  /* Set the height to match that of the viewport. */
+  height: calc(100% - 50px);
+  position: relative;
+  overflow: auto;
+
+  /* Set the width to match that of the viewport. */
+  width: 100vw;
+
+  /* Remove any browser-default margins. */
 }

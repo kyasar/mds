@@ -27,7 +27,7 @@
     <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/angularjs-geolocation/dist/angularjs-geolocation.min.js"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!--
     <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
     <script src="bower_components/underscore/underscore-min.js"></script>
@@ -51,18 +51,15 @@
     <!-- Fixed navbar-->
     <nav class="navbar navbar-fixed-top col-sm-8" ng-controller="productCtrl">
         <div class="container">
-            <!--
             <div class="navbar-header navbar-right">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                     <span class="sr-only">Toggle navigation</span>
                 </button>
                 <a class="navbar-brand" href="">Markod.com</a>
             </div>
-            -->
-            <!-- FORM TO CREATE TODOS -->
+
             <form class="navbar-center" role="search">
                 <div class="form-group">
-                    <!-- BIND THIS VALUE TO searchText IN ANGULAR -->
                     <div class="input-group">
                     <input type="text" id="id_productSearchBox"
                            class="form-control"
@@ -75,7 +72,7 @@
                            typeahead-min-length="2">
                     <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
                         <span class="input-group-btn">
-                        <button class="btn btn-default" type="button">Markod!</button>
+                        <button id="search_btn" class="btn btn-default" type="button">Markod!</button>
                         </span>
                     </div>
                 </div>
@@ -88,7 +85,6 @@
 
 <!-- Google Map -->
 <div id="main-div" ng-controller="gmapsCtrl">
-
     <div id="map-canvas" ui-map="myMap"
          ui-options="mapOptions"
          ui-event="{'map-idle' : 'onMapIdle()'}"
@@ -111,6 +107,26 @@
             </div>
         </div>
     </footer>
+</div>
+
+<div id="markets_bar" class="markets_bar_left">
+    <div id="navbar-inner" class="list-group s-scroll" style="width:300px">
+
+        <div class="list-group-item" onmouseover="this.style.background='gray';" onmouseout="this.style.background='white';">
+            <h4 class="list-group-item-heading">List group item heading 1</h4>
+            <p class="list-group-item-text">zzzzzzzzzzzzz.</p>
+            <button type="button" class="btn btn-warning">Warning</button>
+        </div>
+        <div class="list-group-item" onmouseover="this.style.background='gray';" onmouseout="this.style.background='white';">
+            <h4 class="list-group-item-heading">List group item heading 4</h4>
+            <p class="list-group-item-text">yyyyyyyyyyyy</p>
+        </div>
+        <div class="list-group-item" onmouseover="this.style.background='gray';" onmouseout="this.style.background='white';">
+            <h4 class="list-group-item-heading">List group item 3 heading</h4>
+            <p class="list-group-item-text">xxxxxxxxxxx.</p>
+        </div>
+
+    </div>
 </div>
 
 </body>

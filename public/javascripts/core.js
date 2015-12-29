@@ -34,3 +34,11 @@ mainApp.factory('MainService', function ($rootScope) {
         }
     };
 });
+
+$(document).on('click', "#search_btn", function() {
+    console.log("Button clicked.")
+    $('#markets_bar').animate({
+        height: 'toggle'
+    }, 990, function() {
+    });
+});

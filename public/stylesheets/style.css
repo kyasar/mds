@@ -33,3 +33,18 @@ body { height: 100%; font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
   text-align: center;
   margin-top: 10px;
 }
+
+.markets_bar_left
+{
+  margin-top: 100px;
+  left : 25px;
+  position: absolute;
+  display: none;
+  overflow: hidden;
+  max-height: calc(100% - 100px * 2);
+}
+
+#navbar-inner {
+  max-height: 100%;
+  overflow-y: auto;
+}

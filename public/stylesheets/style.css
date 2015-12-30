@@ -43,7 +43,3 @@ body { height: 100%; font: 18px "Lucida Grande", Helvetica, Arial, sans-serif; }
   max-height: 100%;
   overflow-y: auto;
 }
-
-#id_productSearchBox {
-  width : 400px;
-}

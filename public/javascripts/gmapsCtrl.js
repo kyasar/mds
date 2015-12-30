@@ -19,12 +19,17 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
         return $scope.error == "";
     };
 
+    $scope.$on('$viewContentLoaded', function(){
+        NProgress.done();
+    });
+
     $scope.mapOptions = {
         center: new google.maps.LatLng($scope.lat, $scope.lng),
         zoom: 15,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         minZoom: 12,
-        maxZoom: 16
+        maxZoom: 16,
+        mapTypeControl: false
     };
 
     $scope.markerContentGenerator = function(marketName) {
@@ -37,10 +42,12 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
 
         $scope.markets.forEach(function(m) {
             console.log("M: " + m.name + " " + m.loc.coordinates[0] + " " + m.loc.coordinates[1]);
+
             var marker = new google.maps.Marker(
                 {   map: $scope.myMap,
                     position: new google.maps.LatLng(m.loc.coordinates[0], m.loc.coordinates[1]),
-                    title: m.name
+                    title: m.name,
+                    animation: google.maps.Animation.DROP
                 });
 
             marker.addListener('click', function() {
@@ -53,7 +60,9 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
             });
 
             // Push marker to markers array
-            $scope.marketMarkers.push(marker);
+            window.setTimeout(function() {
+                $scope.marketMarkers.push(marker);
+            }, 500);
         });
     };
 

@@ -64,8 +64,10 @@ router.use(function(req, res, next) {
  Return fields name, barcode (modified?) (image later?)
  */
 router.get('/products/', function(req, res) {
-    log.info('Searching for product with name:', req.query.search);
-    return ProductModel.find({ $text : { $search : req.query.search } },
+    var rgx = new RegExp('\\b' + req.query.search, "gi");
+    log.info("rgx: ", rgx.toString());
+    return ProductModel.find({ name : { $regex : rgx} },
+    //return ProductModel.find({ $text : { $search : req.query.search } },
         function(err, products) {
         if (!err) {
             return res.send({status: 'OK', product: products});

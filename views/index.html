@@ -41,45 +41,29 @@
     <script src="javascripts/core.js"></script>
     <script src="javascripts/productCtrl.js"></script>
     <script src="javascripts/gmapsCtrl.js"></script>
-
-
 </head>
-<!-- SET THE CONTROLLER AND GET ALL TODOS -->
+
 <body>
 
-<div id="div-header">
+<div id="div-header" class="navbar navbar-fixed-top">
     <!-- Fixed navbar-->
-    <nav class="navbar navbar-fixed-top col-sm-8" ng-controller="productCtrl">
-        <div class="container">
-            <div class="navbar-header navbar-right">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                </button>
-                <a class="navbar-brand" href="">Markod.com</a>
-            </div>
-
-            <form class="navbar-center" role="search">
-                <div class="form-group">
-                    <div class="input-group">
-                    <input type="text" id="id_productSearchBox"
-                           class="form-control"
-                           placeholder="bal, çikolata, deterjan .."
-                           uib-typeahead="product as product.name for product in queryProducts($viewValue) | limitTo:3"
-                           ng-model="searchText"
-                           typeahead-loading="loadingLocations"
-                           typeahead-template-url="templates/product-tmpl.html"
-                           typeahead-on-select="onProductSelect($item,$model,$label)"
-                           typeahead-min-length="2">
-                    <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
-                        <span class="input-group-btn">
-                        <button id="search_btn" class="btn btn-default" type="button">Markod!</button>
-                        </span>
-                    </div>
-                </div>
-            </form>
-            <!-- -->
+    <form class="navbar-form navbar-center" role="search">
+        <div class="input-group" ng-controller="productCtrl">
+            <input type="text" id="id_productSearchBox"
+                   class="form-control input-lg"
+                   placeholder="bal, çikolata, deterjan .."
+                   uib-typeahead="product as product.name for product in queryProducts($viewValue) | limitTo:3"
+                   ng-model="searchText"
+                   typeahead-loading="loadingLocations"
+                   typeahead-template-url="templates/product-tmpl.html"
+                   typeahead-on-select="onProductSelect($item,$model,$label)"
+                   typeahead-min-length="2">
+            <span class="input-group-btn">
+                <button id="search_btn" class="btn btn-default input-lg btn-lg" type="button">Markod!</button>
+            </span>
         </div>
-    </nav>
+        <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+    </form>
 </div>
 
 

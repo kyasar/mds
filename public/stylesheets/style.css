@@ -1,7 +1,3 @@
-a {
-  color: #00B7FF;
-}
-
 .dropdown-menu{
   width: -moz-calc(100% - 28px);
   width: -webkit-calc(100% - 28px);
@@ -9,18 +5,17 @@ a {
 }
 
 html { height: 100% }
-body { height: 100%; font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
+body { height: 100%; font: 18px "Lucida Grande", Helvetica, Arial, sans-serif; }
 
 #main-div {
-  margin-top: 50px;
-  margin-bottom: 50px;
-  height: calc(100% - 50px * 2);
+  height: calc(100% - 50px);  /* footer height 50px*/
   width: 100%;
   position: absolute;
 }
 
 #map-canvas {
   /* Set the height to match that of the viewport. */
+  background-color: navajowhite;
   height: 100%;
   width: 100%;
   position: absolute;
@@ -47,4 +42,8 @@ body { height: 100%; font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
 #navbar-inner {
   max-height: 100%;
   overflow-y: auto;
+}
+
+#id_productSearchBox {
+  width : 400px;
 }

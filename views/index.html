@@ -28,6 +28,7 @@
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/angularjs-geolocation/dist/angularjs-geolocation.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
     <!--
     <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
     <script src="bower_components/underscore/underscore-min.js"></script>
@@ -45,29 +46,29 @@
 
 <body>
 
-<div id="div-header" ng-controller="productCtrl">
+<div id="div-header" class="row col-md-4 col-md-offset-4"
+     style="position: absolute; margin-top: 20px;" ng-controller="productCtrl">
     <!-- Fixed navbar-->
-    <form class="navbar-form navbar-center" role="search" >
-            <div class="entry input-group input-group-lg" >
-                <input type="text" id="id_productSearchBox"
-                       class="form-control"
-                       placeholder="bal, çikolata, deterjan ..xxxxxxxxxxxxxxxxxxx"
-                       uib-typeahead="product as product.name for product in queryProducts($viewValue) | limitTo:3"
-                       ng-model="searchText"
-                       typeahead-loading="loadingLocations"
-                       typeahead-template-url="templates/product-tmpl.html"
-                       typeahead-on-select="onProductSelect($item,$model,$label)"
-                       typeahead-min-length="2">
-                <span class="input-group-btn">
-                    <button id="search_btn" class="btn btn-default btn-danger" type="button">
-                        <strong>Mar</strong>kod
-                    </button>
-                </span>
-            </div>
-            <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+    <form role="search" >
+        <div class="entry input-group input-group-lg" >
+            <input type="text" id="id_productSearchBox"
+                   class="form-control"
+                   placeholder="bal, çikolata, deterjan ..xxxxxxxxxxxxxxxxxxx"
+                   uib-typeahead="product as product.name for product in queryProducts($viewValue) | limitTo:3"
+                   ng-model="searchText"
+                   typeahead-loading="loadingLocations"
+                   typeahead-template-url="templates/product-tmpl.html"
+                   typeahead-on-select="onProductSelect($item,$model,$label)"
+                   typeahead-min-length="2">
+            <span class="input-group-btn">
+                <button id="search_btn" class="btn btn-default btn-danger" type="button">
+                    <strong>Mar</strong>kod
+                </button>
+            </span>
+        </div>
+        <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
     </form>
 </div>
-
 
 <!-- Google Map -->
 <div id="main-div" ng-controller="gmapsCtrl">

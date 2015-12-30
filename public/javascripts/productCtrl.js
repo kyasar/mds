@@ -41,10 +41,28 @@ mainApp.controller('productCtrl', function($scope, $http, MainService) {
             });
     };
 
-    $scope.onProductSelect = function(item, model, label) {
-        console.log("item : " + JSON.stringify(item));
-        console.log("model: " + JSON.stringify(model));
-        console.log("label: " + label);
+    $scope.scanNearbyMarketsbyProductBarcode = function(barcode) {
+        console.log("HTTP POST request to scan nearby markets by barcode: " + barcode);
     };
+
+    $scope.scanNearbyMarketsbyProductName = function(productQueryName) {
+        console.log("HTTP POST request to scan nearby markets by name: " + productQueryName);
+    };
+
+    $scope.onProductSelect = function(item, model, label) {
+        //console.log("item : " + JSON.stringify(item));
+        console.log("model: " + JSON.stringify(model));
+        //console.log("label: " + label);
+        $scope.scanNearbyMarketsbyProductBarcode(model.barcode);
+    };
+
+    $scope.searchProduct = function() {
+        if ($scope.searchText.length < 2) {
+            console.log("search text: " + $scope.searchText + " limit: 2");
+        } else {
+            NProgress.inc(0.5);
+            $scope.scanNearbyMarketsbyProductName($scope.searchText);
+        }
+    }
 });
 

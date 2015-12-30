@@ -28,6 +28,11 @@
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="bower_components/angularjs-geolocation/dist/angularjs-geolocation.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="bower_components/nprogress/nprogress.css">
+    <script src='bower_components/nprogress/nprogress.js'></script>
+    <script>
+        NProgress.start();
+    </script>
 
     <!--
     <script src="bower_components/angular-google-maps/dist/angular-google-maps.min.js"></script>
@@ -53,7 +58,8 @@
         <div class="entry input-group input-group-lg" >
             <input type="text" id="id_productSearchBox"
                    class="form-control"
-                   placeholder="bal, çikolata, deterjan ..xxxxxxxxxxxxxxxxxxx"
+                   autocomplete="off"
+                   placeholder="Lipton, Su, Deterjan, Bal .."
                    uib-typeahead="product as product.name for product in queryProducts($viewValue) | limitTo:3"
                    ng-model="searchText"
                    typeahead-loading="loadingLocations"
@@ -61,7 +67,10 @@
                    typeahead-on-select="onProductSelect($item,$model,$label)"
                    typeahead-min-length="2">
             <span class="input-group-btn">
-                <button id="search_btn" class="btn btn-default btn-danger" type="button">
+                <button id="search_btn"
+                        class="btn btn-default btn-danger"
+                        type="button"
+                        ng-click="searchProduct()">
                     <strong>Mar</strong>kod
                 </button>
             </span>

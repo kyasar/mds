@@ -12,6 +12,7 @@ var _ = require('underscore');
 var express = require('express');
 var router  = express.Router();
 var async = require('async');
+var sleep = require('sleep');
 
 router.get('/test', function(req, res) {
     return ProductModel.find({}, {_id:0, name:1, barcode:1}, function(err, products) {
@@ -177,6 +178,75 @@ router.post('/scan/', function(req, res) {
         }
         res.send(respond);
     });
+});
+
+/*
+This methods scans markets in near given location and finds the prices of
+ the product given barcode
+ */
+router.get('/scannearby/', function(req, res) {
+
+    if (!req.query.long || !req.query.lat || !req.query.max_dist) {
+        log.info("No Lat or Long info specified !");
+        return res.send({status: 'fail', error: "No location specified."});
+    }
+    log.info("long:", req.query.long, " lat:", req.query.lat, " max_dist:", req.query.max_dist);
+
+    /*if (!req.body.products) {
+        log.info("Product List not specified !");
+        return res.send({status: 'fail', error : "No list specified."});
+    }*/
+
+    var respond = {status : 'OK', markets : []};
+    var markets;
+
+    async.series([
+            /*
+             First task, grabs nearby markets
+             */
+            function(callback) {
+                MarketModel.find({ loc : { $near : { $geometry : { type : "Point" ,
+                        coordinates : [req.query.lat, req.query.long] },
+                        $maxDistance : parseInt(req.query.max_dist) } } },
+                    { name : 1, loc : 1, products : 1, _id : 0 },
+                    function (err, results) {
+                        if (!err)
+                        {
+                            log.info("Markets number: ", results.length);
+                            //res.send({'status': 'OK', 'markets' : markets});
+                            markets = results;
+                        }
+                        else
+                        {
+                            res.statusCode = 500;
+                            log.error('Internal error(%d): %s', res.statusCode, err.message);
+                            return res.send({status: 'fail', error: 'Server error'});
+                        }
+                        callback(err);
+                    });
+            },
+
+            /* Search markets for given product list */
+            function(callback) {
+                for (var i = 0; i < markets.length; i++) {
+                    log.info("Market #", i, ": ", markets[i].name, " # of products: ", markets[i].products.length);
+                    sleep.sleep(1);
+                }
+                respond.markets = markets;
+                callback();
+            }
+        ],
+        /*
+         Last callback, returns the respond containing markets that includes given products
+         */
+        function(err) {
+            if (err) {
+                res.statusCode = 500;
+                res.send({status: 'fail', error: 'Server error'});
+            }
+            log.info("Sending response..");
+            res.send(respond);
+        });
 });
 
 // ---------------------------------------------------------
@@ -471,7 +541,6 @@ router.post('/market/', function(req, res) {
 /*
 User info can be updated; ie Shoplists.
  */
-var sleep = require('sleep');
 router.post('/user-update/', function(req, res) {
     if (!req.body._id) {
         log.info("User Id is not specified !");

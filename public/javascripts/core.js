@@ -16,7 +16,7 @@ mainApp.config(function config() {
 });
 
 mainApp.factory('MainService', function ($rootScope) {
-    var mem = {}
+    var mem = {};
     var mdsURL = "http://localhost:8000";
 
     console.log("MainService created..");

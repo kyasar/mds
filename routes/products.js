@@ -186,17 +186,17 @@ This methods scans markets in near given location and finds the prices of
  */
 router.get('/scannearby/', function(req, res) {
 
-    if (!req.query.long || !req.query.lat || !req.query.max_dist) {
-        log.info("No Lat or Long info specified !");
-        return res.send({status: 'fail', error: "No location specified."});
+    if (!req.query.long || !req.query.lat || !req.query.max_dist || !req.query.barcode) {
+        log.info("Not enough info specified.");
+        return res.send({status: 'fail', error: "Not enough info specified."});
     }
-    log.info("long:", req.query.long, " lat:", req.query.lat, " max_dist:", req.query.max_dist);
+    log.info("long:", req.query.long, " lat:", req.query.lat,
+        " max_dist:", req.query.max_dist, " barcode: ", req.query.barcode);
 
     /*if (!req.body.products) {
         log.info("Product List not specified !");
         return res.send({status: 'fail', error : "No list specified."});
     }*/
-
     var respond = {status : 'OK', markets : []};
     var markets;
 
@@ -226,13 +226,31 @@ router.get('/scannearby/', function(req, res) {
                     });
             },
 
-            /* Search markets for given product list */
+            /* Search markets for given product(s) */
             function(callback) {
                 for (var i = 0; i < markets.length; i++) {
                     log.info("Market #", i, ": ", markets[i].name, " # of products: ", markets[i].products.length);
-                    sleep.sleep(1);
+                    var products = markets[i].products;
+                    var found = 0;
+                    for (var j = 0; j < products.length; j++) {
+                        if (products[j].barcode == req.query.barcode) {
+                            log.info("Product found in this market: ", markets[i].name);
+                            found = 1;
+                            /*
+                            No need to send all product list of the market
+                             */
+                            markets[i].products = undefined;
+                            markets[i].products = [];
+                            markets[i].products.push(products[j]);
+                        }
+                    }
+                    /*
+                    At least, 1 porduct found in the market
+                     */
+                    if (found) {
+                        respond.markets.push(markets[i]);
+                    }
                 }
-                respond.markets = markets;
                 callback();
             }
         ],

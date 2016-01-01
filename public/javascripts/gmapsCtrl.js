@@ -13,6 +13,8 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
     $scope.myMap = undefined;
     $scope.marketMarkers = [];
 
+    $scope.lastPoint;
+
     console.log("gmaps ctrl..");
 
     $scope.showResult = function () {
@@ -133,6 +135,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
 
         var latlng = new google.maps.LatLng($scope.lat, $scope.lng);
         $scope.myMap.setCenter(latlng);
+        $scope.lastPoint = latlng;      // save initial location
 
         /*
         When zoom is changed by user, this callback will be invoked

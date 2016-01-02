@@ -13,7 +13,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
     $scope.myMap = undefined;
     $scope.marketMarkers = [];
 
-    $scope.lastPoint;
+    $scope.lastPoint = undefined;
 
     console.log("gmaps ctrl..");
 
@@ -74,6 +74,10 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
 
         console.log("onMapIdle func. zoom= " + zoom
             + " lat: " + newMapCenter.lat() + " long: " + newMapCenter.lng());
+        var latlng = new google.maps.LatLng(newMapCenter.lat(), newMapCenter.lng());
+
+        console.log("DIST: " + google.maps.geometry.spherical.computeDistanceBetween(latlng, $scope.lastPoint));
+        $scope.lastPoint = latlng;
 
         if (zoom >= 16) dist = 500;
         else if (zoom >= 15) dist = 2000;

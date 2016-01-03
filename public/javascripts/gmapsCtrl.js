@@ -72,6 +72,9 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
         var newMapCenter = $scope.myMap.getCenter();
         var zoom = $scope.myMap.getZoom();
 
+        if (newMapCenter == undefined)
+            return;
+        
         console.log("onMapIdle func. zoom= " + zoom
             + " lat: " + newMapCenter.lat() + " long: " + newMapCenter.lng());
         var latlng = new google.maps.LatLng(newMapCenter.lat(), newMapCenter.lng());

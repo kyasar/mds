@@ -3,7 +3,7 @@
  */
 
 mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
-    $scope.mds = MainService.getServerURL();;
+    $scope.mds = MainService.getServerURL();
     $scope.distance = 1000;
 
     $scope.lat = "0";
@@ -21,7 +21,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
         return $scope.error == "";
     };
 
-    $scope.$on('$viewContentLoaded', function(){
+    $scope.$on('$viewContentLoaded', function() {
         NProgress.done();
     });
 
@@ -74,7 +74,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
 
         if (newMapCenter == undefined)
             return;
-        
+
         console.log("onMapIdle func. zoom= " + zoom
             + " lat: " + newMapCenter.lat() + " long: " + newMapCenter.lng());
         var latlng = new google.maps.LatLng(newMapCenter.lat(), newMapCenter.lng());

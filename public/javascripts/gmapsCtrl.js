@@ -40,10 +40,10 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
 
     //Markers should be added after map is loaded
     $scope.showMarkets = function() {
-        console.log("showMarkets func.");
+        //console.log("showMarkets func.");
 
         $scope.markets.forEach(function(m) {
-            console.log("M: " + m.name + " " + m.loc.coordinates[0] + " " + m.loc.coordinates[1]);
+            //console.log("M: " + m.name + " " + m.loc.coordinates[0] + " " + m.loc.coordinates[1]);
 
             var marker = new google.maps.Marker(
                 {   map: $scope.myMap,
@@ -74,6 +74,11 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
 
         if (newMapCenter == undefined)
             return;
+
+        var ne = $scope.myMap.getBounds().getNorthEast();
+        var sw = $scope.myMap.getBounds().getSouthWest();
+
+        console.log("Hipotenus: " + google.maps.geometry.spherical.computeDistanceBetween(ne, sw));
 
         console.log("onMapIdle func. zoom= " + zoom
             + " lat: " + newMapCenter.lat() + " long: " + newMapCenter.lng());
@@ -113,7 +118,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
         $scope.deleteMarkers();
 
         var queryURL = $scope.mds + "/mds/api/market/nearby?" + "lat=" + lat + "&long=" + long + "&max_dist=" + dist + "&token=test&api_key=test";
-        console.log("REQ: " + queryURL);
+        //console.log("REQ: " + queryURL);
 
         return $http.get(queryURL)
             .success(function(data) {
@@ -148,7 +153,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
         When zoom is changed by user, this callback will be invoked
          */
         $scope.myMap.addListener('zoom_changed', function() {
-            console.log('Zoom: ' + $scope.myMap.getZoom());
+            //console.log('Zoom: ' + $scope.myMap.getZoom());
         });
         //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.myMap, position: latlng }));
     };

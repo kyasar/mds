@@ -13,7 +13,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
     $scope.myMap = undefined;
     $scope.marketMarkers = [];
 
-    $scope.lastPoint = undefined;
+    $scope.lastCenter = undefined;
 
     console.log("gmaps ctrl..");
 
@@ -72,28 +72,34 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
         var newMapCenter = $scope.myMap.getCenter();
         var zoom = $scope.myMap.getZoom();
 
-        if (newMapCenter == undefined)
+        if (newMapCenter === undefined)
             return;
 
         var ne = $scope.myMap.getBounds().getNorthEast();
         var sw = $scope.myMap.getBounds().getSouthWest();
 
-        console.log("Hipotenus: " + google.maps.geometry.spherical.computeDistanceBetween(ne, sw));
+        var hypotenuse = google.maps.geometry.spherical.computeDistanceBetween(ne, sw);
+        console.log("Hypotenus: " + hypotenuse + " r: " + hypotenuse/2);
 
-        console.log("onMapIdle func. zoom= " + zoom
-            + " lat: " + newMapCenter.lat() + " long: " + newMapCenter.lng());
+        //console.log("onMapIdle func. zoom= " + zoom
+        //    + " lat: " + newMapCenter.lat() + " long: " + newMapCenter.lng());
         var latlng = new google.maps.LatLng(newMapCenter.lat(), newMapCenter.lng());
+        var centerDiff = google.maps.geometry.spherical.computeDistanceBetween(latlng, $scope.lastCenter);
 
-        console.log("DIST: " + google.maps.geometry.spherical.computeDistanceBetween(latlng, $scope.lastPoint));
-        $scope.lastPoint = latlng;
+        console.log("Center Diff: " + centerDiff);
+        if (centerDiff > (hypotenuse/2))
+        {
+            console.log("Center is updated to: " + latlng);
+            $scope.lastCenter = latlng;
 
-        if (zoom >= 16) dist = 500;
-        else if (zoom >= 15) dist = 2000;
-        else if (zoom >= 14) dist = 4000;
-        else if (zoom >= 13) dist = 8000;
-        else if (zoom >= 12) dist = 16000;
+            if (zoom >= 16) dist = 500;
+            else if (zoom >= 15) dist = 2000;
+            else if (zoom >= 14) dist = 4000;
+            else if (zoom >= 13) dist = 8000;
+            else if (zoom >= 12) dist = 16000;
 
-        $scope.getNearbyMarkets(newMapCenter.lat(), newMapCenter.lng(), dist);
+            $scope.getNearbyMarkets(newMapCenter.lat(), newMapCenter.lng(), dist);
+        }
     };
 
     // Sets the map on all markers in the array.
@@ -147,7 +153,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
 
         var latlng = new google.maps.LatLng($scope.lat, $scope.lng);
         $scope.myMap.setCenter(latlng);
-        $scope.lastPoint = latlng;      // save initial location
+        $scope.lastCenter = latlng;      // save initial location
 
         /*
         When zoom is changed by user, this callback will be invoked

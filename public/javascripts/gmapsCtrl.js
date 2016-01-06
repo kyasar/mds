@@ -13,7 +13,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
     $scope.myMap = undefined;
     $scope.marketMarkers = [];
 
-    $scope.lastCenter = undefined;
+    $scope.currentCenter = undefined;
 
     console.log("gmaps ctrl..");
 
@@ -69,10 +69,10 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
     };
 
     $scope.onMapIdle = function() {
-        var newMapCenter = $scope.myMap.getCenter();
+        var newCenter = $scope.myMap.getCenter();
         var zoom = $scope.myMap.getZoom();
 
-        if (newMapCenter === undefined)
+        if (newCenter === undefined)
             return;
 
         var ne = $scope.myMap.getBounds().getNorthEast();
@@ -81,17 +81,14 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
         var hypotenuse = google.maps.geometry.spherical.computeDistanceBetween(ne, sw);
         console.log("Hypotenus: " + hypotenuse + " r: " + hypotenuse/2);
 
-        //console.log("onMapIdle func. zoom= " + zoom
-        //    + " lat: " + newMapCenter.lat() + " long: " + newMapCenter.lng());
-        var latlng = new google.maps.LatLng(newMapCenter.lat(), newMapCenter.lng());
-        var centerDiff = google.maps.geometry.spherical.computeDistanceBetween(latlng, $scope.lastCenter);
+        var centerDiff = google.maps.geometry.spherical.computeDistanceBetween(newCenter, $scope.currentCenter);
 
         console.log("Center Diff: " + centerDiff);
-        if (centerDiff > (hypotenuse/2))
+        if (centerDiff >= (hypotenuse/2))
         {
-            console.log("Center is updated to: " + latlng);
-            $scope.lastCenter = latlng;
-            $scope.getNearbyMarkets(newMapCenter.lat(), newMapCenter.lng(), hypotenuse);
+            console.log("Center is updated to: " + newCenter);
+            $scope.currentCenter = newCenter;
+            $scope.getNearbyMarkets(newCenter.lat(), newCenter.lng(), hypotenuse);
         }
     };
 
@@ -146,7 +143,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
 
         var latlng = new google.maps.LatLng($scope.lat, $scope.lng);
         $scope.myMap.setCenter(latlng);
-        $scope.lastCenter = latlng;      // save initial location
+        $scope.currentCenter = latlng;      // save initial location
 
         /*
         When zoom is changed by user, this callback will be invoked

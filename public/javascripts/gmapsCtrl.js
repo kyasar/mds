@@ -12,7 +12,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
     $scope.error = "";
     $scope.myMap = undefined;
     $scope.marketMarkers = [];
-
+    $scope.centerChangedCntr = 0;
     $scope.currentCenter = undefined;
 
     console.log("gmaps ctrl..");
@@ -68,6 +68,19 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
         });
     };
 
+    $scope.drawCircle = function(center, radius) {
+        var cityCircle = new google.maps.Circle({
+            strokeColor: '#FF0000',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#FF0000',
+            fillOpacity: 0.35,
+            map: $scope.myMap,
+            center: center,
+            radius: radius
+        });
+    };
+
     $scope.onMapIdle = function() {
         var newCenter = $scope.myMap.getCenter();
         var zoom = $scope.myMap.getZoom();
@@ -79,15 +92,17 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
         var sw = $scope.myMap.getBounds().getSouthWest();
 
         var hypotenuse = google.maps.geometry.spherical.computeDistanceBetween(ne, sw);
-        console.log("Hypotenus: " + hypotenuse + " r: " + hypotenuse/2);
+        console.log("Hypotenuse: " + hypotenuse + " r: " + hypotenuse/2);
 
         var centerDiff = google.maps.geometry.spherical.computeDistanceBetween(newCenter, $scope.currentCenter);
 
         console.log("Center Diff: " + centerDiff);
-        if (centerDiff >= (hypotenuse/2))
+        if (centerDiff >= (hypotenuse/2) || $scope.centerChangedCntr == 0)
         {
             console.log("Center is updated to: " + newCenter);
+            $scope.centerChangedCntr++;
             $scope.currentCenter = newCenter;
+            //$scope.drawCircle(newCenter, hypotenuse/2);
             $scope.getNearbyMarkets(newCenter.lat(), newCenter.lng(), hypotenuse);
         }
     };

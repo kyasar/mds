@@ -35,13 +35,23 @@ mainApp.factory('MainService', function ($rootScope) {
     };
 });
 
-/*
-$(document).on('click', "#search_btn", function() {
-
-    console.log("Button clicked.")
-    $('#markets_bar').animate({
-        height: 'toggle'
-    }, 990, function() {
+$(function() {
+    var slider = $("#left-panel").slideReveal({
+        // width: 100,
+        //height : 200,
+        push: false,
+        position: "left",
+        speed: 600,
+        trigger: $("#left-panel-trigger"),
+        // autoEscape: false,
+        shown: function(obj){
+            obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-left"></span>');
+            //obj.addClass("left-shadow-overlay");
+        },
+        hidden: function(obj){
+            obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-right"></span>');
+            //obj.removeClass("left-shadow-overlay");
+        }
     });
+    slider.slideReveal("hide");
 });
-*/

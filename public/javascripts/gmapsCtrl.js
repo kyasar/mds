@@ -91,14 +91,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
         {
             console.log("Center is updated to: " + latlng);
             $scope.lastCenter = latlng;
-
-            if (zoom >= 16) dist = 500;
-            else if (zoom >= 15) dist = 2000;
-            else if (zoom >= 14) dist = 4000;
-            else if (zoom >= 13) dist = 8000;
-            else if (zoom >= 12) dist = 16000;
-
-            $scope.getNearbyMarkets(newMapCenter.lat(), newMapCenter.lng(), dist);
+            $scope.getNearbyMarkets(newMapCenter.lat(), newMapCenter.lng(), hypotenuse);
         }
     };
 

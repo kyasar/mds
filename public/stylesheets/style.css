@@ -43,3 +43,31 @@ body { height: 100%; font: 18px "Lucida Grande", Helvetica, Arial, sans-serif; }
   max-height: 100%;
   overflow-y: auto;
 }
+
+#left-panel {
+  background-color: navajowhite;
+  z-index: 1;
+  margin-top: 20px;
+  border-radius: 0 0 10px 0;
+}
+
+#left-panel h3 {
+  background-color: hsl(355, 92%, 46%) !important;
+  color: white;
+  font-size: 1.9em;
+  padding: 20px;
+  margin: 0;
+  font-weight: 300;
+}
+
+#left-panel-trigger {
+  background-color: hsl(355, 92%, 46%) !important;
+  color: white;
+  right: -40px;
+  padding: 10px;
+  position: absolute;
+  top: 0;
+  width: 40px;
+  cursor: pointer;
+  border-radius: 0 10px 10px 0;
+}

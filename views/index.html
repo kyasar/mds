@@ -30,8 +30,31 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <link rel="stylesheet" href="bower_components/nprogress/nprogress.css">
     <script src='bower_components/nprogress/nprogress.js'></script>
+
+    <script src="bower_components/slidereveal/dist/jquery.slidereveal.min.js"></script>
+
     <script>
-        NProgress.start();
+        //NProgress.start();
+        $(function() {
+            slider = $("#left-panel").slideReveal({
+                // width: 100,
+                //height : 200,
+                push: false,
+                position: "left",
+                speed: 600,
+                trigger: $("#left-panel-trigger"),
+                // autoEscape: false,
+                shown: function(obj){
+                    obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-left"></span>');
+                    //obj.addClass("left-shadow-overlay");
+                },
+                hidden: function(obj){
+                    obj.find(".handle").html('<span class="glyphicon glyphicon-chevron-right"></span>');
+                    //obj.removeClass("left-shadow-overlay");
+                }
+            });
+        });
+
     </script>
 
     <!--
@@ -78,9 +101,22 @@
         <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
     </form>
 </div>
-
 <!-- Google Map -->
 <div id="main-div" ng-controller="gmapsCtrl">
+    <div id="left-panel">
+        <div id="left-panel-trigger" class="handle">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </div>
+        <h3>
+            SlideReveal<br/>
+            <small><span class="glyphicon glyphicon-info-sign"></span> Press <kbd>ESC</kbd> to close</small>
+        </h3>
+        <a href="#include">How to include</a>
+        <a href="#use">How to use</a>
+        <a href="#method">Methods</a>
+        <a href="#option">Options</a>
+    </div>
+
     <div id="map-canvas" ui-map="myMap"
          ui-options="mapOptions"
          ui-event="{'map-idle' : 'onMapIdle()'}"

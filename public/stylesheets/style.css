@@ -71,3 +71,10 @@ body { height: 100%; font: 18px "Lucida Grande", Helvetica, Arial, sans-serif; }
   cursor: pointer;
   border-radius: 0 10px 10px 0;
 }
+
+#left-panel-title {
+  background-image: url("../images/img_main_page.jpg");
+  background-size:contain;
+  width: inherit;
+  height: 160px;
+}

@@ -85,14 +85,13 @@
         <div id="left-panel-trigger" class="handle">
             <span class="glyphicon glyphicon-chevron-right"></span>
         </div>
-        <h3>
-            SlideReveal<br/>
-            <small><span class="glyphicon glyphicon-info-sign"></span> Press <kbd>ESC</kbd> to close</small>
-        </h3>
-        <a href="#include">How to include</a>
-        <a href="#use">How to use</a>
-        <a href="#method">Methods</a>
-        <a href="#option">Options</a>
+        <div id="left-panel-title">
+
+        </div>
+        <div class="list-group">
+            <!-- Here we will list market scan results (with prices) -->
+            <a href="#" class="list-group-item" ng-repeat="marker in marketMarkers">{{marker.title}}</a>
+        </div>
     </div>
 
     <div id="map-canvas" ui-map="myMap"

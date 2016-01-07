@@ -78,3 +78,34 @@ body { height: 100%; font: 18px "Lucida Grande", Helvetica, Arial, sans-serif; }
   width: inherit;
   height: 160px;
 }
+
+.market-marker {
+  position:relative;
+  background-color: red;
+  border-radius: 5px 5px 5px 5px;
+  padding: 3px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.market-marker h5 {
+  color: white;
+}
+
+.market-marker:after {
+  z-index: -1;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -10px;
+  content:'';
+  width: 0;
+  height: 0;
+  border-top: solid 10px red;
+  border-left: solid 10px transparent;
+  border-right: solid 10px transparent;
+}
+
+.marker-container {
+  display: inline-block;
+}

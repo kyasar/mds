@@ -45,11 +45,15 @@ mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
         $scope.markets.forEach(function(m) {
             //console.log("M: " + m.name + " " + m.loc.coordinates[0] + " " + m.loc.coordinates[1]);
 
-            var marker = new google.maps.Marker(
+            var div = document.createElement('DIV');
+            div.innerHTML = '<div class="marker-container"><div class="market-marker"><h5>$9.99</h5></div></div>';
+
+            var marker = new RichMarker(
                 {   map: $scope.myMap,
                     position: new google.maps.LatLng(m.loc.coordinates[0], m.loc.coordinates[1]),
                     title: m.name,
-                    animation: google.maps.Animation.DROP
+                    content: div,
+                    shadow: '0 0 0 0'
                 });
 
             marker.addListener('click', function() {

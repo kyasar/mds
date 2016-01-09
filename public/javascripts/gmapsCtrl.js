@@ -44,7 +44,7 @@ mainApp.controller('gmapsCtrl', function($scope, $http, SharedProps) {
             //console.log("M: " + m.name + " " + m.loc.coordinates[0] + " " + m.loc.coordinates[1]);
 
             var div = document.createElement('DIV');
-            div.innerHTML = '<div class="marker-container"><div class="market-marker"><h5>$9.99</h5></div></div>';
+            div.innerHTML = '<div class="marker-container"><div class="market-marker"><span class="text-primary">$ 999.999</span></div></div>';
 
             var marker = new RichMarker(
                 {   map: $scope.myMap,

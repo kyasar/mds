@@ -45,7 +45,16 @@ mainApp.controller('productCtrl', function($scope, $http, SharedProps) {
         console.log("HTTP POST request to scan nearby markets by barcode: " + barcode);
         var url = "mds/api/scannearby/?";
 
-        url += "lat=39.893792499999996&long=32.802407699999996&max_dist=600&barcode=8690998117129&token=test&api_key=test";
+        //url += "lat=39.893792499999996&long=32.802407699999996&max_dist=600&barcode=8690998117129&token=test&api_key=test";
+        var mapCenter = SharedProps.getMapCenter();
+        console.log("Lat: " + mapCenter.lat() + " Long: " + mapCenter.lng());
+        console.log("Range: " + SharedProps.getMaxDist());
+
+        url += "lat=" + mapCenter.lat() + "&long=" + mapCenter.lng();
+        url += "&barcode=" + barcode;
+        url += "&max_dist=" + SharedProps.getMaxDist() + "&api_key=test";
+
+        console.log("Req. URL: " + url);
 
         return $http.get(url)
             .success(function(data) {

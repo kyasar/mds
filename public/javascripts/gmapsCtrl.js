@@ -4,8 +4,6 @@
 
 mainApp.controller('gmapsCtrl', function($scope, $http, SharedProps) {
     $scope.mds = SharedProps.getServerURL();
-    $scope.distance = 1000;
-
     $scope.lat = "0";
     $scope.lng = "0";
     $scope.accuracy = "0";
@@ -108,6 +106,12 @@ mainApp.controller('gmapsCtrl', function($scope, $http, SharedProps) {
             $scope.currentCenter = newCenter;
             //$scope.drawCircle(newCenter, hypotenuse/2);
             $scope.getNearbyMarkets(newCenter.lat(), newCenter.lng(), hypotenuse);
+
+            /*
+                Share new center and range with other controllers
+             */
+            SharedProps.setMapCenter(newCenter);
+            SharedProps.setMaxDist(hypotenuse);
         }
     };
 

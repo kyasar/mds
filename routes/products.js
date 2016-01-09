@@ -182,7 +182,7 @@ router.post('/scan/', function(req, res) {
 
 /*
 This methods scans markets in near given location and finds the prices of
- the product given barcode
+ the product given barcode - for Web APP
  */
 router.get('/scannearby/', function(req, res) {
 

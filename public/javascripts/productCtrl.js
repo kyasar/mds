@@ -45,7 +45,6 @@ mainApp.controller('productCtrl', function($scope, $http, SharedProps) {
         console.log("HTTP POST request to scan nearby markets by barcode: " + barcode);
         var url = "mds/api/scannearby/?";
 
-        //url += "lat=39.893792499999996&long=32.802407699999996&max_dist=600&barcode=8690998117129&token=test&api_key=test";
         var mapCenter = SharedProps.getMapCenter();
         console.log("Lat: " + mapCenter.lat() + " Long: " + mapCenter.lng());
         console.log("Range: " + SharedProps.getMaxDist());
@@ -66,6 +65,7 @@ mainApp.controller('productCtrl', function($scope, $http, SharedProps) {
             })
             .then(function(response) {
                 console.log("THEN: " + response.data.markets);
+                NProgress.done();
                 return response.data.markets;
             });
     };
@@ -76,6 +76,7 @@ mainApp.controller('productCtrl', function($scope, $http, SharedProps) {
 
     $scope.onProductSelect = function(item, model, label) {
         //console.log("item : " + JSON.stringify(item));
+        NProgress.inc(0.5);
         console.log("model: " + JSON.stringify(model));
         //console.log("label: " + label);
         $scope.scanNearbyMarketsbyProductBarcode(model.barcode);

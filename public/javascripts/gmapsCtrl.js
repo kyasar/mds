@@ -2,8 +2,8 @@
  * Created by kadir on 21.12.2015.
  */
 
-mainApp.controller('gmapsCtrl', function($scope, $http, MainService) {
-    $scope.mds = MainService.getServerURL();
+mainApp.controller('gmapsCtrl', function($scope, $http, SharedProps) {
+    $scope.mds = SharedProps.getServerURL();
     $scope.distance = 1000;
 
     $scope.lat = "0";

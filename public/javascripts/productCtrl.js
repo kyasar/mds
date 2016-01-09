@@ -6,9 +6,9 @@
  */
 // public/core.js
 
-mainApp.controller('productCtrl', function($scope, $http, MainService) {
+mainApp.controller('productCtrl', function($scope, $http, SharedProps) {
     $scope.searchText = "";
-    $scope.mds = MainService.getServerURL();
+    $scope.mds = SharedProps.getServerURL();
 
     console.log("products ctrl..");
 
@@ -43,6 +43,22 @@ mainApp.controller('productCtrl', function($scope, $http, MainService) {
 
     $scope.scanNearbyMarketsbyProductBarcode = function(barcode) {
         console.log("HTTP POST request to scan nearby markets by barcode: " + barcode);
+        var url = "mds/api/scannearby/?";
+
+        url += "lat=39.893792499999996&long=32.802407699999996&max_dist=600&barcode=8690998117129&token=test&api_key=test";
+
+        return $http.get(url)
+            .success(function(data) {
+                //$scope.ma = data.product;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            })
+            .then(function(response) {
+                console.log("THEN: " + response.data.markets);
+                return response.data.markets;
+            });
     };
 
     $scope.scanNearbyMarketsbyProductName = function(productQueryName) {

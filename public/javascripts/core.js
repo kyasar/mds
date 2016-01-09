@@ -15,11 +15,13 @@ mainApp.config(function config() {
     console.log("MainApp config");
 });
 
-mainApp.factory('MainService', function ($rootScope) {
+mainApp.factory('SharedProps', function ($rootScope) {
     var mem = {};
     var mdsURL = "http://localhost:8000";
+    var mapCenter = undefined;
+    var max_dist = undefined;
 
-    console.log("MainService created..");
+    console.log("SharedProps service created..");
 
     return {
         storeScope: function (key, value) {
@@ -31,6 +33,18 @@ mainApp.factory('MainService', function ($rootScope) {
         },
         getServerURL: function() {
             return mdsURL;
+        },
+        getMapCenter: function() {
+            return mapCenter;
+        },
+        setMapCenter: function(center) {
+            mapCenter = center;
+        },
+        getMaxDist: function() {
+            return max_dist;
+        },
+        setMaxDist: function(dist) {
+            max_dist = dist;
         }
     };
 });

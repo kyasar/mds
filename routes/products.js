@@ -226,7 +226,7 @@ router.get('/scannearby/', function(req, res) {
                     });
             },
 
-            /* Search markets for given product(s) */
+            /* Search grabbed markets for given product(s) */
             function(callback) {
                 for (var i = 0; i < markets.length; i++) {
                     log.info("Market #", i, ": ", markets[i].name, " # of products: ", markets[i].products.length);

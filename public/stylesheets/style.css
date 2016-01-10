@@ -76,7 +76,7 @@ body { height: 100%; font: 18px "Lucida Grande", Helvetica, Arial, sans-serif; }
   background-image: url("../images/img_main_page.jpg");
   background-size:contain;
   width: inherit;
-  height: 160px;
+  height: 180px;
 }
 
 .market-marker {

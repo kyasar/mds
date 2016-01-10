@@ -2,7 +2,7 @@
  * Created by kadir on 21.12.2015.
  */
 
-mainApp.controller('gmapsCtrl', function($scope, $http, SharedProps) {
+mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps) {
     $scope.mds = SharedProps.getServerURL();
     $scope.lat = "0";
     $scope.lng = "0";
@@ -14,6 +14,26 @@ mainApp.controller('gmapsCtrl', function($scope, $http, SharedProps) {
     $scope.currentCenter = undefined;
 
     console.log("gmaps ctrl..");
+
+    $rootScope.$on('scanNearby', function (event, url) {
+        console.log("message from productCtrl: " + url);
+
+        return $http.get(url)
+            .success(function(data) {
+                //$scope.ma = data.product;
+                $scope.markets = data.markets;
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            })
+            .then(function(response) {
+                console.log("THEN: " + response.data.markets);
+                NProgress.done();
+                $scope.showMarkets();
+                return response.data.markets;
+            });
+
+    });
 
     $scope.showResult = function () {
         return $scope.error == "";
@@ -38,13 +58,14 @@ mainApp.controller('gmapsCtrl', function($scope, $http, SharedProps) {
 
     //Markers should be added after map is loaded
     $scope.showMarkets = function() {
-        //console.log("showMarkets func.");
+        // Clean previous markers on the map
+        $scope.deleteMarkers();
 
         $scope.markets.forEach(function(m) {
             //console.log("M: " + m.name + " " + m.loc.coordinates[0] + " " + m.loc.coordinates[1]);
 
             var div = document.createElement('DIV');
-            div.innerHTML = '<div class="marker-container"><div class="market-marker"><span class="text-primary">$ 999.999</span></div></div>';
+            div.innerHTML = '<div class="marker-container"><div class="market-marker"><span>$ <strong>999.999</strong></span></div></div>';
 
             var marker = new RichMarker(
                 {   map: $scope.myMap,
@@ -134,7 +155,6 @@ mainApp.controller('gmapsCtrl', function($scope, $http, SharedProps) {
     };
 
     $scope.getNearbyMarkets = function(lat, long, dist) {
-        $scope.deleteMarkers();
 
         var queryURL = $scope.mds + "/mds/api/market/nearby?" + "lat=" + lat + "&long=" + long + "&max_dist=" + dist + "&token=test&api_key=test";
         //console.log("REQ: " + queryURL);

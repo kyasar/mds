@@ -6,7 +6,7 @@
  */
 // public/core.js
 
-mainApp.controller('productCtrl', function($scope, $http, SharedProps) {
+mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProps) {
     $scope.searchText = "";
     $scope.mds = SharedProps.getServerURL();
 
@@ -55,7 +55,9 @@ mainApp.controller('productCtrl', function($scope, $http, SharedProps) {
 
         console.log("Req. URL: " + url);
 
-        return $http.get(url)
+        $rootScope.$emit('scanNearby', url);// res - your data
+
+        /*return $http.get(url)
             .success(function(data) {
                 //$scope.ma = data.product;
                 console.log(data);
@@ -67,7 +69,7 @@ mainApp.controller('productCtrl', function($scope, $http, SharedProps) {
                 console.log("THEN: " + response.data.markets);
                 NProgress.done();
                 return response.data.markets;
-            });
+            });*/
     };
 
     $scope.scanNearbyMarketsbyProductName = function(productQueryName) {

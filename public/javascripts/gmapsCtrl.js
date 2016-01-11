@@ -29,7 +29,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
             .then(function(response) {
                 console.log("THEN: " + response.data.markets);
                 NProgress.done();
-                $scope.showMarkets();
+                $scope.showResults();
                 return response.data.markets;
             });
 
@@ -48,7 +48,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         zoom: 15,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         minZoom: 12,
-        maxZoom: 16,
+        //maxZoom: 16,
         mapTypeControl: false
     };
 
@@ -64,6 +64,38 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         $scope.markets.forEach(function(m) {
             //console.log("M: " + m.name + " " + m.loc.coordinates[0] + " " + m.loc.coordinates[1]);
 
+            var marker = new google.maps.Marker(
+                {   map: $scope.myMap,
+                    position: new google.maps.LatLng(m.loc.coordinates[0], m.loc.coordinates[1]),
+                    icon: "images/market_marker.png",
+                    title: m.name,
+                    market: m   // market contains market object - extra data
+                });
+
+            marker.addListener('click', function() {
+                var infowindow = new google.maps.InfoWindow({
+                    content: $scope.markerContentGenerator(m.name)
+                });
+
+                console.log("Marker clicked: " + marker.title);
+                infowindow.open($scope.myMap, marker);
+            });
+
+            // Push marker to markers array
+            window.setTimeout(function() {
+                $scope.marketMarkers.push(marker);
+            }, 500);
+        });
+    };
+
+    //Markers should be added after map is loaded
+    $scope.showResults = function() {
+        // Clean previous markers on the map
+        $scope.deleteMarkers();
+
+        $scope.markets.forEach(function(m) {
+            //console.log("M: " + m.name + " " + m.loc.coordinates[0] + " " + m.loc.coordinates[1]);
+
             var div = document.createElement('DIV');
             div.innerHTML = '<div class="marker-container"><div class="market-marker"><span>$ <strong>999.999</strong></span></div></div>';
 
@@ -72,7 +104,8 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
                     position: new google.maps.LatLng(m.loc.coordinates[0], m.loc.coordinates[1]),
                     title: m.name,
                     content: div,
-                    shadow: '0 0 0 0'
+                    shadow: '0 0 0 0',
+                    market: m   // market contains market object - extra data
                 });
 
             marker.addListener('click', function() {

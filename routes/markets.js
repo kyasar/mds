@@ -23,7 +23,7 @@ router.get('/nearby/', function(req, res) {
     MarketModel.find({ loc : { $near : { $geometry : { type : "Point" ,
                 coordinates : [req.query.lat, req.query.long] },
                 $maxDistance : parseInt(req.query.max_dist) } } },
-                { name : 1, loc : 1, _id : 0 },
+                { name : 1, loc : 1, vicinity: 1, _id : 0 },
                 function (err, markets) {
         if (!err)
         {

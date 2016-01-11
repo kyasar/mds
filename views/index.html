@@ -91,7 +91,10 @@
         </div>
         <div class="list-group">
             <!-- Here we will list market scan results (with prices) -->
-            <a href="#" class="list-group-item" ng-repeat="marker in marketMarkers">{{marker.title}}</a>
+            <a href="#" class="list-group-item" ng-repeat="marker in marketMarkers">
+                <h4>{{marker.market.name}}</h4><br>
+                <h6>{{marker.market.vicinity}}</h6>
+            </a>
         </div>
     </div>
 

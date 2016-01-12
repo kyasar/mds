@@ -132,6 +132,10 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         slider.slideReveal("show")
     };
 
+    $scope.leftPanelResultClicked = function(marker) {
+        console.log("LP item clicked: " + marker.market.name);
+    };
+
     $scope.drawCircle = function(center, radius) {
         var cityCircle = new google.maps.Circle({
             strokeColor: '#FF0000',

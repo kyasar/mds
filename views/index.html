@@ -91,7 +91,9 @@
         </div>
         <div class="list-group">
             <!-- Here we will list market scan results (with prices) -->
-            <a href="#" class="list-group-item" ng-repeat="marker in marketMarkers">
+            <a href="#" class="list-group-item" ng-repeat="marker in marketMarkers"
+               ng-click="$parent.selected = marker; leftPanelResultClicked(marker)"
+               ng-class="{active:selected==marker}">
                 <h4>{{marker.market.name}}</h4><br>
                 <h6>{{marker.market.vicinity}}</h6>
             </a>

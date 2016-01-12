@@ -49,8 +49,12 @@ mainApp.factory('SharedProps', function ($rootScope) {
     };
 });
 
+/*
+Slider is globally accessed by other controllers
+ */
+var slider;
 $(function() {
-    var slider = $("#left-panel").slideReveal({
+    slider = $("#left-panel").slideReveal({
         // width: 100,
         //height : 200,
         push: false,

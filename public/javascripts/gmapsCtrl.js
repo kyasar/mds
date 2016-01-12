@@ -125,6 +125,11 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
                 $scope.marketMarkers.push(marker);
             }, 500);
         });
+
+        /*
+        Show slider where results are listed.
+         */
+        slider.slideReveal("show")
     };
 
     $scope.drawCircle = function(center, radius) {

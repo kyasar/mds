@@ -104,8 +104,7 @@
          ui-event="{'map-click': 'showMarkets()'}">
     </div>
     <!--In addition to creating the markers on the map, div elements with existing google.maps.Marker object should be created to hook up with events -->
-    <div ng-repeat="marker in marketMarkers" ui-map-marker="marketMarkers[$index]"
-         ui-event="{'map-click': 'markerClicked(marker)'}">
+    <div ng-repeat="marker in marketMarkers" ui-map-marker="marketMarkers[$index]">
     </div>
 </div>
 

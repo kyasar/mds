@@ -53,7 +53,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
     };
 
     $scope.markerContentGenerator = function(marketName) {
-        return "<div>" + marketName + "<br>" + "Price: $9.99" + "</div>";
+        return "<div>" + marketName + "</div>";
     };
 
     //Markers should be added after map is loaded
@@ -94,10 +94,13 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         $scope.deleteMarkers();
 
         $scope.markets.forEach(function(m) {
-            //console.log("M: " + m.name + " " + m.loc.coordinates[0] + " " + m.loc.coordinates[1]);
+            console.log("M: " + m.name + " price: " + m.products[0].price);
 
             var div = document.createElement('DIV');
-            div.innerHTML = '<div class="marker-container"><div class="market-marker"><span>$ <strong>999.999</strong></span></div></div>';
+            var price = m.products[0].price;
+
+            div.innerHTML = '<div class="marker-container">' +
+                '<div class="market-marker"><span><strong>₺ ' + price + '</strong></span></div></div>';
 
             var marker = new RichMarker(
                 {   map: $scope.myMap,

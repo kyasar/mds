@@ -143,12 +143,16 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
                 }
             });
 
+            $scope.myMap.panTo(marker.position);
+
             if (marker.getAnimation() != null) {
                 marker.setAnimation(null);
             } else {
                 marker.setAnimation(google.maps.Animation.BOUNCE);
             }
         } else {
+            $scope.myMap.panTo(marker.position);
+
             console.log("LP result item clicked: " + marker.market.name);
         }
     };

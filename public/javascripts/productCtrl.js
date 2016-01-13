@@ -54,22 +54,7 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProp
         url += "&max_dist=" + SharedProps.getMaxDist() + "&api_key=test";
 
         console.log("Req. URL: " + url);
-
         $rootScope.$emit('scanNearby', url);// res - your data
-
-        /*return $http.get(url)
-            .success(function(data) {
-                //$scope.ma = data.product;
-                console.log(data);
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-            })
-            .then(function(response) {
-                console.log("THEN: " + response.data.markets);
-                NProgress.done();
-                return response.data.markets;
-            });*/
     };
 
     $scope.scanNearbyMarketsbyProductName = function(productQueryName) {
@@ -79,6 +64,7 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProp
     $scope.onProductSelect = function(item, model, label) {
         //console.log("item : " + JSON.stringify(item));
         NProgress.inc(0.5);
+        slider.slideReveal("hide");
         console.log("model: " + JSON.stringify(model));
         //console.log("label: " + label);
         $scope.scanNearbyMarketsbyProductBarcode(model.barcode);

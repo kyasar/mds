@@ -92,6 +92,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
     $scope.showResults = function() {
         // Clean previous markers on the map
         $scope.deleteMarkers();
+        SharedProps.setProductSearched(true);   // a search is made
 
         $scope.markets.forEach(function(m) {
             console.log("M: " + m.name + " price: " + m.products[0].price);
@@ -133,7 +134,23 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
     };
 
     $scope.leftPanelResultClicked = function(marker) {
-        console.log("LP item clicked: " + marker.market.name);
+
+        if (!SharedProps.getProductSearched()) {
+            console.log("LP item clicked: " + marker.market.name);
+            $scope.marketMarkers.forEach(function (m) {
+                if (m.getAnimation() != null) {
+                    m.setAnimation(null);
+                }
+            });
+
+            if (marker.getAnimation() != null) {
+                marker.setAnimation(null);
+            } else {
+                marker.setAnimation(google.maps.Animation.BOUNCE);
+            }
+        } else {
+            console.log("LP result item clicked: " + marker.market.name);
+        }
     };
 
     $scope.drawCircle = function(center, radius) {

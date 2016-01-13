@@ -20,6 +20,7 @@ mainApp.factory('SharedProps', function ($rootScope) {
     var mdsURL = "http://localhost:8000";
     var mapCenter = undefined;
     var max_dist = undefined;
+    var productSearched = false;    // initially no product is searched
 
     console.log("SharedProps service created..");
 
@@ -45,6 +46,12 @@ mainApp.factory('SharedProps', function ($rootScope) {
         },
         setMaxDist: function(dist) {
             max_dist = dist;
+        },
+        getProductSearched: function() {
+            return productSearched;
+        },
+        setProductSearched: function(b) {
+            productSearched = b;
         }
     };
 });

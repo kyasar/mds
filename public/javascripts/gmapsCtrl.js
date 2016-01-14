@@ -56,6 +56,12 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         return "<div>" + marketName + "</div>";
     };
 
+    closeInfoWindows = function() {
+        $scope.marketMarkers.forEach(function(m) {
+            m.infowindow.close();
+        });
+    };
+
     //Markers should be added after map is loaded
     $scope.showMarkets = function() {
         // Clean previous markers on the map
@@ -72,13 +78,15 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
                     market: m   // market contains market object - extra data
                 });
 
+            marker.infowindow = new google.maps.InfoWindow({
+                content: $scope.markerContentGenerator(m.name)
+            });
+
             marker.addListener('click', function() {
-                var infowindow = new google.maps.InfoWindow({
-                    content: $scope.markerContentGenerator(m.name)
-                });
+                closeInfoWindows();
 
                 console.log("Marker clicked: " + marker.title);
-                infowindow.open($scope.myMap, marker);
+                marker.infowindow.open($scope.myMap, marker);
             });
 
             // Push marker to markers array

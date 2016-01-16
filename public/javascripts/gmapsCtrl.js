@@ -20,7 +20,6 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
 
         return $http.get(url)
             .success(function(data) {
-                //$scope.ma = data.product;
                 $scope.markets = data.markets;
             })
             .error(function(data) {
@@ -35,10 +34,6 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
 
     });
 
-    $scope.showResult = function () {
-        return $scope.error == "";
-    };
-
     $scope.$on('$viewContentLoaded', function() {
         NProgress.done();
     });
@@ -52,8 +47,8 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         mapTypeControl: false
     };
 
-    $scope.markerContentGenerator = function(marketName) {
-        return "<div>" + marketName + "</div>";
+    $scope.markerInfoWindowGenerator = function(market) {
+        return "<div><h5>" + market.name + "</h5>" + market.vicinity + "</div>";
     };
 
     closeInfoWindows = function() {
@@ -79,7 +74,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
                 });
 
             marker.infowindow = new google.maps.InfoWindow({
-                content: $scope.markerContentGenerator(m.name)
+                content: $scope.markerInfoWindowGenerator(m)
             });
 
             marker.addListener('click', function() {
@@ -121,7 +116,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
                 });
 
             marker.infowindow = new google.maps.InfoWindow({
-                content: $scope.markerContentGenerator(m.name)
+                content: $scope.markerInfoWindowGenerator(m)
             });
 
             marker.addListener('click', function() {

@@ -140,6 +140,9 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
 
     $scope.leftPanelResultClicked = function(marker) {
 
+        closeInfoWindows();
+        marker.infowindow.open($scope.myMap, marker);
+
         if (!SharedProps.getProductSearched()) {
             console.log("LP item clicked: " + marker.market.name);
             $scope.marketMarkers.forEach(function (m) {

@@ -57,6 +57,13 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         });
     };
 
+    makeResultMarkersUnfocused = function() {
+        $scope.marketMarkers.forEach(function(m) {
+            m.setContent(null);
+            m.setContent(m.unfocused);
+        });
+    };
+
     //Markers should be added after map is loaded
     $scope.showMarkets = function() {
         // Clean previous markers on the map
@@ -99,20 +106,25 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
 
         $scope.markets.forEach(function(m) {
             console.log("M: " + m.name + " price: " + m.products[0].price);
-
-            var div = document.createElement('DIV');
             var price = m.products[0].price;
-
+            var div = document.createElement('DIV');
             div.innerHTML = '<div class="marker-container">' +
                 '<div class="market-marker"><span><strong>₺ ' + price + '</strong></span></div></div>';
+
+            var divFocused = document.createElement('DIV');
+            divFocused.innerHTML = '<div class="marker-container">' +
+            '<div class="market-marker-clicked"><span><strong>₺ ' + price + '</strong></span></div></div>';
 
             var marker = new RichMarker(
                 {   map: $scope.myMap,
                     position: new google.maps.LatLng(m.loc.coordinates[0], m.loc.coordinates[1]),
                     title: m.name,
                     content: div,
+                    focused: divFocused,    // focused content on marker clicked
+                    unfocused: div,
                     shadow: '0 0 0 0',
-                    market: m   // market contains market object - extra data
+                    market: m,   // market contains market object - extra data
+                    price: price
                 });
 
             marker.infowindow = new google.maps.InfoWindow({
@@ -121,6 +133,9 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
 
             marker.addListener('click', function() {
                 closeInfoWindows();
+                makeResultMarkersUnfocused();
+
+                marker.setContent(marker.focused);
 
                 console.log("Marker clicked: " + marker.title);
                 marker.infowindow.open($scope.myMap, marker);
@@ -140,8 +155,11 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
 
     $scope.leftPanelResultClicked = function(marker) {
 
+        /*
+        Show clicked market infowindow only
+         */
         closeInfoWindows();
-        marker.infowindow.open($scope.myMap, marker);
+        //marker.infowindow.open($scope.myMap, marker);
 
         if (!SharedProps.getProductSearched()) {
             console.log("LP item clicked: " + marker.market.name);
@@ -151,6 +169,9 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
                 }
             });
 
+            /*
+            Center clicked market on map
+             */
             $scope.myMap.panTo(marker.position);
 
             if (marker.getAnimation() != null) {
@@ -160,6 +181,9 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
             }
         } else {
             $scope.myMap.panTo(marker.position);
+
+            makeResultMarkersUnfocused();
+            marker.setContent(marker.focused);
 
             console.log("LP result item clicked: " + marker.market.name);
         }

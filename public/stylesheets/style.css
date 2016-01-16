@@ -110,6 +110,37 @@ body { height: 100%; font: 18px "Lucida Grande", Helvetica, Arial, sans-serif; }
   border-right: solid 10px transparent;
 }
 
+.market-marker-clicked {
+  position:relative;
+  background-color: #1194A9;
+  border-radius: 5px 5px 5px 5px;
+  cursor: pointer;
+  padding: 4px;
+  margin-bottom: 10px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: mediumturquoise;
+}
+
+.market-marker-clicked span {
+  color: white;
+  font-size: 16px;
+}
+
+.market-marker-clicked:after {
+  z-index: -1;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -10px;
+  content:'';
+  width: 0;
+  height: 0;
+  border-top: solid 10px #1194A9;
+  border-left: solid 10px transparent;
+  border-right: solid 10px transparent;
+}
+
 .marker-container {
   display: inline-block;
   box-shadow: 0 -10px 25px -5px black;

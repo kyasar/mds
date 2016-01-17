@@ -47,7 +47,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         mapTypeControl: false
     };
 
-    $scope.markerInfoWindowGenerator = function(market) {
+    markerInfoWindowGenerator = function(market) {
         return "<div><h5>" + market.name + "</h5>" + market.vicinity + "</div>";
     };
 

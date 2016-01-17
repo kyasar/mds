@@ -66,6 +66,8 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProp
         NProgress.inc(0.5);
         slider.slideReveal("hide");
         console.log("model: " + JSON.stringify(model));
+        // Product is searched
+        SharedProps.setProductSearched(true);
         //console.log("label: " + label);
         $scope.scanNearbyMarketsbyProductBarcode(model.barcode);
     };

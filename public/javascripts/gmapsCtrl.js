@@ -15,7 +15,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
 
     console.log("gmaps ctrl..");
 
-    getScanNearbyMarkets = function() {
+    scanNearbyMarkets = function() {
         var url = "mds/api/scannearby/?";
 
         var mapCenter = SharedProps.getMapCenter();
@@ -44,7 +44,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
     };
 
     $rootScope.$on('scanNearby', function (event) {
-        getScanNearbyMarkets();
+        scanNearbyMarkets();
     });
 
     $scope.$on('$viewContentLoaded', function() {
@@ -237,20 +237,21 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
             $scope.centerChangedCntr++;
             $scope.currentCenter = newCenter;
             //$scope.drawCircle(newCenter, hypotenuse/2);
+
+            /*
+             Share new center and range with other controllers
+             */
+            SharedProps.setMapCenter(newCenter);
+            SharedProps.setMaxDist(hypotenuse);
+
             if (!SharedProps.getProductSearched())
             {
                 $scope.getNearbyMarkets(newCenter.lat(), newCenter.lng(), hypotenuse);
             }
             else
             {
-                //$scope.
+                scanNearbyMarkets();
             }
-
-            /*
-                Share new center and range with other controllers
-             */
-            SharedProps.setMapCenter(newCenter);
-            SharedProps.setMaxDist(hypotenuse);
         }
     };
 

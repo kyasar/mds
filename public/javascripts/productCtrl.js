@@ -43,18 +43,7 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProp
 
     $scope.scanNearbyMarketsbyProductBarcode = function(barcode) {
         console.log("HTTP POST request to scan nearby markets by barcode: " + barcode);
-        var url = "mds/api/scannearby/?";
-
-        var mapCenter = SharedProps.getMapCenter();
-        console.log("Lat: " + mapCenter.lat() + " Long: " + mapCenter.lng());
-        console.log("Range: " + SharedProps.getMaxDist());
-
-        url += "lat=" + mapCenter.lat() + "&long=" + mapCenter.lng();
-        url += "&barcode=" + barcode;
-        url += "&max_dist=" + SharedProps.getMaxDist() + "&api_key=test";
-
-        console.log("Req. URL: " + url);
-        $rootScope.$emit('scanNearby', url);// res - your data
+        $rootScope.$emit('scanNearby');// res - your data
     };
 
     $scope.scanNearbyMarketsbyProductName = function(productQueryName) {
@@ -68,6 +57,7 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProp
         console.log("model: " + JSON.stringify(model));
         // Product is searched
         SharedProps.setProductSearched(true);
+        SharedProps.setProductBarcode(model.barcode);
         //console.log("label: " + label);
         $scope.scanNearbyMarketsbyProductBarcode(model.barcode);
     };

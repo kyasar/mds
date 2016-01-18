@@ -15,8 +15,18 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
 
     console.log("gmaps ctrl..");
 
-    $rootScope.$on('scanNearby', function (event, url) {
-        console.log("message from productCtrl: " + url);
+    getScanNearbyMarkets = function() {
+        var url = "mds/api/scannearby/?";
+
+        var mapCenter = SharedProps.getMapCenter();
+        console.log("Lat: " + mapCenter.lat() + " Long: " + mapCenter.lng());
+        console.log("Range: " + SharedProps.getMaxDist());
+
+        url += "lat=" + mapCenter.lat() + "&long=" + mapCenter.lng();
+        url += "&barcode=" + SharedProps.getProductBarcode();
+        url += "&max_dist=" + SharedProps.getMaxDist() + "&api_key=test";
+
+        console.log("Req. URL: " + url);
 
         return $http.get(url)
             .success(function(data) {
@@ -31,7 +41,10 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
                 $scope.showResults();
                 return response.data.markets;
             });
+    };
 
+    $rootScope.$on('scanNearby', function (event) {
+        getScanNearbyMarkets();
     });
 
     $scope.$on('$viewContentLoaded', function() {
@@ -81,7 +94,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
                 });
 
             marker.infowindow = new google.maps.InfoWindow({
-                content: $scope.markerInfoWindowGenerator(m)
+                content: markerInfoWindowGenerator(m)
             });
 
             marker.addListener('click', function() {
@@ -128,7 +141,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
                 });
 
             marker.infowindow = new google.maps.InfoWindow({
-                content: $scope.markerInfoWindowGenerator(m)
+                content: markerInfoWindowGenerator(m)
             });
 
             marker.addListener('click', function() {
@@ -224,7 +237,14 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
             $scope.centerChangedCntr++;
             $scope.currentCenter = newCenter;
             //$scope.drawCircle(newCenter, hypotenuse/2);
-            $scope.getNearbyMarkets(newCenter.lat(), newCenter.lng(), hypotenuse);
+            if (!SharedProps.getProductSearched())
+            {
+                $scope.getNearbyMarkets(newCenter.lat(), newCenter.lng(), hypotenuse);
+            }
+            else
+            {
+                //$scope.
+            }
 
             /*
                 Share new center and range with other controllers

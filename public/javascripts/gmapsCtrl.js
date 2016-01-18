@@ -12,6 +12,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
     $scope.marketMarkers = [];
     $scope.centerChangedCntr = 0;
     $scope.currentCenter = undefined;
+    $scope.zoom = undefined;
 
     console.log("gmaps ctrl..");
 
@@ -84,17 +85,20 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         mapTypeControl: false
     };
 
-    markerInfoWindowGenerator = function(market) {
+    markerInfoWindowGenerator = function(market)
+    {
         return "<div><h5>" + market.name + "</h5>" + market.vicinity + "</div>";
     };
 
-    closeInfoWindows = function() {
+    closeInfoWindows = function()
+    {
         $scope.marketMarkers.forEach(function(m) {
             m.infowindow.close();
         });
     };
 
-    makeResultMarkersUnfocused = function() {
+    makeResultMarkersUnfocused = function()
+    {
         $scope.marketMarkers.forEach(function(m) {
             m.setContent(null);
             m.setContent(m.unfocused);
@@ -247,7 +251,8 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
 
     $scope.onMapIdle = function() {
         var newCenter = $scope.myMap.getCenter();
-        var zoom = $scope.myMap.getZoom();
+        var newZoom = $scope.myMap.getZoom();
+        var zoomChanged = false;
 
         if (newCenter === undefined)
             return;
@@ -259,7 +264,14 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         var centerDiff = google.maps.geometry.spherical.computeDistanceBetween(newCenter, $scope.currentCenter);
 
         console.log("Center Diff: " + centerDiff);
-        if (centerDiff >= (hypotenuse/2) || $scope.centerChangedCntr == 0)
+        if (newZoom != $scope.zoom)
+        {
+            zoomChanged = true;
+            $scope.zoom = newZoom;
+            console.log('New Zoom level: ' + newZoom);
+        }
+
+        if (centerDiff >= (hypotenuse/2) || $scope.centerChangedCntr == 0 || zoomChanged)
         {
             console.log("Center is updated to: " + newCenter);
             $scope.centerChangedCntr++;
@@ -320,12 +332,12 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         var latlng = new google.maps.LatLng($scope.lat, $scope.lng);
         $scope.myMap.setCenter(latlng);
         $scope.currentCenter = latlng;      // save initial location
-
+        $scope.zoom = $scope.myMap.getZoom();
         /*
         When zoom is changed by user, this callback will be invoked
          */
         $scope.myMap.addListener('zoom_changed', function() {
-            //console.log('Zoom: ' + $scope.myMap.getZoom());
+            console.log('Zoom: ' + $scope.myMap.getZoom());
         });
         //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.myMap, position: latlng }));
     };

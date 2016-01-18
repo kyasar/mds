@@ -36,7 +36,7 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProp
                 console.log('Error: ' + data);
             })
             .then(function(response) {
-                console.log("THEN: " + response.data.product);
+                //console.log("THEN: " + response.data.product);
                 return response.data.product;
             });
     };

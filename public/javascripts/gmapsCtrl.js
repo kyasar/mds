@@ -15,28 +15,52 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
 
     console.log("gmaps ctrl..");
 
-    scanNearbyMarkets = function() {
-        var url = "mds/api/scannearby/?";
-
+    getNearbyMarkets = function()
+    {
+        var queryURL = $scope.mds + "/mds/api/market/nearby?";
         var mapCenter = SharedProps.getMapCenter();
-        console.log("Lat: " + mapCenter.lat() + " Long: " + mapCenter.lng());
-        console.log("Range: " + SharedProps.getMaxDist());
+        //console.log("Lat: " + mapCenter.lat() + " Long: " + mapCenter.lng());
+        //console.log("Range: " + SharedProps.getMaxDist());
 
-        url += "lat=" + mapCenter.lat() + "&long=" + mapCenter.lng();
-        url += "&barcode=" + SharedProps.getProductBarcode();
-        url += "&max_dist=" + SharedProps.getMaxDist() + "&api_key=test";
+        queryURL += "lat=" + mapCenter.lat() + "&long=" + mapCenter.lng();
+        queryURL += "&max_dist=" + SharedProps.getMaxDist() + "&token=test&api_key=test";
 
-        console.log("Req. URL: " + url);
-
-        return $http.get(url)
+        //console.log("REQ: " + queryURL);
+        return $http.get(queryURL)
             .success(function(data) {
                 $scope.markets = data.markets;
+                console.log(data);
             })
             .error(function(data) {
                 console.log('Error: ' + data);
             })
             .then(function(response) {
-                console.log("THEN: " + response.data.markets);
+                $scope.showMarkets();
+                return response.data.markets;
+            });
+    };
+
+    scanNearbyMarkets = function()
+    {
+        var url = "mds/api/scannearby/?";
+        var mapCenter = SharedProps.getMapCenter();
+        //console.log("Lat: " + mapCenter.lat() + " Long: " + mapCenter.lng());
+        //console.log("Range: " + SharedProps.getMaxDist());
+
+        url += "lat=" + mapCenter.lat() + "&long=" + mapCenter.lng();
+        url += "&barcode=" + SharedProps.getProductBarcode();
+        url += "&max_dist=" + SharedProps.getMaxDist() + "&api_key=test";
+
+        //console.log("Req. URL: " + url);
+        return $http.get(url)
+            .success(function(data) {
+                $scope.markets = data.markets;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            })
+            .then(function(response) {
                 NProgress.done();
                 $scope.showResults();
                 return response.data.markets;
@@ -77,10 +101,13 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         });
     };
 
-    //Markers should be added after map is loaded
-    $scope.showMarkets = function() {
+    /*
+     Shows markers of any market on the range
+     */
+    $scope.showMarkets = function()
+    {
         // Clean previous markers on the map
-        $scope.deleteMarkers();
+        deleteMarkers();
 
         $scope.markets.forEach(function(m) {
             //console.log("M: " + m.name + " " + m.loc.coordinates[0] + " " + m.loc.coordinates[1]);
@@ -111,11 +138,14 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         });
     };
 
-    //Markers should be added after map is loaded
-    $scope.showResults = function() {
+    /*
+        Shows markers of markets containing products requested
+     */
+    $scope.showResults = function()
+    {
         // Clean previous markers on the map
-        $scope.deleteMarkers();
-        SharedProps.setProductSearched(true);   // a search is made
+        deleteMarkers();
+        SharedProps.setProductSearched(true);   // a product search is requested
 
         $scope.markets.forEach(function(m) {
             console.log("M: " + m.name + " price: " + m.products[0].price);
@@ -226,8 +256,6 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         var sw = $scope.myMap.getBounds().getSouthWest();
 
         var hypotenuse = google.maps.geometry.spherical.computeDistanceBetween(ne, sw);
-        console.log("Hypotenuse: " + hypotenuse + " r: " + hypotenuse/2);
-
         var centerDiff = google.maps.geometry.spherical.computeDistanceBetween(newCenter, $scope.currentCenter);
 
         console.log("Center Diff: " + centerDiff);
@@ -243,59 +271,45 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
              */
             SharedProps.setMapCenter(newCenter);
             SharedProps.setMaxDist(hypotenuse);
+            console.log("Range: " + SharedProps.getMaxDist());
 
             if (!SharedProps.getProductSearched())
             {
-                $scope.getNearbyMarkets(newCenter.lat(), newCenter.lng(), hypotenuse);
+                getNearbyMarkets();
             }
             else
             {
+                /*
+                    A product is being searched right now, so scan it on new map area
+                 */
                 scanNearbyMarkets();
             }
         }
     };
 
     // Sets the map on all markers in the array.
-    $scope.setMapOnAll = function (map) {
+    setMapOnAll = function (map) {
         for (var i = 0; i < $scope.marketMarkers.length; i++) {
             $scope.marketMarkers[i].setMap(map);
         }
     };
 
     // Removes the markers from the map, but keeps them in the array.
-    $scope.clearMarkers = function() {
-        $scope.setMapOnAll(null);
+    clearMarkers = function() {
+        setMapOnAll(null);
     };
 
     // Deletes all markers in the array by removing references to them.
-    $scope.deleteMarkers = function() {
-        $scope.clearMarkers();
+    deleteMarkers = function() {
+        clearMarkers();
         $scope.marketMarkers = [];
-    };
-
-    $scope.getNearbyMarkets = function(lat, long, dist) {
-
-        var queryURL = $scope.mds + "/mds/api/market/nearby?" + "lat=" + lat + "&long=" + long + "&max_dist=" + dist + "&token=test&api_key=test";
-        //console.log("REQ: " + queryURL);
-
-        return $http.get(queryURL)
-            .success(function(data) {
-                $scope.markets = data.markets;
-                console.log(data);
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-            })
-            .then(function(response) {
-                $scope.showMarkets();
-                return response.data.product;
-            });
     };
 
     /*
     This callback function is invoked when current location is acquired
      */
-    $scope.showPosition = function (position) {
+    showPosition = function (position)
+    {
         $scope.lat = position.coords.latitude;
         $scope.lng = position.coords.longitude;
         $scope.accuracy = position.coords.accuracy;
@@ -316,7 +330,8 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.myMap, position: latlng }));
     };
 
-    $scope.showError = function (error) {
+    showError = function (error)
+    {
         switch (error.code) {
             case error.PERMISSION_DENIED:
                 $scope.error = "User denied the request for Geolocation."
@@ -334,16 +349,18 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         $scope.$apply();
     };
 
-    $scope.getLocation = function () {
+    $scope.getLocation = function ()
+    {
         console.log("getting current location..");
         /*
             HTML5 Geo-Location support
          */
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition($scope.showPosition, $scope.showError);
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
         }
         else {
             $scope.error = "Geolocation is not supported by this browser.";
+            //TODO: Show a warning to User
         }
     };
 

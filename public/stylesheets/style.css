@@ -93,6 +93,7 @@ body { height: 100%; font: 18px "Lucida Grande", Helvetica, Arial, sans-serif; }
 
 .market-marker span {
   color: white;
+  white-space: nowrap ;
   font-size: 16px;
 }
 
@@ -124,6 +125,7 @@ body { height: 100%; font: 18px "Lucida Grande", Helvetica, Arial, sans-serif; }
 
 .market-marker-clicked span {
   color: white;
+  white-space: nowrap ;
   font-size: 16px;
 }
 

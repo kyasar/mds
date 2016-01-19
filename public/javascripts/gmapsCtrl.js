@@ -254,14 +254,19 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, SharedProps)
         var newZoom = $scope.myMap.getZoom();
         var zoomChanged = false;
 
-        if (newCenter === undefined)
+        if (newCenter == undefined) {
+            console.log("No map center captured !!");
             return;
+        }
 
         var ne = $scope.myMap.getBounds().getNorthEast();
         var sw = $scope.myMap.getBounds().getSouthWest();
 
         var hypotenuse = google.maps.geometry.spherical.computeDistanceBetween(ne, sw);
-        var centerDiff = google.maps.geometry.spherical.computeDistanceBetween(newCenter, $scope.currentCenter);
+        var centerDiff = 0;
+
+        if ($scope.centerChangedCntr)
+            centerDiff = google.maps.geometry.spherical.computeDistanceBetween(newCenter, $scope.currentCenter);
 
         console.log("Center Diff: " + centerDiff);
         if (newZoom != $scope.zoom)

@@ -339,24 +339,27 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
         //$scope.marketMarkers.push(new google.maps.Marker({ map: $scope.myMap, position: latlng }));
     };
 
-    showAllowLocationBox = function () {
-        var modalInstance = $uibModal.open({
+    $scope.showAllowLocationBox = function () {
+        $scope.allowLocModal = $uibModal.open({
             animation: true,
             templateUrl: 'templates/allow-gps.html',
             controller: 'gmapsCtrl',
-            size: 'lg',
-            resolve: {
-                markets: function () {
-                    return $scope.markets;
-                }
-            }
+            scope: $scope,
+            size: 'lg'
         });
+        $scope.allowLocModal.result.then(function() {
+            console.log('Success');
+        }, function() {
+            console.log('Cancelled');
+        });
+    };
 
-        modalInstance.result.then(function (selectedItem) {
-                $scope.selected = selectedItem;
-            }, function () {
-                console.log('Modal dismissed at: ' + new Date());
-        });
+    $scope.ok = function () {
+        $scope.allowLocModal.close();
+    };
+
+    $scope.cancel = function () {
+        $scope.allowLocModal.dismiss('cancel');
     };
 
     showError = function (error) {
@@ -364,7 +367,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
             case error.PERMISSION_DENIED:
                 $scope.error = "User denied the request for Geolocation.";
                 $scope.locationAllowed = false;
-                showAllowLocationBox();
+                $scope.showAllowLocationBox();
                 break;
             case error.POSITION_UNAVAILABLE:
                 $scope.error = "Location information is unavailable.";

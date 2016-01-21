@@ -13,6 +13,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
     $scope.centerChangedCntr = 0;
     $scope.currentCenter = undefined;
     $scope.zoom = undefined;
+    $scope.locationAllowed = false;
 
     console.log("gmaps ctrl..");
 
@@ -249,7 +250,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
         var newZoom = $scope.myMap.getZoom();
         var zoomChanged = false;
 
-        if (newCenter == undefined) {
+        if (newCenter == undefined || $scope.locationAllowed == false) {
             console.log("No map center captured !!");
             return;
         }
@@ -263,7 +264,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
         if ($scope.centerChangedCntr)
             centerDiff = google.maps.geometry.spherical.computeDistanceBetween(newCenter, $scope.currentCenter);
 
-        console.log("Center Diff: " + centerDiff);
+        console.log("Center Diff: " + centerDiff + " cNTR: " + $scope.centerChangedCntr);
         if (newZoom != $scope.zoom) {
             zoomChanged = true;
             $scope.zoom = newZoom;
@@ -317,6 +318,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
      This callback function is invoked when current location is acquired
      */
     showPosition = function (position) {
+        $scope.locationAllowed = true;
         $scope.lat = position.coords.latitude;
         $scope.lng = position.coords.longitude;
         $scope.accuracy = position.coords.accuracy;
@@ -338,7 +340,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
     };
 
     showAllowLocationBox = function () {
-        /*var modalInstance = $uibModal.open({
+        var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: 'templates/allow-gps.html',
             controller: 'gmapsCtrl',
@@ -351,24 +353,17 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
         });
 
         modalInstance.result.then(function (selectedItem) {
-            $scope.selected = selectedItem;
+                $scope.selected = selectedItem;
             }, function () {
                 console.log('Modal dismissed at: ' + new Date());
-            });
-        console.log('Modal dismissed at: ' + new Date());*/
-        alert("You need to allow Location service in browser !");
+        });
     };
-
-    $scope.$watch('error', function () {
-        //alert('hey, error has changed! ' + $scope.error);
-        console.log("Error watch !");
-    });
 
     showError = function (error) {
         switch (error.code) {
             case error.PERMISSION_DENIED:
                 $scope.error = "User denied the request for Geolocation.";
-                console.log("PERMISSION DENIED.");
+                $scope.locationAllowed = false;
                 showAllowLocationBox();
                 break;
             case error.POSITION_UNAVAILABLE:
@@ -377,10 +372,11 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
             case error.TIMEOUT:
                 $scope.error = "The request to get user location timed out.";
                 break;
-            case error.UNKNOWN_ERROR:
+            default:
                 $scope.error = "An unknown error occurred.";
                 break;
         }
+        console.log("Error: " + $scope.error);
         $scope.$apply();
     };
 
@@ -398,11 +394,8 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
         }
     };
 
-    $scope.initMe = function () {
-        console.log("INIT ME..");
+    $scope.initMap = function () {
         $scope.getLocation();
     };
-
-    $scope.initMe();
 });
 

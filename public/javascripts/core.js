@@ -6,9 +6,6 @@ var mainApp = angular.module('mainApp', ["ui.bootstrap", 'ui.map', 'ui.event']);
 
 mainApp.run(function ($rootScope) {
     console.log("MainApp run");
-    /*$rootScope.$on('scope.stored', function (event, data) {
-     console.log("scope.stored", data);
-     });*/
 });
 
 mainApp.config(function config() {
@@ -24,12 +21,7 @@ mainApp.factory('SharedProps', function ($rootScope) {
     var productSearched = false;    // initially no product is searched
 
     console.log("SharedProps service created..");
-
     return {
-        storeScope: function (key, value) {
-            $rootScope.$emit('scope.stored', key);
-            mem[key] = value;
-        },
         getScope: function (key) {
             return mem[key];
         },

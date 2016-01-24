@@ -132,9 +132,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
             });
 
             // Push marker to markers array
-            window.setTimeout(function () {
-                $scope.marketMarkers.push(marker);
-            }, 500);
+            $scope.marketMarkers.push(marker);
         });
     };
 
@@ -185,9 +183,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
             });
 
             // Push marker to markers array
-            window.setTimeout(function () {
-                $scope.marketMarkers.push(marker);
-            }, 500);
+            $scope.marketMarkers.push(marker);
         });
 
         /*

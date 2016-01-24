@@ -193,7 +193,8 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
         /*
          Show slider where results are listed.
          */
-        slider.slideReveal("show")
+        if ($scope.markets.length)
+            slider.slideReveal("show")
     };
 
     $scope.leftPanelResultClicked = function (marker) {

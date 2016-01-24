@@ -199,7 +199,6 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
          Show clicked market infowindow only
          */
         closeInfoWindows();
-        //marker.infowindow.open($scope.myMap, marker);
 
         if (!SharedProps.getProductSearched()) {
             console.log("LP item clicked: " + marker.market.name);

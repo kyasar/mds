@@ -113,7 +113,7 @@ router.post('/scan/', function(req, res) {
         function(callback) {
             async.eachSeries(req.body.markets, function(m, callback) {
                 //log.info("Scanning market: ", m.id);
-                MarketModel.findOne({'id': m.id}, function (err, market) {
+                MarketModel.findOne({'id': m.maps_id}, function (err, market) {
                     if (market) {
                         log.info("Market found in the system with id: ", market.id);
 
@@ -140,7 +140,7 @@ router.post('/scan/', function(req, res) {
                         }
                     }
                     else if (!market) {
-                        log.info("Market NOT found in the system  with id: ", m.id);
+                        log.info("Market NOT found in the system  with id: ", m.maps_id);
                     }
                     else {
                         res.statusCode = 500;

@@ -102,7 +102,7 @@
           position: "fixed",
           width: setting.width,
           transition: transition,
-          height: "100%",
+          height: "calc(100% - 50px -40px)",
           top: setting.top
         })
         .css(setting.position, "-"+sidePosition);

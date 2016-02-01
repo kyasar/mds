@@ -85,16 +85,18 @@
         <div id="left-panel-title">
 
         </div>
+        <!--
         <div id="results-left-panel" class="list-group" ng-scrollbar scrollbar-x="false" scrollbar-y="true" scrollbar-config="{show: false}">
-            <!-- Here we will list market scan results (with prices) -->
+            <!-- Here we will list market scan results (with prices)
             <a href="#" class="list-group-item" ng-repeat="marker in marketMarkers"
                ng-click="$parent.selected = marker; leftPanelResultClicked(marker)"
                ng-class="{active:selected==marker}">
                 {{marker.market.name}}
-                <!--<h4>{{marker.market.name}}</h4><br>
-                <h6>{{marker.market.vicinity}}</h6>-->
+                <h4>{{marker.market.name}}</h4><br>
+                <h6>{{marker.market.vicinity}}</h6>
             </a>
         </div>
+        -->
     </div>
 
     <div id="map-canvas" ui-map="myMap"

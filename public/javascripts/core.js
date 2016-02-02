@@ -58,7 +58,7 @@ mainApp.factory('SharedProps', function ($rootScope) {
 /*
 Slider is globally accessed by other controllers
  */
-var slider;
+/*var slider;
 $(function() {
     slider = $("#left-panel").slideReveal({
         // width: 100,
@@ -78,4 +78,4 @@ $(function() {
         }
     });
     slider.slideReveal("hide");
-});
+});*/

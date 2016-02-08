@@ -8,6 +8,9 @@ var obj = xlsx.parse(__dirname + '/ornek.xlsx'); // parses a file
 
 obj.forEach(function(entry) {
     entry.data.forEach(function(rec) {
-        console.log(JSON.stringify(rec))
+        var item = rec;
+
+        if (item[1].toString().length != 13)
+            console.log("Barcode: " + item[1] + " Name: " + item[2]);
     });
 });

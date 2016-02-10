@@ -1,16 +1,57 @@
 var xlsx = require('node-xlsx');
 var fs = require('fs');
-
+//var ProductModel   = require('../libs/mongoose').ProductModel;
+var config      = require('../libs/config');
 var obj = xlsx.parse(__dirname + '/ornek.xlsx'); // parses a file 
 
- 
 //var obj = xlsx.parse(fs.readFileSync(__dirname + '/ornek.xlsx')); // parses a buffer
 
-obj.forEach(function(entry) {
-    entry.data.forEach(function(rec) {
-        var item = rec;
+//lets require/import the mongodb native drivers.
+var mongodb = require('mongodb');
 
-        if (item[1].toString().length == 13 || item[1].toString().length == 8)
-            console.log("Barcode: " + item[1] + " Name: " + item[2]);
-    });
+//We need to work with "MongoClient" interface in order to connect to a mongodb server.
+var MongoClient = mongodb.MongoClient;
+
+// Connection URL. This is where your mongodb server is running.
+var url = 'mongodb://localhost:27017/mddb';
+
+// Use connect method to connect to the Server
+MongoClient.connect(url, function (err, db) {
+    if (err) {
+        console.log('Unable to connect to the mongoDB server. Error:', err);
+    } else {
+        //HURRAY!! We are connected. :)
+        console.log('Connection established to', url);
+
+        // do some work here with the database.
+
+        // Get the documents collection
+        var collection = db.collection('products');
+
+
+        // Insert some users
+        collection.insert({name:"xxx", barcode: 66666}, function (err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('Inserted %d documents into the "users" collection. The documents inserted with "_id" are:', result.length, result);
+            }
+            //Close connection
+            db.close();
+        });
+    }
 });
+
+/*obj.forEach(function(entry) {
+    entry.data.forEach(function(rec) {
+        if ((rec[1].toString().length == 13 || rec[1].toString().length == 8)
+            && rec[2] != undefined ) {
+            var product
+                = {
+                barcode: rec[1].toString(),
+                name: rec[2].toString()
+            };
+            console.log("Barcode: " + product.barcode + " Name: " + product.name);
+        }
+    });
+});*/

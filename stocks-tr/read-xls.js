@@ -3,7 +3,7 @@ var fs = require('fs');
 //var ProductModel   = require('../libs/mongoose').ProductModel;
 var config      = require('../libs/config');
 var obj = xlsx.parse(__dirname + '/ornek.xlsx'); // parses a file 
-
+var async = require('async');
 //var obj = xlsx.parse(fs.readFileSync(__dirname + '/ornek.xlsx')); // parses a buffer
 
 //lets require/import the mongodb native drivers.
@@ -28,30 +28,44 @@ MongoClient.connect(url, function (err, db) {
         // Get the documents collection
         var collection = db.collection('products');
 
+        async.series([
+            function(callback){
+                // do some more stuff ...
+                obj.forEach(function(entry) {
+                    entry.data.forEach(function(rec) {
+                        if ((rec[1].toString().length == 13 || rec[1].toString().length == 8)
+                            && rec[2] != undefined ) {
+                            var product
+                                = {
+                                barcode: rec[1].toString(),
+                                name: rec[2].toString()
+                            };
 
-        // Insert some users
-        collection.insert({name:"xxx", barcode: 66666}, function (err, result) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log('Inserted %d documents into the "users" collection. The documents inserted with "_id" are:', result.length, result);
+                            // Insert some users
+                            /*collection.insert({name:"xxx", barcode: 66666}, function (err, result) {
+                             if (err) {
+                             console.log(err);
+                             } else {
+                             console.log('Inserted %d documents into the "users" collection. The documents inserted with "_id" are:', result.length, result);
+                             }
+                             //Close connection
+
+                             });*/
+
+                            console.log("Barcode: " + product.barcode + " Name: " + product.name);
+                        }
+                    });
+                });
+                callback(null, 'two');
             }
-            //Close connection
+        ],
+
+        function(err, results){
+            // results is now equal to ['one', 'two']
             db.close();
+            console.log("DB closed.")
         });
     }
 });
 
-/*obj.forEach(function(entry) {
-    entry.data.forEach(function(rec) {
-        if ((rec[1].toString().length == 13 || rec[1].toString().length == 8)
-            && rec[2] != undefined ) {
-            var product
-                = {
-                barcode: rec[1].toString(),
-                name: rec[2].toString()
-            };
-            console.log("Barcode: " + product.barcode + " Name: " + product.name);
-        }
-    });
-});*/
+/**/

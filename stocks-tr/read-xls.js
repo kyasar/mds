@@ -17,6 +17,7 @@ var url = 'mongodb://localhost:27017/mddb';
 
 // Use connect method to connect to the Server
 MongoClient.connect(url, function (err, db) {
+    var count = 0, fail = 0;
     if (err) {
         console.log('Unable to connect to the mongoDB server. Error:', err);
     } else {
@@ -42,17 +43,17 @@ MongoClient.connect(url, function (err, db) {
                             };
 
                             // Insert some users
-                            /*collection.insert({name:"xxx", barcode: 66666}, function (err, result) {
-                             if (err) {
-                             console.log(err);
-                             } else {
-                             console.log('Inserted %d documents into the "users" collection. The documents inserted with "_id" are:', result.length, result);
-                             }
-                             //Close connection
+                            collection.insert(product, function (err, result) {
+                                 if (err) {
+                                     fail++;
+                                    console.log(err);
+                                 } else {
+                                    console.log('Inserted %d documents into the "users" collection. The documents inserted with "_id" are:', result.length, result);
+                                     count++;
+                                 }
+                             });
 
-                             });*/
-
-                            console.log("Barcode: " + product.barcode + " Name: " + product.name);
+                            //console.log("Barcode: " + product.barcode + " Name: " + product.name);
                         }
                     });
                 });
@@ -62,8 +63,8 @@ MongoClient.connect(url, function (err, db) {
 
         function(err, results){
             // results is now equal to ['one', 'two']
-            db.close();
-            console.log("DB closed.")
+            //db.close();
+            console.log("DB closed. Succ: " + count + " Fail: " + fail);
         });
     }
 });

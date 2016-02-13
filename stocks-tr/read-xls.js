@@ -2,7 +2,6 @@ var xlsx = require('node-xlsx');
 var fs = require('fs');
 //var ProductModel   = require('../libs/mongoose').ProductModel;
 var config      = require('../libs/config');
-var obj = xlsx.parse(__dirname + '/ornek.xlsx'); // parses a file 
 var async = require('async');
 //var obj = xlsx.parse(fs.readFileSync(__dirname + '/ornek.xlsx')); // parses a buffer
 
@@ -14,6 +13,18 @@ var MongoClient = mongodb.MongoClient;
 
 // Connection URL. This is where your mongodb server is running.
 var url = 'mongodb://localhost:27017/mddb';
+
+var excel_file = undefined;
+// print process.argv
+process.argv.forEach(function (val, index, array) {
+    if (index == 2) {
+        console.log(index + ': ' + val);
+        excel_file = val;
+    }
+});
+
+if (excel_file == undefined)    return;
+var obj = xlsx.parse(__dirname + val); // parses a file
 
 // Use connect method to connect to the Server
 MongoClient.connect(url, function (err, db) {

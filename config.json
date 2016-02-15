@@ -9,5 +9,6 @@
   "coeff_np" : 2,
   "coeff_nm" : 5,
   "coeff_p"  : 1,
-  "coeff_ap" : 3
+  "coeff_ap" : 3,
+  "PRODUCT_SEARCH_RESULTS_LIMIT" : 10
 }

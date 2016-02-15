@@ -77,7 +77,7 @@ router.get('/products/', function(req, res) {
             log.error('Internal error(%d): %s', res.statusCode, err.message);
             return res.send({status: 'fail', error: 'Server error' });
         }
-    }).select({name: 1, barcode: 1, _id: 0}).limit(10);
+    }).select({name: 1, barcode: 1, _id: 0}).limit(config.get('PRODUCT_SEARCH_RESULTS_LIMIT'));
 });
 
 router.get('/products/:barcode', function(req, res) {

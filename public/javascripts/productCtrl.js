@@ -1,27 +1,12 @@
 /**
- * Created by kadir on 21.12.2015.
- */
-/**
  * Created by kadir on 17.12.2015.
  */
-// public/core.js
 
 mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProps) {
     $scope.searchText = "";
     $scope.mds = SharedProps.getServerURL();
 
     console.log("products ctrl..");
-
-    /*
-     $http.get('/mds/api/test')
-     .success(function(data) {
-     $scope.products = data;
-     console.log(data);
-     })
-     .error(function(data) {
-     console.log('Error: ' + data);
-     });
-     */
 
     $scope.queryProducts = function(searchText) {
         console.log("REQ: /mds/api/products?api_key=test&search=" + searchText);

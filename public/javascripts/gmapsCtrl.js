@@ -398,4 +398,3 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
         $scope.getLocation();
     };
 });
-

@@ -1,0 +1,21 @@
+================================
+Install mongodb 2.6.10 (text search feature)
+================================
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
+echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
+sudo apt-get update
+# sudo apt-get install mongodb-org
+sudo apt-get install mongodb-org=2.6.10 mongodb-org-server=2.6.10 mongodb-org-shell=2.6.10 mongodb-org-mongos=2.6.10 mongodb-org-tools=2.6.10
+
+
+================================
+DB move tasks
+================================
+LOCAL:
+mongodump --db mddb --out /tmp/mddb-19-02-2016
+tar cf mddb-19-02-2016.tar mddb-19-02-2016/
+scp mddb-19-02-2016.tar kadir@185.103.198.191:/tmp
+
+MDS VPS:
+tar xf mddb-19-02-2016.tar
+mongorestore mddb-19-02-2016/

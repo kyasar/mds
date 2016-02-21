@@ -52,6 +52,8 @@
      style="position: absolute; margin-top: 20px;" ng-controller="productCtrl">
     <!-- Fixed navbar-->
     <form role="search" >
+        <!-- uib typeahead autocomplete does not support scrollable suggestion list right now
+         There are some workarounds in uib-bootstrap Js lib but we should wait for a real solution  -->
         <div class="entry input-group input-group-lg" >
             <input type="text" id="id_productSearchBox"
                    class="form-control"

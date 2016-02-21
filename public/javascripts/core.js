@@ -15,7 +15,7 @@ mainApp.config(function config() {
 mainApp.factory('SharedProps', function ($rootScope) {
     var mem = {};
     var mdsURL = "http://localhost:8000";
-    //var mdsURL = "http://185.103.198.191";
+    //var mdsURL = "http://www.markod.net";
     var mapCenter = undefined;
     var max_dist = undefined;
     var barcode = undefined;

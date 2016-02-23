@@ -18,8 +18,9 @@ var nodemailer = require("nodemailer");
  STMP is mail server which is responsible for sending and recieving email.
  */
 var smtpTransport = nodemailer.createTransport("SMTP", {
-    host: 'www.markod.net',
+    host: 'mail.markod.net',
     port: 25,
+    secure: true,   // use ssl
     auth: {
         user: 'info@markod.net',
         pass: 'infomds2015'
@@ -248,9 +249,9 @@ router.post('/local', function(req, res) {
                         link = "http://" + config.get('mds_url') + "/mds/signup/verify?id=" + newUser._id.toString() + "&token=" +  newUser.verifyToken;
                         //console.log("link: " + link);
                         mailOptions = {
-                            from    : "Markod",
+                            from    : "info@markod.net",
                             to      : newUser.email,
-                            subject : "Please confirm your Email account",
+                            subject : "markod.net: Please confirm your Email account",
                             html    : "Hello,<br> Welcome to Markod !!<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
                         };
                         //console.log(mailOptions);

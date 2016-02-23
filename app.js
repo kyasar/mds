@@ -58,7 +58,8 @@ app.use(function(req, res, next) {
 
 // Error Handlers
 // Development error handler will print stacktrace
-if (app.get('env') === 'development') {
+if (process.env.NODE_ENV === 'development') {
+  console.log("** Development Stage **");
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
@@ -81,7 +82,6 @@ app.use(function(err, req, res, next) {
 app.listen(config.get('port'), function(){
   log.info('Express server listening on port ' + config.get('port'));
 });
-
 
 /*
 var https = require('https');

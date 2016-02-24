@@ -11,5 +11,6 @@
   "coeff_p"  : 1,
   "coeff_ap" : 3,
   "PRODUCT_SEARCH_RESULTS_LIMIT" : 10,
+  "http_protocol" : "http://",
   "mds_url" : "www.markod.net"
 }

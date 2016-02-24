@@ -17,7 +17,7 @@ var nodemailer = require("nodemailer");
  Here we are configuring our SMTP Server details.
  STMP is mail server which is responsible for sending and recieving email.
  */
-var smtpTransport = nodemailer.createTransport("SMTP", {
+var smtpMailConn = { //= nodemailer.createTransport("SMTP", {
     host: 'mds1.markod.net',
     port: 587,
 //    secure: true,
@@ -32,10 +32,10 @@ var smtpTransport = nodemailer.createTransport("SMTP", {
      user: "kyasar07@gmail.com",
      pass: "Peijreby007"
      } */
-});
+//)};
+};
 
-//var smtpTransport = nodemailer.createTransport('smtps://info%40markod.net:infomds2015@mail.markod.net');
-//var smtpTransport = nodemailer.createTransport(smtpMailConn);
+var smtpTransport = nodemailer.createTransport(smtpMailConn);
 var mailOptions, host, link;
 
 /*
@@ -246,7 +246,7 @@ router.post('/local', function(req, res) {
                 newUser.save(function (err) {
                     if (!err) {
                         host = req.get('host');
-                        link = "http://" + config.get('mds_url') + "/mds/signup/verify?id=" + newUser._id.toString() + "&token=" +  newUser.verifyToken;
+                        link = config.get('http_protocol') + config.get('mds_url') + "/mds/signup/verify?id=" + newUser._id.toString() + "&token=" +  newUser.verifyToken;
 
                         //console.log("link: " + link);
                         mailOptions = {

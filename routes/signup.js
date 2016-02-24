@@ -18,84 +18,84 @@ var nodemailer = require("nodemailer");
  STMP is mail server which is responsible for sending and recieving email.
  */
 var smtpTransport = nodemailer.createTransport("SMTP", {
-    host: 'mail.markod.net',
-    port: 25,
-    secure: true,   // use ssl
+    host: 'mds1.markod.net',
+    port: 587,
+//    secure: true,
+//    ssl: true,
+//    use_authentication: true,
     auth: {
         user: 'info@markod.net',
         pass: 'infomds2015'
     } /*
-    service: "Gmail",
-    auth: {
-        user: "kyasar07@gmail.com",
-        pass: "Peijreby007"
-    } */
+     service: "Gmail",
+     auth: {
+     user: "kyasar07@gmail.com",
+     pass: "Peijreby007"
+     } */
 });
+
+//var smtpTransport = nodemailer.createTransport('smtps://info%40markod.net:infomds2015@mail.markod.net');
+//var smtpTransport = nodemailer.createTransport(smtpMailConn);
 var mailOptions, host, link;
 
+/*
+    Email verify method
+ */
 router.get('/verify', function(req, res) {
-    console.log(req.protocol + "://" + req.get('host'));
-
+    //console.log(req.protocol + "://" + req.get('host'));
     if (!req.query.id || !req.query.token) {
         log.info("No Id or Token specified.");
         return res.send({status: 'fail', error : "No Id or Token specified."});
     }
 
-    if ((req.protocol + "://" + req.get('host')) == ("http://" + host))
-    {
-        console.log("Searching for user id: ", req.query.id);
+    console.log("Email Verify: Searching for user id: ", req.query.id);
 
-        UserModel.findById(req.query.id, function (err, user) {
-            if (user) {
-                log.info("User found: ", user._id.toString());
+    UserModel.findById(req.query.id, function (err, user) {
+        if (user) {
+            log.info("User found: ", user._id.toString());
 
-                jwt.verify(req.query.token, config.get('secret'), function(err, decoded) {
-                    if (err) {
-                        log.info("Token NOT verified !!");
+            jwt.verify(req.query.token, config.get('secret'), function(err, decoded) {
+                if (err) {
+                    log.info("Token NOT verified !!");
 
-                        UserModel.findByIdAndRemove(req.query.id, function(err) {
+                    UserModel.findByIdAndRemove(req.query.id, function(err) {
+                        if (!err) {
+                            log.info("User deleted to get new token to be verified.");
+                        } else {
+                            log.error("User could not be deleted! Fatal Error.");
+                        }
+                        return res.send({status: 'fail', error: 'Token not verified. Timed out.'});
+                    });
+
+                } else {
+                    log.info("Token verified. OK.");
+
+                    UserModel.findByIdAndUpdate(req.query.id,
+                        { $set : { 'verification' : true }, $unset : { 'verifyToken' : "" } },
+                        { new: true, upsert : false },  // Return updated object, Do not insert if not exists
+                        function (err, user) {
                             if (!err) {
-                                log.info("User deleted to get new token to be verified.");
+                                log.info("User Verified.");
+                                return res.send({ status: 'OK', user : user });
                             } else {
-                                log.error("User could not be deleted! Fatal Error.");
-                            }
-                            return res.send({status: 'fail', error: 'Token not verified. Timed out.'});
-                        });
-
-                    } else {
-                        log.info("Token verified. OK.");
-
-                        UserModel.findByIdAndUpdate(req.query.id,
-                            { $set : { 'verification' : true }, $unset : { 'verifyToken' : "" } },
-                            { new: true, upsert : false },  // Return updated object, Do not insert if not exists
-                            function (err, user) {
-                                if (!err) {
-                                    log.info("User Verified.");
-                                    return res.send({ status: 'OK', user : user });
+                                console.log(err);
+                                if(err.name == 'ValidationError') {
+                                    res.statusCode = 400;
+                                    res.send({status: 'fail', error: 'Validation error' });
                                 } else {
-                                    console.log(err);
-                                    if(err.name == 'ValidationError') {
-                                        res.statusCode = 400;
-                                        res.send({status: 'fail', error: 'Validation error' });
-                                    } else {
-                                        res.statusCode = 500;
-                                        res.send({status: 'fail', error: 'Server error' });
-                                    }
-                                    log.error('Internal error(%d): %s', res.statusCode, err.message);
+                                    res.statusCode = 500;
+                                    res.send({status: 'fail', error: 'Server error' });
                                 }
-                            });
-                    }
-                });
-            } else if (!user) {
-                log.info("User not found !!");
-                return res.send({status: 'fail', error: 'User not found.'});
-            }
-        });
-    }
-    else
-    {
-        return res.send({status: 'fail', error: 'Request is from unknown source.'});
-    }
+                                log.error('Internal error(%d): %s', res.statusCode, err.message);
+                            }
+                        });
+                }
+            });
+        } else if (!user) {
+            log.info("User not found !!");
+            return res.send({status: 'fail', error: 'User not found.'});
+        }
+    });
 });
 
 // ---------------------------------------------------------
@@ -247,6 +247,7 @@ router.post('/local', function(req, res) {
                     if (!err) {
                         host = req.get('host');
                         link = "http://" + config.get('mds_url') + "/mds/signup/verify?id=" + newUser._id.toString() + "&token=" +  newUser.verifyToken;
+
                         //console.log("link: " + link);
                         mailOptions = {
                             from    : "info@markod.net",

@@ -11,5 +11,5 @@
   "coeff_p"  : 1,
   "coeff_ap" : 3,
   "PRODUCT_SEARCH_RESULTS_LIMIT" : 10,
-  "mds_url" : "127.0.0.1"
+  "mds_url" : "localhost:8000"
 }

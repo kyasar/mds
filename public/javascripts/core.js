@@ -2,20 +2,41 @@
  * Created by kadir on 17.12.2015.
  */
 // public/core.js
-var mainApp = angular.module('mainApp', ["ui.bootstrap", 'ui.map', 'ui.event']);
+var mainApp = angular.module('mainApp', ["ui.bootstrap", 'ui.map', 'ui.event', 'environment']);
 
 mainApp.run(function ($rootScope) {
     console.log("MainApp run");
 });
 
-mainApp.config(function config() {
-    console.log("MainApp config");
+mainApp.config(function(envServiceProvider) {
+    console.log("Config run");
+    // set the domains and variables for each environment
+    envServiceProvider.config({
+        mdsURL: {
+            development: ['localhost', 'dev.local'],
+            production: ['markod.net']
+        },
+        vars: {
+            development: {
+                apiUrl: 'http://localhost:8000'
+            },
+            production: {
+                apiUrl: 'http://www.markod.net'
+            }
+        }
+    });
+
+    // run the environment check, so the comprobation is made
+    // before controllers and services are built
+    envServiceProvider.check();
 });
 
-mainApp.factory('SharedProps', function ($rootScope) {
+mainApp.factory('SharedProps', function ($rootScope, envService) {
     var mem = {};
-    var mdsURL = "http://localhost:8000";
-    //var mdsURL = "http://www.markod.net";
+    //envService.set('production'); // will set 'production' as current environment
+    var environment = envService.get(); // gets 'development'
+    console.log("Current version: ", environment);
+
     var mapCenter = undefined;
     var max_dist = undefined;
     var barcode = undefined;

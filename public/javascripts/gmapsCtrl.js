@@ -2,8 +2,8 @@
  * Created by kadir on 21.12.2015.
  */
 
-mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, SharedProps) {
-    $scope.mds = SharedProps.getServerURL();
+mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, SharedProps, envService) {
+    $scope.mds = envService.read('apiUrl'); // SharedProps.getServerURL();
     $scope.lat = "0";
     $scope.lng = "0";
     $scope.accuracy = "0";

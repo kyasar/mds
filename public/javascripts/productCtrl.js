@@ -2,9 +2,9 @@
  * Created by kadir on 17.12.2015.
  */
 
-mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProps) {
+mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProps, envService) {
     $scope.searchText = "";
-    $scope.mds = SharedProps.getServerURL();
+    $scope.mds = envService.read('apiUrl'); // SharedProps.getServerURL();
 
     console.log("products ctrl..");
 

@@ -59,7 +59,7 @@ app.use(function(req, res, next) {
 // Error Handlers
 // Development error handler will print stacktrace
 if (process.env.NODE_ENV === 'development') {
-  console.log("** Development Stage **");
+  console.log("** Development Version **");
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
@@ -67,6 +67,8 @@ if (process.env.NODE_ENV === 'development') {
       error: err
     });
   });
+} else {
+  console.log("** Production Version **");
 }
 
 // production error handler

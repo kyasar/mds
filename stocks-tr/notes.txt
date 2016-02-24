@@ -28,4 +28,20 @@ sudo npm install -g forever
 forever start app.js
 forever logs app.js
 
+===============================
+nodemailer module
+===============================
+Nodemailer module is updated to version v2.2
+===============================
 
+
+===============================
+Postfix Mail server
+===============================
+Line:
+submission inet n       -       n       -       -       smtpd
+is added to support smtp mail send via port 587
+mail server name: mds1.markod.net
+===============================
+
+===============================

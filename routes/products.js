@@ -309,18 +309,6 @@ router.use(function(req, res, next) {
     }
 });
 
-router.get('/products/', function(req, res) {
-    return ProductModel.find( function(err, products) {
-        if (!err) {
-            return res.send(products);
-        } else {
-            res.statusCode = 500;
-            log.error('Internal error(%d): %s', res.statusCode, err.message);
-            return res.send({status: 'fail', error: 'Server error' });
-        }
-    });
-});
-
 // function to create file from base64 encoded string
 var fs = require('fs');
 function base64_decode(base64str) {

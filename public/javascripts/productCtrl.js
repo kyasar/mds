@@ -54,6 +54,31 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProp
             NProgress.inc(0.5);
             $scope.scanNearbyMarketsbyProductName($scope.searchText);
         }
+    };
+
+    $scope.retrieveAllProducts = function() {
+        return $http.get($scope.mds + '/mds/api/products/all?api_key=test')
+            .success(function(data) {
+                $scope.products = data.product;
+                console.log(data);
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            })
+            .then(function(response) {
+                return response.data.product;
+            });
+    };
+
+    $scope.itemsByPage = 15;
+
+    $scope.removeProduct = function(product) {
+        console.log("Product: ", product.name, " will bre removed.");
+
+        var index = $scope.products.indexOf(product);
+        if (index !== -1) {
+            $scope.products.splice(index, 1);    // Removed just in client-side
+        }
     }
 });
 

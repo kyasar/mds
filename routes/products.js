@@ -1,6 +1,16 @@
 /**
  * Created by kadir on 24.06.2015.
  */
+/*
+
+ API Definitions
+ Method  URL                             Definition
+ ======  =============================== ==========
+ GET     mds/api/products                Fetches all products
+ GET     mds/api/products:barcode        Fetch a products mathcing with barcode
+ POST    mds/api/products                Adds a new Product
+
+ */
 
 var ProductModel   = require('../libs/mongoose').ProductModel;
 var MarketModel    = require('../libs/mongoose').MarketModel;
@@ -79,6 +89,20 @@ router.get('/products/', function(req, res) {
         }
     }).select({name: 1, barcode: 1, _id: 0}).limit(config.get('PRODUCT_SEARCH_RESULTS_LIMIT'));
 });
+
+router.get('/products/all', function(req, res) {
+    return ProductModel.find({ },
+        function(err, products) {
+            if (!err) {
+                return res.send({status: 'OK', product: products});
+            } else {
+                res.statusCode = 500;
+                log.error('Internal error(%d): %s', res.statusCode, err.message);
+                return res.send({status: 'fail', error: 'Server error' });
+            }
+        }).limit(100);
+});
+
 
 router.get('/products/:barcode', function(req, res) {
     log.info('Searching for product with barcode: ', req.params.barcode);

@@ -1,0 +1,78 @@
+<!-- index.html -->
+<!doctype html>
+
+<html ng-app="mainApp">
+<head>
+    <!-- META -->
+    <meta charset="utf-8">
+    <!-- Optimize mobile viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Markod App</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="stylesheet" href="bower_components/nprogress/nprogress.css">
+
+    <!-- Dependencies -->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/angularjs-geolocation/dist/angularjs-geolocation.min.js"></script>
+    <script src="bower_components/angular-ui-map/ui-map.min.js"></script>
+    <script src="bower_components/angular-ui-event/dist/event.min.js"></script>
+    <script src="bower_components/angular-smart-table/dist/smart-table.min.js"></script>
+
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src='bower_components/nprogress/nprogress.js'></script>
+    <script src="bower_components/angular-environment/dist/angular-environment.min.js"></script>
+    <!-- <script src="bower_components/slidereveal/dist/jquery.slidereveal.min.js"></script> -->
+
+    <!-- Our Application Scripts -->
+    <script src="javascripts/core.js"></script>
+    <script src="javascripts/productCtrl.js"></script>
+</head>
+
+<body>
+
+<div ng-controller="productCtrl" ng-init="retrieveAllProducts()">
+    <table st-table="displayedCollection" st-safe-src="products" class="table table-striped">
+        <thead>
+        <tr>
+            <th st-sort="productName">Product Name</th>
+            <th st-sort="productBarcode">Barcode</th>
+            <th>Last Modified Date</th>
+        </tr>
+        <tr>
+            <th colspan="5">
+                <input st-search="" class="form-control" placeholder="global search ..." type="text"/>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="product in displayedCollection">
+            <td>{{ product.name }}</td>
+            <td>{{ product.barcode }}</td>
+            <td>{{ product.modified }}</td>
+            <td>
+                <button type="button" ng-click="removeProduct(product)" class="btn btn-sm btn-danger">
+                    <i class="glyphicon glyphicon-remove-circle">
+                    </i>
+                </button>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="5" class="text-center">
+                <div st-pagination st-items-by-page="8" st-displayed-pages="10"></div>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+
+</body>
+</html>

@@ -2,7 +2,7 @@
  * Created by kadir on 17.12.2015.
  */
 // public/core.js
-var mainApp = angular.module('mainApp', ['ui.bootstrap', 'ui.map', 'ui.event', 'environment', 'ngResource']);
+var mainApp = angular.module('mainApp', ['ui.bootstrap', 'ui.map', 'ui.event', 'environment', 'smart-table']);
 
 mainApp.run(function ($rootScope) {
     console.log("MainApp run");
@@ -78,6 +78,10 @@ mainApp.factory('SharedProps', function ($rootScope, envService) {
 });
 
 /*
+ mainApp.factory('Entry', function($resource, envService) {
+ return $resource(envService.read('apiUrl') + '/mds/api/products/:id'); // Note the full endpoint address
+ });
+
 Slider is globally accessed by other controllers
  */
 /*var slider;

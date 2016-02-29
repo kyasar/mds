@@ -92,7 +92,17 @@ router.get('/products/', function(req, res) {
 
 router.get('/products/all', function(req, res) {
     log.info("Page: ", req.query.page, " Limit: ", req.query.limit);
-    return ProductModel.paginate({ }, { page: req.query.page, limit: req.query.limit },
+    var queryStr = {};
+    if (req.query.name != undefined)
+    {
+        queryStr.name = req.query.name;
+    }
+    else if (req.query.barcode != undefined)
+    {
+        queryStr.barcode = req.query.barcode;
+    }
+    log.info("Products all queryStr: ", JSON.stringify(queryStr) );
+    return ProductModel.paginate(queryStr, { page: req.query.page, limit: req.query.limit },
         function(err, products) {
             if (!err) {
                 return res.send({status: 'OK', product: products});
@@ -387,7 +397,7 @@ router.post('/products/', function(req, res) {
     var productUpdateObj = {};
     productUpdateObj.name = product.name;
     productUpdateObj.barcode = product.barcode;
-    productUpdateObj.modified = new Date().toISOString()
+    productUpdateObj.modified = new Date().toISOString();
 
     if (req.body.encodedPhoto) {
         log.info("New product comes with its photo..");

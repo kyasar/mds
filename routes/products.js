@@ -91,7 +91,8 @@ router.get('/products/', function(req, res) {
 });
 
 router.get('/products/all', function(req, res) {
-    return ProductModel.find({ },
+    log.info("Page: ", req.query.page, " Limit: ", req.query.limit);
+    return ProductModel.paginate({ }, { page: req.query.page, limit: req.query.limit },
         function(err, products) {
             if (!err) {
                 return res.send({status: 'OK', product: products});
@@ -100,7 +101,7 @@ router.get('/products/all', function(req, res) {
                 log.error('Internal error(%d): %s', res.statusCode, err.message);
                 return res.send({status: 'fail', error: 'Server error' });
             }
-        }).limit(100);
+        });
 });
 
 router.get('/products/:barcode', function(req, res) {

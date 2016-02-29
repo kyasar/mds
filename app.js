@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var config      = require('./libs/config');
 var log       = require('./libs/log')(module);
 var session      = require('express-session');
-
+require("babel-polyfill");
 var app = express();
 
 // view engine setup

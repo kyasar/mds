@@ -2,9 +2,9 @@
  * Created by kadir on 24.06.2015.
  */
 var mongoose    = require('mongoose');
-var Schema = mongoose.Schema;
+var mongoosePaginate = require('mongoose-paginate');
 
-var Product = new Schema({
+var ProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
     // we will query with barcode number frequently, so let it be indexed
     barcode: { type: String, index: true, required: true },
@@ -13,5 +13,7 @@ var Product = new Schema({
     encodedPhoto : {type: String}
 });
 
-var ProductModel = mongoose.model('Product', Product);
+ProductSchema.plugin(mongoosePaginate);
+
+var ProductModel = mongoose.model('Product', ProductSchema);
 module.exports.ProductModel = ProductModel;

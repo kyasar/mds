@@ -73,12 +73,28 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProp
     $scope.itemsByPage = 15;
 
     $scope.removeProduct = function(product) {
-        console.log("Product: ", product.name, " will bre removed.");
+        console.log("Product: ", product.name, " ", product.barcode, " will be removed.");
 
-        var index = $scope.products.indexOf(product);
-        if (index !== -1) {
-            $scope.products.splice(index, 1);    // Removed just in client-side
-        }
+        return $http.delete($scope.mds + '/mds/api/products/' + product.barcode + '?api_key=test')
+            .success(function(data) {
+                console.log("data.status: ", data.status);
+                if (data.status == "OK") {
+                    var index = $scope.products.indexOf(product);
+                    if (index !== -1) {
+                        $scope.products.splice(index, 1);    // Removed just in client-side
+                    }
+                    console.log("Product removed successfully.");
+                } else {
+                    console.log("Unable to delete product: " + product.barcode + "\nReason: " + data.error);
+                }
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            })
+            .then(function(response) {
+                console.log("THEN of remove ");
+                return response.data;
+            });
     }
 });
 

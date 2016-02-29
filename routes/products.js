@@ -103,7 +103,6 @@ router.get('/products/all', function(req, res) {
         }).limit(100);
 });
 
-
 router.get('/products/:barcode', function(req, res) {
     log.info('Searching for product with barcode: ', req.params.barcode);
     return ProductModel.findOne({ barcode : req.params.barcode }, function(err, product) {
@@ -115,6 +114,34 @@ router.get('/products/:barcode', function(req, res) {
             return res.send({status: 'fail', error: 'Server error' });
         }
     }).select({name: 1, barcode: 1, _id: 0});
+});
+
+router.delete('/products/:barcode', function(req, res) {
+    log.info('Removing product with barcode: ', req.params.barcode);
+
+    return ProductModel.findOne({ barcode : req.params.barcode }, function(err, product) {
+        if (!err) {
+            if (product) {
+                product.remove({barcode: req.params.barcode}, function (err, product) {
+                    if (!err) {
+                        log.info("Product removed in server side (from DB)");
+                        return res.send({status: 'OK'});
+                    } else {
+                        res.statusCode = 500;
+                        log.error('Internal error(%d): %s', res.statusCode, err.message);
+                        return res.send({status: 'fail', error: 'Server error'});
+                    }
+                });
+            } else {
+                log.info("No such product !");
+                return res.send({status: 'fail', error: 'No such product' });
+            }
+        } else {
+            res.statusCode = 500;
+            log.error('Internal error(%d): %s', res.statusCode, err.message);
+            return res.send({status: 'fail', error: 'Server error' });
+        }
+    });
 });
 
 /*

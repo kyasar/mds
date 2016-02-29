@@ -4,6 +4,8 @@
 
 mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProps, envService) {
     $scope.searchText = "";
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = 10;
     $scope.mds = envService.read('apiUrl'); // SharedProps.getServerURL();
 
     console.log("products ctrl..");
@@ -56,11 +58,18 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProp
         }
     };
 
-    $scope.retrieveAllProducts = function() {
-        return $http.get($scope.mds + '/mds/api/products/all?api_key=test')
+    $scope.retrieveAllProducts = function(page, limit) {
+        //console.log($scope.mds + '/mds/api/products/all?api_key=test' + '&page=' + page + '&limit=' + limit);
+        return $http.get($scope.mds + '/mds/api/products/all?api_key=test' + '&page=' + page + '&limit=' + limit)
             .success(function(data) {
-                $scope.products = data.product;
                 console.log(data);
+                if (data.status == "OK") {
+                    $scope.products = data.product.docs;
+                    $scope.itemsPerPage = data.product.limit;
+                    $scope.totalProducts = data.product.total;
+                } else {
+                    console.log("Cannot retrieve products");
+                }
             })
             .error(function(data) {
                 console.log('Error: ' + data);
@@ -70,7 +79,10 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProp
             });
     };
 
-    $scope.itemsByPage = 15;
+    $scope.pageChanged = function() {
+        console.log('Page changed to: ' + $scope.currentPage);
+        $scope.retrieveAllProducts($scope.currentPage, $scope.itemsPerPage);
+    };
 
     $scope.removeProduct = function(product) {
         console.log("Product: ", product.name, " ", product.barcode, " will be removed.");
@@ -92,9 +104,8 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProp
                 console.log('Error: ' + data);
             })
             .then(function(response) {
-                console.log("THEN of remove ");
                 return response.data;
             });
-    }
+    };
 });
 

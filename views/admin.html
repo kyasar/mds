@@ -37,7 +37,7 @@
 
 <body>
 
-<div ng-controller="productCtrl" ng-init="retrieveAllProducts()">
+<div ng-controller="productCtrl">
     <table st-table="displayedCollection" st-safe-src="products" class="table table-striped table-hover">
         <thead>
         <tr>
@@ -76,7 +76,15 @@
         <tfoot>
         <tr>
             <td colspan="5" class="text-center">
-                <div st-pagination st-items-by-page="itemsByPage" st-displayed-pages="10"></div>
+                <!-- <div st-pagination st-items-by-page="itemsByPage" st-displayed-pages="10"></div> -->
+                <uib-pagination total-items="totalProducts"
+                                ng-model="currentPage"
+                                ng-init="pageChanged()"
+                                ng-change="pageChanged()"
+                                max-size="itemsPerPage"
+                                class="pagination-md"
+                                boundary-links="true"
+                                force-ellipses="true"></uib-pagination>
             </td>
         </tr>
         </tfoot>

@@ -45,3 +45,9 @@ mail server name: mds1.markod.net
 ===============================
 
 ===============================
+Pagination on Server side
+===============================
+npm install mongoose-paginate
+npm install babel-polyfill
+bower install angular-smart-table
+===============================

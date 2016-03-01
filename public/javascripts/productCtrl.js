@@ -58,9 +58,20 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProp
         }
     };
 
-    $scope.retrieveAllProducts = function(page, limit) {
-        //console.log($scope.mds + '/mds/api/products/all?api_key=test' + '&page=' + page + '&limit=' + limit);
-        return $http.get($scope.mds + '/mds/api/products/all?api_key=test' + '&page=' + page + '&limit=' + limit)
+    $scope.retrieveAllProducts = function(page, limit, name, barcode) {
+        val = queryURL = $scope.mds + '/mds/api/products/all?api_key=test'
+            + '&page=' + page + '&limit=' + limit;
+        console.log("name: ", name, "barcode: ", barcode);
+        if (name != undefined && name != "")
+        {
+            queryURL += "&name=" + name;
+        }
+        if (barcode != undefined && barcode != "")
+        {
+            queryURL += "&barcode=" + barcode;
+        }
+        console.log("Retrieve all query: " + queryURL);
+        return $http.get(queryURL)
             .success(function(data) {
                 console.log(data);
                 if (data.status == "OK") {
@@ -77,6 +88,18 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProp
             .then(function(response) {
                 return response.data.product;
             });
+    };
+
+    $scope.retrieveAllByName = function(name) {
+        $scope.currentPage = 1;
+        console.log('Query by product name: ' + name);
+        $scope.retrieveAllProducts($scope.currentPage, $scope.itemsPerPage, name);
+    };
+
+    $scope.retrieveAllByBarcode = function(barcode) {
+        $scope.currentPage = 1;
+        console.log('Query by product barcode: ' + barcode);
+        $scope.retrieveAllProducts($scope.currentPage, $scope.itemsPerPage, undefined, barcode);
     };
 
     $scope.pageChanged = function() {

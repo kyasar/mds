@@ -47,8 +47,11 @@
             <th>Last Modified Date</th>
         </tr>
         <tr>
-            <th colspan="6">
-                <input st-search="name" class="form-control" placeholder="global search ..." type="text"/>
+            <th colspan="1">
+                <input ng-model="name" ng-change="retrieveAllByName(name)" class="form-control" placeholder="Search by Name.." type="text"/>
+            </th>
+            <th colspan="1">
+                <input ng-model="barcode" ng-change="retrieveAllByBarcode(barcode)" class="form-control" placeholder="Search by Barcode" type="text"/>
             </th>
         </tr>
         </thead>

@@ -155,6 +155,12 @@ router.delete('/products/:barcode', function(req, res) {
     });
 });
 
+router.put('/products/:barcode', function(req, res) {
+        log.info('Updating product with barcode: ', req.params.barcode);
+        return res.send({status: 'OK'});
+});
+
+
 /*
  SCAN method, scans the markets given in markets fields of JSON request for given
  products list, Returns the markets containing products with their prices

@@ -2,7 +2,7 @@
  * Created by kadir on 17.12.2015.
  */
 
-mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProps, envService) {
+mainApp.controller('productCtrl', function($scope, $rootScope, $http, $uibModal, SharedProps, envService) {
     $scope.searchText = "";
     $scope.currentPage = 1;
     $scope.itemsPerPage = 10;
@@ -129,6 +129,64 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, SharedProp
             .then(function(response) {
                 return response.data;
             });
+    };
+
+    $scope.updateProduct = function(product) {
+        console.log("Product: ", product.name, " ", product.barcode, " will be updated.");
+
+        $scope.updateProductModal = $uibModal.open({
+            animation: true,
+            templateUrl: 'templates/update-product.html',
+            controller: 'updateProductModalCtrl',
+            scope: $scope,
+            size: 'lg',
+            resolve: {
+                product: function() {
+                    return product;
+                }
+            }
+        });
+
+        $scope.updateProductModal.result.then(function() {
+            console.log('Update goes to server');
+            return $http.put($scope.mds + '/mds/api/products/' + product.barcode + '?api_key=test')
+                .success(function(data) {
+                    console.log("data.status: ", data.status);
+                    if (data.status == "OK") {
+                        console.log("Product updated successfully.");
+                    } else {
+                        console.log("Unable to update product: " + product.barcode + "\nReason: " + data.error);
+                    }
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                })
+                .then(function(response) {
+                    return response.data;
+                });
+        }, function() {
+            console.log('Update Cancelled');
+        });
+    };
+});
+
+// Please note that $uibModalInstance represents a modal window (instance) dependency.
+// It is not the same as the $uibModal service used above.
+
+mainApp.controller('updateProductModalCtrl', function ($scope, $uibModalInstance, product) {
+
+    $scope.product = product;
+
+    /*
+     Update uib Modal (Pop-up dialog)
+     OK/cancel callbacks
+     */
+    $scope.updateProductOK = function () {
+        $scope.updateProductModal.close();
+    };
+
+    $scope.updateProductCancel = function () {
+        $scope.updateProductModal.dismiss('cancel');
     };
 });
 

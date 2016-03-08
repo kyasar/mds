@@ -156,8 +156,9 @@ router.delete('/products/:barcode', function(req, res) {
 });
 
 router.put('/products/:barcode', function(req, res) {
-        log.info('Updating product with barcode: ', req.params.barcode);
-        return res.send({status: 'OK'});
+    log.info('Updating product with barcode: ', req.params);
+    log.info('New product: ', req.body.name, ' ', req.body.barcode);
+    return res.send({status: 'OK'});
 });
 
 

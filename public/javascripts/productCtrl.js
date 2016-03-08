@@ -147,15 +147,20 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, $uibModal,
             }
         });
 
-        $scope.updateProductModal.result.then(function() {
-            console.log('Update goes to server');
-            return $http.put($scope.mds + '/mds/api/products/' + product.barcode + '?api_key=test')
-                .success(function(data) {
+        $scope.updateProductModal.result.then(function(productUpdated) {
+            //console.log('Update goes to server: ', JSON.stringify(productUpdated));
+            return $http({
+                url: $scope.mds + '/mds/api/products/' + product.barcode + '?api_key=test',
+                dataType: "json",
+                method: "PUT",
+                data: {name: productUpdated.name, barcode: productUpdated.barcode},
+                headers: {'Content-Type': 'application/json'}}
+                ).success(function(data) {
                     console.log("data.status: ", data.status);
                     if (data.status == "OK") {
                         console.log("Product updated successfully.");
                     } else {
-                        console.log("Unable to update product: " + product.barcode + "\nReason: " + data.error);
+                        console.log("Unable to update product: " + productUpdated.barcode + "\nReason: " + data.error);
                     }
                 })
                 .error(function(data) {
@@ -175,14 +180,15 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, $uibModal,
 
 mainApp.controller('updateProductModalCtrl', function ($scope, $uibModalInstance, product) {
 
-    $scope.product = product;
-
+    $scope.productToUpdate = {};
+    angular.copy(product, $scope.productToUpdate);
+    //console.log(JSON.stringify(product), " ", JSON.stringify($scope.productToUpdate));
     /*
      Update uib Modal (Pop-up dialog)
      OK/cancel callbacks
      */
     $scope.updateProductOK = function () {
-        $scope.updateProductModal.close();
+        $scope.updateProductModal.close($scope.productToUpdate);
     };
 
     $scope.updateProductCancel = function () {

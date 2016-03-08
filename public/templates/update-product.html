@@ -1,20 +1,19 @@
 <div class="modal-header">
-    <a href="#" >{{ product }}</a>
-    <table align="center" style="border-collapse: separate; border-spacing: 10px;">
-        <thead>
-        <th><h3>Edit attributes of the product</h3></th>
-        </thead>
-        <tbody>
-        <tr>
-            <th>Name: </th>
-            <th>{{product.name}}</th>
-        </tr>
-        <tr>
-            <th>Barcode: </th>
-            <th>{{product.barcode}}</th>
-        </tr>
-        </tbody>
-    </table>
+    <h2 href="#" >{{ productToUpdate.name }}</h2>
+    <form role="form">
+        <div class="form-group">
+            <label for="pName">Name</label>
+            <input class="form-control input-lg" ng-model="productToUpdate.name" value="{{productToUpdate.name}}" id="pName" type="text">
+        </div>
+        <div class="form-group">
+            <label for="pBarcode">Barcode</label>
+            <input class="form-control input-lg" ng-model="productToUpdate.barcode" value="{{productToUpdate.barcode}}" id="pBarcode" type="text">
+        </div>
+        <div class="form-group">
+            <label for="pModified">Last Modified Date</label>
+            <h1 class="form-control" id="pModified" type="text">{{productToUpdate.modified}}</h1>
+        </div>
+    </form>
 </div>
 <div class="modal-footer">
     <button class="btn btn-danger btn-lg" type="button" ng-click="updateProductCancel()">Cancel</button>

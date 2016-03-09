@@ -61,7 +61,7 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, $uibModal,
     $scope.retrieveAllProducts = function(page, limit, name, barcode) {
         val = queryURL = $scope.mds + '/mds/api/products/all?api_key=test'
             + '&page=' + page + '&limit=' + limit;
-        console.log("name: ", name, "barcode: ", barcode);
+        //console.log("name: ", name, "barcode: ", barcode);
         if (name != undefined && name != "")
         {
             queryURL += "&name=" + name;
@@ -159,6 +159,7 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, $uibModal,
                     console.log("data.status: ", data.status);
                     if (data.status == "OK") {
                         console.log("Product updated successfully.");
+                        $scope.pageChanged();
                     } else {
                         console.log("Unable to update product: " + productUpdated.barcode + "\nReason: " + data.error);
                     }

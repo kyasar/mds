@@ -156,9 +156,30 @@ router.delete('/products/:barcode', function(req, res) {
 });
 
 router.put('/products/:barcode', function(req, res) {
-    log.info('Updating product with barcode: ', req.params);
+    log.info('Updating product with barcode: ', req.params.barcode);
     log.info('New product: ', req.body.name, ' ', req.body.barcode);
-    return res.send({status: 'OK'});
+    ProductModel.update({'barcode' : req.params.barcode },
+        {'$set' : { 'barcode' : req.body.barcode,
+            'name' : req.body.name,
+            'modified': Date.now()
+            }
+        },
+        function (err, product) {
+            if (!err) {
+                log.info("Product updated.");
+                return res.send({ status: 'OK', product : product });
+            } else {
+                console.log(err);
+                if(err.name == 'ValidationError') {
+                    res.statusCode = 400;
+                    res.send({status: 'fail', error: 'Validation error' });
+                } else {
+                    res.statusCode = 500;
+                    res.send({status: 'fail', error: 'Server error' });
+                }
+                log.error('Internal error(%d): %s', res.statusCode, err.message);
+            }
+        });
 });
 
 

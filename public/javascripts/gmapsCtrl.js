@@ -316,9 +316,12 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
      */
     showPosition = function (position) {
         $scope.locationAllowed = true;
-        $scope.lat = position.coords.latitude;
-        $scope.lng = position.coords.longitude;
-        $scope.accuracy = position.coords.accuracy;
+        if (position != undefined)
+        {
+            $scope.lat = position.coords.latitude;
+            $scope.lng = position.coords.longitude;
+            $scope.accuracy = position.coords.accuracy;
+        }
         $scope.$apply();
 
         console.log("lat: " + $scope.lat + " long: " + $scope.lng);
@@ -340,7 +343,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
         $scope.allowLocModal = $uibModal.open({
             animation: true,
             templateUrl: 'templates/allow-gps.html',
-            controller: 'gmapsCtrl',
+            controller: 'allowLocationModalCtrl',
             scope: $scope,
             size: 'lg'
         });
@@ -351,20 +354,15 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
         });
     };
 
-    $scope.ok = function () {
-        $scope.allowLocModal.close();
-    };
-
-    $scope.cancel = function () {
-        $scope.allowLocModal.dismiss('cancel');
-    };
-
     showError = function (error) {
         switch (error.code) {
             case error.PERMISSION_DENIED:
                 $scope.error = "User denied the request for Geolocation.";
                 $scope.locationAllowed = false;
                 $scope.showAllowLocationBox();
+                $scope.lat = "39.89396977";
+                $scope.lng = "32.79992535";
+                showPosition(undefined);
                 break;
             case error.POSITION_UNAVAILABLE:
                 $scope.error = "Location information is unavailable.";
@@ -396,5 +394,19 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
 
     $scope.initMap = function () {
         $scope.getLocation();
+    };
+});
+
+// Please note that $uibModalInstance represents a modal window (instance) dependency.
+// It is not the same as the $uibModal service used above.
+
+mainApp.controller('allowLocationModalCtrl', function ($scope, $uibModalInstance) {
+
+    /*
+     Update uib Modal (Pop-up dialog)
+     OK/cancel callbacks
+     */
+    $scope.allowLocationOK = function () {
+        $scope.allowLocModal.close();
     };
 });

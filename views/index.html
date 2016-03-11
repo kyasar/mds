@@ -29,7 +29,7 @@
     <script src="bower_components/angularjs-geolocation/dist/angularjs-geolocation.min.js"></script>
     <script src="bower_components/angular-ui-map/ui-map.min.js"></script>
     <script src="bower_components/angular-ui-event/dist/event.min.js"></script>
-    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-smart-table/dist/smart-table.min.js"></script>
 
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src='bower_components/nprogress/nprogress.js'></script>
@@ -59,8 +59,9 @@
         <div class="entry input-group input-group-lg" >
             <input type="text" id="id_productSearchBox"
                    class="form-control"
+                   data-toggle="tooltip" data-placement="bottom" title="Enter a product name !"
                    autocomplete="off"
-                   placeholder="Lipton, Su, Deterjan, Bal .."
+                   placeholder="Bal, Lipton, Su .."
                    uib-typeahead="product as product.name for product in queryProducts($viewValue) | limitTo:3"
                    ng-model="searchText"
                    typeahead-loading="loadingLocations"

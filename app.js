@@ -49,8 +49,8 @@ app.get('/', function(req, res) {
   //res.send({ret:'ok'});
 });
 
-app.get('/admin', function(req, res) {
-  res.sendfile('./views/admin.html'); // load the index.ejs file
+app.get('/manager', function(req, res) {
+  res.sendfile('./views/manager.html'); // load the index.ejs file
   //res.send({ret:'ok'});
 });
 

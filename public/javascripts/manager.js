@@ -1,67 +1,94 @@
 /**
  * Created by kadir on 17.12.2015.
  */
+// public/core.js
+var managerApp = angular.module('managerApp', ['ui.bootstrap', 'ui.map', 'ui.event', 'environment', 'smart-table']);
 
-mainApp.controller('productCtrl', function($scope, $rootScope, $http, $uibModal, SharedProps, envService) {
+managerApp.run(function ($rootScope) {
+    console.log("ManagerApp run");
+});
+
+managerApp.config(function(envServiceProvider) {
+    console.log("Config run");
+    // set the domains and variables for each environment
+    envServiceProvider.config({
+        mdsURL: {
+            development: ['localhost', 'dev.local'],
+            production: ['markod.net']
+        },
+        vars: {
+            development: {
+                apiUrl: 'http://localhost:8000'
+            },
+            production: {
+                apiUrl: 'http://www.markod.net'
+            }
+        }
+    });
+
+    // run the environment check, so the comprobation is made
+    // before controllers and services are built
+    envServiceProvider.check();
+});
+
+managerApp.factory('SharedProps', function ($rootScope, envService) {
+    var mem = {};
+    //envService.set('production'); // will set 'production' as current environment
+    var environment = envService.get(); // gets 'development'
+    console.log("Current version: ", environment);
+
+    var mapCenter = undefined;
+    var max_dist = undefined;
+    var barcode = undefined;
+    var productSearched = false;    // initially no product is searched
+
+    console.log("SharedProps service created..");
+    return {
+        getScope: function (key) {
+            return mem[key];
+        },
+        getServerURL: function() {
+            return mdsURL;
+        },
+        getMapCenter: function() {
+            return mapCenter;
+        },
+        setMapCenter: function(center) {
+            mapCenter = center;
+        },
+        getMaxDist: function() {
+            return max_dist;
+        },
+        setMaxDist: function(dist) {
+            max_dist = dist;
+        },
+        getProductBarcode: function() {
+            return barcode;
+        },
+        setProductBarcode: function(b) {
+            barcode = b;
+        },
+        getProductSearched: function() {
+            return productSearched;
+        },
+        setProductSearched: function(b) {
+            productSearched = b;
+        }
+    };
+});
+
+managerApp.controller('managerCtrl', function($scope, $rootScope, $http, $uibModal, SharedProps, envService) {
     $scope.searchText = "";
     $scope.currentPage = 1;
     $scope.itemsPerPage = 10;
     $scope.mds = envService.read('apiUrl'); // SharedProps.getServerURL();
 
-    console.log("products ctrl..");
+    console.log("manager ctrl..");
 
-    $scope.queryProducts = function(searchText) {
-        console.log("REQ: /mds/api/products?api_key=test&search=" + searchText);
-        console.log("VAL: " + searchText);
 
-        return $http.get($scope.mds + '/mds/api/products?api_key=test&search=' + searchText)
-            .success(function(data) {
-                $scope.products = data.product;
-                console.log(data);
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-            })
-            .then(function(response) {
-                //console.log("THEN: " + response.data.product);
-                return response.data.product;
-            });
-    };
-
-    $scope.scanNearbyMarketsbyProductBarcode = function(barcode) {
-        console.log("HTTP POST request to scan nearby markets by barcode: " + barcode);
-        $rootScope.$emit('scanNearby');// res - your data
-    };
-
-    $scope.scanNearbyMarketsbyProductName = function(productQueryName) {
-        console.log("HTTP POST request to scan nearby markets by name: " + productQueryName);
-    };
-
-    $scope.onProductSelect = function(item, model, label) {
-        //console.log("item : " + JSON.stringify(item));
-        NProgress.inc(0.5);
-        //slider.slideReveal("hide");
-        console.log("model: " + JSON.stringify(model));
-        // Product is searched
-        SharedProps.setProductSearched(true);
-        SharedProps.setProductBarcode(model.barcode);
-        //console.log("label: " + label);
-        $scope.scanNearbyMarketsbyProductBarcode(model.barcode);
-    };
-
-    $scope.searchProduct = function() {
-        if ($scope.searchText.length < 2) {
-            console.log("search text: " + $scope.searchText + " limit: 2");
-        } else {
-            NProgress.inc(0.5);
-            $scope.scanNearbyMarketsbyProductName($scope.searchText);
-        }
-    };
-
-    /*
     $scope.retrieveAllProducts = function(page, limit, name, barcode) {
         val = queryURL = $scope.mds + '/mds/api/products/all?api_key=test'
-            + '&page=' + page + '&limit=' + limit;
+        + '&page=' + page + '&limit=' + limit;
         //console.log("name: ", name, "barcode: ", barcode);
         if (name != undefined && name != "")
         {
@@ -151,12 +178,12 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, $uibModal,
         $scope.updateProductModal.result.then(function(productUpdated) {
             //console.log('Update goes to server: ', JSON.stringify(productUpdated));
             return $http({
-                url: $scope.mds + '/mds/api/products/' + product.barcode + '?api_key=test',
-                dataType: "json",
-                method: "PUT",
-                data: {name: productUpdated.name, barcode: productUpdated.barcode},
-                headers: {'Content-Type': 'application/json'}}
-                ).success(function(data) {
+                    url: $scope.mds + '/mds/api/products/' + product.barcode + '?api_key=test',
+                    dataType: "json",
+                    method: "PUT",
+                    data: {name: productUpdated.name, barcode: productUpdated.barcode},
+                    headers: {'Content-Type': 'application/json'}}
+            ).success(function(data) {
                     console.log("data.status: ", data.status);
                     if (data.status == "OK") {
                         console.log("Product updated successfully.");
@@ -174,7 +201,26 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, $uibModal,
         }, function() {
             console.log('Update Cancelled');
         });
-    }; */
-
+    };
 });
 
+// Please note that $uibModalInstance represents a modal window (instance) dependency.
+// It is not the same as the $uibModal service used above.
+
+managerApp.controller('updateProductModalCtrl', function ($scope, $uibModalInstance, product) {
+
+    $scope.productToUpdate = {};
+    angular.copy(product, $scope.productToUpdate);
+    //console.log(JSON.stringify(product), " ", JSON.stringify($scope.productToUpdate));
+    /*
+     Update uib Modal (Pop-up dialog)
+     OK/cancel callbacks
+     */
+    $scope.updateProductOK = function () {
+        $scope.updateProductModal.close($scope.productToUpdate);
+    };
+
+    $scope.updateProductCancel = function () {
+        $scope.updateProductModal.dismiss('cancel');
+    };
+});

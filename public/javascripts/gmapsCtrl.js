@@ -47,6 +47,11 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
     };
 
     scanNearbyMarkets = function () {
+        /*
+            Clear map first
+         */
+        deleteMarkers();
+
         var url = "mds/api/scannearby/?";
         var mapCenter = SharedProps.getMapCenter();
         //console.log("Lat: " + mapCenter.lat() + " Long: " + mapCenter.lng());
@@ -151,7 +156,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
      */
     $scope.showResults = function () {
         // Clean previous markers on the map
-        deleteMarkers();
+
         SharedProps.setProductSearched(true);   // a product search is requested
 
         $scope.markets.forEach(function (m) {

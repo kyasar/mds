@@ -36,7 +36,12 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
                 console.log('Error: ' + data);
             })
             .then(function (response) {
-                $scope.showMarkets();
+                if (response.data.markets.length > 0) {
+                    $scope.showMarkets();
+                } else {
+                    console.log("No market found.");
+                    $scope.noMarketFoundBox();
+                }
                 return response.data.markets;
             });
     };
@@ -62,7 +67,12 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
             })
             .then(function (response) {
                 NProgress.done();
-                $scope.showResults();
+                if (response.data.markets.length > 0) {
+                    $scope.showResults();
+                } else {
+                    console.log("No product found.");
+                    $scope.noProductFoundBox();
+                }
                 return response.data.markets;
             });
     };
@@ -261,7 +271,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
         if ($scope.centerChangedCntr)
             centerDiff = google.maps.geometry.spherical.computeDistanceBetween(newCenter, $scope.currentCenter);
 
-        console.log("Center Diff: " + centerDiff + " cNTR: " + $scope.centerChangedCntr);
+        //console.log("Center Diff: " + centerDiff + " cNTR: " + $scope.centerChangedCntr);
         if (newZoom != $scope.zoom) {
             zoomChanged = true;
             $scope.zoom = newZoom;
@@ -322,7 +332,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
             $scope.lng = position.coords.longitude;
             $scope.accuracy = position.coords.accuracy;
         }
-        $scope.$apply();
+        //$scope.$apply();
 
         console.log("lat: " + $scope.lat + " long: " + $scope.lng);
 
@@ -354,15 +364,54 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
         });
     };
 
+    $scope.noMarketFoundBox = function () {
+        $scope.noMarketFoundModal = $uibModal.open({
+            animation: true,
+            templateUrl: 'templates/no-market-found.html',
+            controller: 'noMarketFoundModalCtrl',
+            scope: $scope,
+            size: 'lg'
+        });
+        $scope.noMarketFoundModal.result.then(function(res) {
+            console.log('Success: ', res);
+            if (res) {
+                $scope.setMapsToDemo();
+            }
+        }, function() {
+            console.log('Cancelled');
+        });
+    };
+
+    $scope.noProductFoundBox = function () {
+        $scope.noProductFoundModal = $uibModal.open({
+            animation: true,
+            templateUrl: 'templates/no-product-found.html',
+            controller: 'noProductFoundModalCtrl',
+            scope: $scope,
+            size: 'lg'
+        });
+        $scope.noProductFoundModal.result.then(function(res) {
+            console.log('Success: ', res);
+        }, function() {
+            console.log('Cancelled');
+        });
+    };
+
+    $scope.setMapsToDemo = function() {
+        $scope.centerChangedCntr = 0;
+        console.log("You are being redirected to Demo location..");
+        $scope.lat = "39.89396977";
+        $scope.lng = "32.79992535";
+        showPosition(undefined);
+    };
+
     showError = function (error) {
         switch (error.code) {
             case error.PERMISSION_DENIED:
                 $scope.error = "User denied the request for Geolocation.";
                 $scope.locationAllowed = false;
                 $scope.showAllowLocationBox();
-                $scope.lat = "39.89396977";
-                $scope.lng = "32.79992535";
-                showPosition(undefined);
+                $scope.setMapsToDemo();
                 break;
             case error.POSITION_UNAVAILABLE:
                 $scope.error = "Location information is unavailable.";
@@ -400,7 +449,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-mainApp.controller('allowLocationModalCtrl', function ($scope, $uibModalInstance) {
+mainApp.controller('allowLocationModalCtrl', function ($scope) {
 
     /*
      Update uib Modal (Pop-up dialog)
@@ -408,5 +457,31 @@ mainApp.controller('allowLocationModalCtrl', function ($scope, $uibModalInstance
      */
     $scope.allowLocationOK = function () {
         $scope.allowLocModal.close();
+    };
+});
+
+mainApp.controller('noMarketFoundModalCtrl', function ($scope) {
+
+    /*
+     Update uib Modal (Pop-up dialog)
+     OK/cancel callbacks
+     */
+    $scope.noMarketFoundGoToDemo = function () {
+        $scope.noMarketFoundModal.close(1);
+    };
+
+    $scope.noMarketFoundClose = function () {
+        $scope.noMarketFoundModal.close(0);
+    };
+});
+
+mainApp.controller('noProductFoundModalCtrl', function ($scope) {
+
+    /*
+     Update uib Modal (Pop-up dialog)
+     OK/cancel callbacks
+     */
+    $scope.noProductFoundOK = function () {
+        $scope.noProductFoundModal.close();
     };
 });

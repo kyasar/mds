@@ -49,11 +49,6 @@ app.get('/', function(req, res) {
   //res.send({ret:'ok'});
 });
 
-app.get('/manager', function(req, res) {
-  res.sendfile('./views/manager.html'); // load the index.ejs file
-  //res.send({ret:'ok'});
-});
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

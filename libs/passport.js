@@ -87,12 +87,12 @@ module.exports = function(passport) {
 
     passport.use('local-login', new LocalStrategy({
             // by default, local strategy uses username and password, we will override with email
-            usernameField : 'email',
-            passwordField : 'password',
+            usernameField : 'email',    // req.body.email
+            passwordField : 'password', // req.body.password
             passReqToCallback : true // allows us to pass back the entire request to the callback
         },
         function(req, email, password, done) { // callback with email and password from our form
-            log.info('logging in.');
+            log.info('Trying to log in.. email: ', email, ', passwd: ', password);
             // find a user whose email is the same as the forms email
             // we are checking to see if the user trying to login already exists
             User.findOne({'email' : email}, function(err, user) {
@@ -103,7 +103,7 @@ module.exports = function(passport) {
                 // if no user is found, return the message
                 if (!user) {
                     log.info('no user found ', email);
-                    return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
+                    return done(null, false, req.flash('loginMessage', 'Email or Password is incorrect.')); // req.flash is the way to set flashdata using connect-flash
                 }
 
                 // if the user is found but the password is wrong

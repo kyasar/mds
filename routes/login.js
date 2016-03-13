@@ -3,26 +3,36 @@
  */
 module.exports = function(app, passport) {
 
+    app.get('/manager', isLoggedIn, function(req, res) {
+        //res.sendfile('./views/manager.html'); // load the index.ejs file
+        res.sendfile('./views/manager.html');
+    });
+
     // =====================================
     // LOGIN ===============================
     // =====================================
     // show the login form
     app.get('/login', function(req, res) {
-
-        // render the page and pass in any flash data if it exists
-        res.send({ret:'login ok', message: req.flash('loginMessage') });
+        res.sendfile('./views/login.html'); // load the index.ejs file
+        // res.send({ret:'login ok', message: req.flash('loginMessage') });
     });
 
     app.get('/login-fail', function(req, res) {
+        res.send({ status:'fail', message: req.flash('loginMessage') });
+    });
 
-        // render the page and pass in any flash data if it exists
-        //res.render('login.ejs', { message: req.flash('loginMessage') });
-        res.send({ret:'login fail', message: req.flash('loginMessage') });
+    app.get('/login-succ', function(req, res) {
+        //TODO: If user is normal, redirect to profile page or what else..
+        if (req.user.email == "kyasar07@gmail.com") {
+            return res.send({status: 'OK', user: req.user, redirect: '/manager'});  // req.user comes from strategy return
+        } else {
+            return res.send({status: 'OK', user: req.user, redirect: '/'});  // req.user comes from strategy return
+        }
     });
 
     // process the login form
-    app.post('/login', isLoggedIn, passport.authenticate('local-login', {
-        successRedirect : '/login', // redirect to the secure profile section
+    app.post('/login', passport.authenticate('local-login', {
+        successRedirect : '/login-succ', // redirect to the secure profile section
         failureRedirect : '/login-fail', // redirect back to the signup page if there is an error
         failureFlash : true // allow flash messages
     }));
@@ -42,8 +52,6 @@ module.exports = function(app, passport) {
     // show the signup form
     app.get('/signup-fail', function(req, res) {
 
-        // render the page and pass in any flash data if it exists
-        //res.render('signup.ejs', {  });
         res.send({ret:'signup failed', message: req.flash('signupMessage')});
     });
 
@@ -53,7 +61,6 @@ module.exports = function(app, passport) {
     // we will want this protected so you have to be logged in to visit
     // we will use route middleware to verify this (the isLoggedIn function)
     app.get('/signup', function(req, res) {
-        //res.render('profile.ejs', {user : req.user});
         res.send({ret:'signup ok', message: req.flash('signupMessage')});
     });
 
@@ -71,10 +78,12 @@ module.exports = function(app, passport) {
 function isLoggedIn(req, res, next) {
 
     // if user is authenticated in the session, carry on
-    if (!req.isAuthenticated())
+    if (req.isAuthenticated()) {
+        console.log("Already logged in.");
         return next();
+    }
 
     // if they aren't redirect them to the home page
-    //res.redirect('/');
-    res.send({ret:'auth ok'});
+    res.redirect('/login');
+    //res.send({ret:'auth ok'});
 }

@@ -6,7 +6,9 @@ var bodyParser = require('body-parser');
 var config      = require('./libs/config');
 var log       = require('./libs/log')(module);
 var session      = require('express-session');
+var favicon = require('serve-favicon');
 require("babel-polyfill");
+
 var app = express();
 
 // view engine setup
@@ -21,6 +23,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
+
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
 // passport middleware initialization
 // use this code before any route definitions

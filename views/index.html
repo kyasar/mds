@@ -22,7 +22,9 @@
     <script src='//maps.googleapis.com/maps/api/js?libraries=geometry'></script>
 
     <!-- Dependencies -->
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
@@ -30,7 +32,6 @@
     <script src="bower_components/angular-ui-map/ui-map.min.js"></script>
     <script src="bower_components/angular-ui-event/dist/event.min.js"></script>
 
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src='bower_components/nprogress/nprogress.js'></script>
     <script src="bower_components/angular-environment/dist/angular-environment.min.js"></script>
     <!-- <script src="bower_components/slidereveal/dist/jquery.slidereveal.min.js"></script> -->
@@ -103,6 +104,21 @@
         </div>
     </div>
     -->
+    <div class="span4 offset4 alert-float" ng-show="alertNoMarket.show"
+         style="position: absolute; top: 20px; left: 25%; z-index: 9999;width: 50%">
+        <div class="alert alert-warning alert-dismissible" role="alert">
+            <span class="close" ng-click="alertNoMarket.show = false">&times;</span>
+            {{ alertNoMarket.msg }}
+        </div>
+    </div>
+
+    <div class="span4 offset4 alert-float" ng-show="alertNoSuchProduct.show"
+         style="position: absolute; top: 20px; left: 25%; z-index: 9999;width: 50%">
+        <div class="alert alert-warning alert-dismissible" role="alert">
+            <span class="close" ng-click="alertNoSuchProduct.show = false; clearSearchText();">&times;</span>
+            {{ alertNoSuchProduct.msg }}
+        </div>
+    </div>
 
     <div id="map-canvas" ui-map="myMap"
          ui-options="mapOptions"
@@ -112,6 +128,7 @@
     <!--In addition to creating the markers on the map, div elements with existing google.maps.Marker object should be created to hook up with events -->
     <div ng-repeat="marker in marketMarkers" ui-map-marker="marketMarkers[$index]">
     </div>
+
 </div>
 
 <div id="div-footer">

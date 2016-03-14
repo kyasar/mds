@@ -104,8 +104,12 @@
         </div>
     </div>
     -->
+    <button type="button" class="btn btn-link btn-lg"
+            ng-click="setMapsToDemo()"
+            style="position: absolute; top: 20px; right: 20px; z-index: 9999;">Go To Demo</button>
+
     <div class="span4 offset4 alert-float" ng-show="alertNoMarket.show"
-         style="position: absolute; top: 20px; left: 25%; z-index: 9999;width: 50%">
+         style="position: absolute; top: 20px; left: 25%; z-index: 9999; width: 50%;">
         <div class="alert alert-warning alert-dismissible" role="alert">
             <span class="close" ng-click="alertNoMarket.show = false">&times;</span>
             {{ alertNoMarket.msg }}
@@ -113,7 +117,7 @@
     </div>
 
     <div class="span4 offset4 alert-float" ng-show="alertNoSuchProduct.show"
-         style="position: absolute; top: 20px; left: 25%; z-index: 9999;width: 50%">
+         style="position: absolute; top: 20px; left: 25%; z-index: 9999;width: 50%;">
         <div class="alert alert-warning alert-dismissible" role="alert">
             <span class="close" ng-click="alertNoSuchProduct.show = false; clearSearchText();">&times;</span>
             {{ alertNoSuchProduct.msg }}

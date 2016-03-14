@@ -23,7 +23,7 @@ module.exports = function(app, passport) {
 
     app.get('/login-succ', function(req, res) {
         //TODO: If user is normal, redirect to profile page or what else..
-        if (req.user.email == "kyasar07@gmail.com") {
+        if (req.user.role == "theboss" && req.user.email == "kyasar07@gmail.com") {
             return res.send({status: 'OK', user: req.user, redirect: '/manager'});  // req.user comes from strategy return
         } else {
             return res.send({status: 'OK', user: req.user, redirect: '/'});  // req.user comes from strategy return

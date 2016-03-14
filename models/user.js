@@ -13,6 +13,7 @@ var User = new Schema({
     loginType        : { type: String },
     password         : { type: String }, // for only local users
     social_id        : { type: String },
+    role             : { type: String, default: "user" },
     points           : { type: Number, default: 0 },
     signDate         : { type: Date, default: Date.now },
     verification     : { type: Boolean, default: false},

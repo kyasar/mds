@@ -30,7 +30,7 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, $uibModal,
 
     $scope.scanNearbyMarketsbyProductBarcode = function(barcode) {
         console.log("HTTP POST request to scan nearby markets by barcode: " + barcode);
-        $rootScope.$emit('scanNearby');// res - your data
+        $rootScope.$emit('scanNearby'); // send signal to GMapsCntrl
     };
 
     $scope.scanNearbyMarketsbyProductName = function(productQueryName) {
@@ -57,6 +57,14 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, $uibModal,
             $scope.scanNearbyMarketsbyProductName($scope.searchText);
         }
     };
+
+    $rootScope.$on('clearSearchText', function (event) {
+        console.log("Ok cleaning..");
+        $scope.searchText = "";
+        //clearMarkers();
+        $rootScope.$emit('getNearby'); // send signal to GMapsCntrl
+        SharedProps.setProductSearched(false);  // Currently not searching for a product
+    });
 
     /*
     $scope.retrieveAllProducts = function(page, limit, name, barcode) {

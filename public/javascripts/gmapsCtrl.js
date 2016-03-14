@@ -14,10 +14,29 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
     $scope.currentCenter = undefined;
     $scope.zoom = undefined;
     $scope.locationAllowed = false;
+    $scope.alertNoMarket = { msg: "No registered market found in this area.", show: false };
+    $scope.alertNoSuchProduct = { msg: "This product is not sold in this region now.", show: false };
 
     console.log("gmaps ctrl..");
 
-    getNearbyMarkets = function () {
+    $scope.clearSearchText = function() {
+        console.log("Search text will be cleared.")
+        $rootScope.$emit('clearSearchText'); // res - your data
+    };
+
+    $rootScope.$on('scanNearby', function (event) {
+        scanNearbyMarkets();
+    });
+
+    $rootScope.$on('getNearby', function (event) {
+        getNearbyMarkets(1);
+    });
+
+    $scope.$on('$viewContentLoaded', function () {
+        NProgress.done();
+    });
+
+    getNearbyMarkets = function (silent) {
         var queryURL = $scope.mds + "/mds/api/market/nearby?";
         var mapCenter = SharedProps.getMapCenter();
         //console.log("Lat: " + mapCenter.lat() + " Long: " + mapCenter.lng());
@@ -37,10 +56,14 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
             })
             .then(function (response) {
                 if (response.data.markets.length > 0) {
+                    $scope.alertNoMarket.show = false;
                     $scope.showMarkets();
                 } else {
                     console.log("No market found.");
-                    $scope.noMarketFoundBox();
+                    //$scope.noMarketFoundBox();
+                    if (silent == undefined) {
+                        $scope.alertNoMarket.show = true;
+                    }
                 }
                 return response.data.markets;
             });
@@ -73,22 +96,16 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
             .then(function (response) {
                 NProgress.done();
                 if (response.data.markets.length > 0) {
+                    $scope.alertNoSuchProduct.show = false;
                     $scope.showResults();
                 } else {
                     console.log("No product found.");
-                    $scope.noProductFoundBox();
+                    //$scope.noProductFoundBox();
+                    $scope.alertNoSuchProduct.show = true;
                 }
                 return response.data.markets;
             });
     };
-
-    $rootScope.$on('scanNearby', function (event) {
-        scanNearbyMarkets();
-    });
-
-    $scope.$on('$viewContentLoaded', function () {
-        NProgress.done();
-    });
 
     $scope.mapOptions = {
         center: new google.maps.LatLng($scope.lat, $scope.lng),

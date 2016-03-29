@@ -123,6 +123,24 @@ router.get('/products/all', function(req, res) {
  *
  * @apiSuccess {String} barcode barcode number (unique) of the Product.
  * @apiSuccess {String} name full name of the Product.
+ *
+ * @apiSuccessExample Success-Response:
+ *      HTTP/1.1 200 OK
+ *      {
+ *          "status": "OK",
+ *          "product": {
+ *              "barcode": "8697520000010",
+ *              "name": "Saka su 1L",
+ *              "modified": "2016-03-29T19:45:29.868Z"
+ *          }
+ *      }
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *          "status": "OK",
+ *          "product": null
+ *     }
  */
 router.get('/products/:barcode', function(req, res) {
     log.info('Searching for product with barcode: ', req.params.barcode);

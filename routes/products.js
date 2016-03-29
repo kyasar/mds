@@ -114,6 +114,16 @@ router.get('/products/all', function(req, res) {
         });
 });
 
+/**
+ * @api {get} /mds/api/products/:barcode Request a product with given barcode
+ * @apiName GetProduct
+ * @apiGroup Product
+ *
+ * @apiParam {Number} barcode Barcode of the product being searched
+ *
+ * @apiSuccess {String} barcode barcode number (unique) of the Product.
+ * @apiSuccess {String} name full name of the Product.
+ */
 router.get('/products/:barcode', function(req, res) {
     log.info('Searching for product with barcode: ', req.params.barcode);
     return ProductModel.findOne({ barcode : req.params.barcode }, function(err, product) {

@@ -40,7 +40,7 @@ router.get('/test', function(req, res) {
 // route middleware to authenticate and check API key
 // a middleware with no mount path; gets executed for every request to the app
 // ---------------------------------------------------------
-router.use(function(req, res, next) {
+/*router.use(function(req, res, next) {
 
     // check header or url parameters or post parameters for token
     var key = req.body.api_key || req.query.api_key;
@@ -68,7 +68,7 @@ router.use(function(req, res, next) {
             });
         }
     }
-});
+});*/
 
 /*
  Search for products that matches the query string
@@ -209,7 +209,6 @@ router.put('/products/:barcode', function(req, res) {
             }
         });
 });
-
 
 /*
  SCAN method, scans the markets given in markets fields of JSON request for given

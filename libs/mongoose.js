@@ -19,7 +19,9 @@ db.once('open', function callback () {
 var UserModel = require('../models/user.js').UserModel;
 var ProductModel = require('../models/product.js').ProductModel;
 var MarketModel = require('../models/market.js').MarketModel;
+var CategoryModel = require('../models/category.js').CategoryModel;
 
 module.exports.UserModel = UserModel;
 module.exports.ProductModel = ProductModel;
 module.exports.MarketModel = MarketModel;
+module.exports.CategoryModel = CategoryModel;

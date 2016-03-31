@@ -15,6 +15,7 @@
 var ProductModel   = require('../libs/mongoose').ProductModel;
 var MarketModel    = require('../libs/mongoose').MarketModel;
 var User    = require('../libs/mongoose').UserModel;
+var CategoryModel    = require('../libs/mongoose').CategoryModel;
 var log     = require('../libs/log')(module);
 var jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var config  = require('../libs/config');
@@ -382,6 +383,75 @@ router.get('/scannearby/', function(req, res) {
             log.info("Sending response..");
             res.send(respond);
         });
+});
+
+router.get('/category', function(req, res) {
+    return CategoryModel.find({}, function(err, cats) {
+        if (!err) {
+            return res.send({ status: 'OK', categories: cats });
+        } else {
+            return res.send({ status: 'fail' });
+        }
+    }).select({name: 1, _id: 0});
+});
+
+router.post('/category/', function(req, res) {
+    if (!req.body.name) {
+        log.info("No category name specified.");
+        return res.send({status: 'fail', error : "No name specified."});
+    }
+
+    log.info("New category: ", req.body.name);
+    var newCategory = new CategoryModel({
+        'name'     : req.body.name
+    });
+
+    return CategoryModel.findOne({'name': newCategory.name}, function(err, category) {
+        if (category) {
+            return res.send({ status: 'OK', category: category });
+        } else {
+            log.info("Creating category: ", newCategory.name);
+            newCategory.save(function(err) {
+                if (!err) {
+                    return res.send({ status : 'OK' });
+                } else {
+                    log.info("Category cannot be saved.");
+                    return res.send({ status: 'fail', error: 'Not saved' });
+                }
+            });
+        }
+    });
+});
+
+router.delete('/category/', function(req, res) {
+    if (!req.body.name) {
+        log.info("No category name specified.");
+        return res.send({status: 'fail', error : "No name specified."});
+    }
+
+    return CategoryModel.findOne({ name : req.body.name }, function(err, category) {
+        if (!err) {
+            if (category) {
+                category.remove({ name: req.body.name }, function (err, category) {
+                    if (!err) {
+                        log.info("Category removed in server side (from DB)");
+                        return res.send({status: 'OK'});
+                    } else {
+                        res.statusCode = 500;
+                        log.error('Internal error(%d): %s', res.statusCode, err.message);
+                        return res.send({status: 'fail', error: 'Server error'});
+                    }
+                });
+            } else {
+                log.info("No such category !");
+                return res.send({status: 'fail', error: 'No such category' });
+            }
+        } else {
+            res.statusCode = 500;
+            log.error('Internal error(%d): %s', res.statusCode, err.message);
+            return res.send({status: 'fail', error: 'Server error' });
+        }
+    });
 });
 
 // ---------------------------------------------------------

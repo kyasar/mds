@@ -85,6 +85,25 @@ managerApp.controller('managerCtrl', function($scope, $rootScope, $http, $uibMod
 
     console.log("manager ctrl..");
 
+    $scope.retrieveAllCategories = function() {
+        val = queryURL = $scope.mds + '/mds/api/category';
+        console.log("Retrieve all categories query: " + queryURL);
+        return $http.get(queryURL)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == "OK") {
+                    $scope.categories = data.categories;
+                } else {
+                    console.log("Cannot retrieve categories");
+                }
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            })
+            .then(function(response) {
+                return response.data.categories;
+            });
+    };
 
     $scope.retrieveAllProducts = function(page, limit, name, barcode) {
         val = queryURL = $scope.mds + '/mds/api/products/all?api_key=test'

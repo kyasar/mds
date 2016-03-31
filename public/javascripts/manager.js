@@ -105,6 +105,26 @@ managerApp.controller('managerCtrl', function($scope, $rootScope, $http, $uibMod
             });
     };
 
+    $scope.retrieveAllUsers = function() {
+        val = queryURL = $scope.mds + '/mds/api/users';
+        console.log("Retrieve all users query: " + queryURL);
+        return $http.get(queryURL)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == "OK") {
+                    $scope.users = data.users;
+                } else {
+                    console.log("Cannot retrieve users");
+                }
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            })
+            .then(function(response) {
+                return response.data.users;
+            });
+    };
+
     $scope.retrieveAllProducts = function(page, limit, name, barcode) {
         val = queryURL = $scope.mds + '/mds/api/products/all?api_key=test'
         + '&page=' + page + '&limit=' + limit;

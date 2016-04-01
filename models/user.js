@@ -5,8 +5,9 @@ var mongoose    = require('mongoose');
 var bcrypt   = require('bcrypt-nodejs');
 
 var Schema = mongoose.Schema;
+var mongoosePaginate = require('mongoose-paginate');
 
-var User = new Schema({
+var UserSchema = new Schema({
     firstName        : { type: String },
     lastName         : { type: String },
     email            : { type: String },
@@ -24,12 +25,12 @@ var User = new Schema({
 
 // methods ======================
 // generating a hash
-User.methods.generateHash = function(password) {
+UserSchema.methods.generateHash = function(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
 
 // checking if password is valid
-User.methods.validPassword = function(password) {
+UserSchema.methods.validPassword = function(password) {
     if (password == this.password)
         return true;
     else
@@ -37,5 +38,7 @@ User.methods.validPassword = function(password) {
     //return bcrypt.compareSync(password, this.password);
 };
 
-var UserModel = mongoose.model('User', User);
+UserSchema.plugin(mongoosePaginate);
+
+var UserModel = mongoose.model('User', UserSchema);
 module.exports.UserModel = UserModel;

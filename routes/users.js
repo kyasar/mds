@@ -5,90 +5,44 @@
 var UserModel      = require('../libs/mongoose').UserModel;
 var log     = require('../libs/log')(module);
 var config  = require('../libs/config');
-var _ = require('underscore');
 var express = require('express');
 var router  = express.Router();
-var async = require('async');
 
-router.get('/', function(req, res) {
-    return UserModel.find({}, function(err, users) {
-        if (!err) {
-            return res.send({ status: 'OK', users: users });
-        } else {
-            return res.send({ status: 'fail' });
-        }
-    }).select({__v: 0, _id: 0})
-});
+/*
+ User info can be updated; ie Shoplists.
+ */
+router.post('/update/', function(req, res) {
+    if (!req.body._id) {
+        log.info("User Id is not specified !");
+        return res.send({status: 'fail', error : "No Id specified."});
+    }
 
-router.get('/all', function(req, res) {
-    log.info("Page: ", req.query.page, " Limit: ", req.query.limit);
-    return UserModel.paginate({}, { page: req.query.page, limit: req.query.limit },
-        function(err, users) {
-            if (!err) {
-                return res.send({status: 'OK', users: users});
-            } else {
-                res.statusCode = 500;
-                log.error('Internal error(%d): %s', res.statusCode, err.message);
-                return res.send({status: 'fail', error: 'Server error' });
-            }
-        });
-});
+    if (!req.body.shopLists && !req.body.markets) {
+        log.info("No data is given to update user !");
+        return res.send({status: 'fail', error : "No data specified."});
+    }
 
-router.delete('/:email', function(req, res) {
-    log.info('Removing user with email: ', req.params.email);
-
-    return UserModel.findOne({ email : req.params.email }, function(err, user) {
-        if (!err) {
+    log.info("User: ", req.body._id, " shoplist: ", req.body.shopLists);
+    UserModel.findByIdAndUpdate(req.body._id
+        , {'$set': {'shopLists': req.body.shopLists } }  // Use $set to change shopList completely, $addToSet aggregate them!
+        , { new: true, upsert: false }  // Return updated object, Do not insert if not exists
+        , function (err, user) {
             if (user) {
-                user.remove({email: req.params.email}, function (err, user) {
-                    if (!err) {
-                        log.info("user removed in server side (from DB)");
-                        return res.send({status: 'OK'});
-                    } else {
-                        res.statusCode = 500;
-                        log.error('Internal error(%d): %s', res.statusCode, err.message);
-                        return res.send({status: 'fail', error: 'Server error'});
-                    }
-                });
-            } else {
-                log.info("No such user !");
-                return res.send({status: 'fail', error: 'No such user' });
-            }
-        } else {
-            res.statusCode = 500;
-            log.error('Internal error(%d): %s', res.statusCode, err.message);
-            return res.send({status: 'fail', error: 'Server error' });
-        }
-    });
-});
-
-router.put('/:email', function(req, res) {
-    log.info('Updating user with email: ', req.params.email);
-    log.info('New user: ', req.body.email, ' ', req.body.points);
-    UserModel.update({'email' : req.params.email },
-        {'$set' : {
-            'firstName' : req.body.firstName,
-            'lastName' : req.body.lastName,
-            'email' : req.body.email,
-            'password' : req.body.password,
-            'verification' : req.body.verification,
-            'points' : req.body.points
-            }
-        },
-        function (err, user) {
-            if (!err) {
-                log.info("user updated.");
-                return res.send({ status: 'OK', user : user });
-            } else {
+                log.info("user updated !");
+                return res.send({status: 'OK', user: user});
+            } else if (err) {
                 console.log(err);
-                if(err.name == 'ValidationError') {
+                if (err.name == 'ValidationError') {
                     res.statusCode = 400;
-                    res.send({status: 'fail', error: 'Validation error' });
+                    res.send({status: 'fail', error: 'Validation error'});
                 } else {
                     res.statusCode = 500;
-                    res.send({status: 'fail', error: 'Server error' });
+                    res.send({status: 'fail', error: 'Server error'});
                 }
                 log.error('Internal error(%d): %s', res.statusCode, err.message);
+            } else {
+                log.info("user not found !");
+                return res.send({status: 'fail', error: "User not found."});
             }
         });
 });

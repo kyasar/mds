@@ -6,40 +6,172 @@ var ProductModel   = require('../libs/mongoose').ProductModel;
 var MarketModel    = require('../libs/mongoose').MarketModel;
 var UserModel      = require('../libs/mongoose').UserModel;
 var log     = require('../libs/log')(module);
-var jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var config  = require('../libs/config');
 var _ = require('underscore');
 var express = require('express');
 var router  = express.Router();
 var async = require('async');
 
-router.get('/nearby/', function(req, res) {
-    if (!req.query.long || !req.query.lat || !req.query.max_dist) {
-        log.info("No Lat or Long info specified !");
-        return res.send({status: 'fail', error: "No location specified."});
-    }
-    log.info("long:", req.query.long, " lat:", req.query.lat, " max_dist:", req.query.max_dist);
+/*
+ Gets a JSON object containing market details and products which will be matched with the market
+ Saves the market if not existing in DB, then associates the products with their prices
+ Method: POST, Content-Type: Application/JSON
+ */
+router.post('/', function(req, res) {
 
-    MarketModel.find({ loc : { $near : { $geometry : { type : "Point" ,
-                coordinates : [req.query.lat, req.query.long] },
-                $maxDistance : parseInt(req.query.max_dist) } } },
-                { name : 1, loc : 1, vicinity: 1, _id : 0 },
-                function (err, markets) {
-        if (!err)
-        {
-            log.info("Markets number: ", markets.length);
-            res.send({'status': 'OK', 'markets' : markets});
-        }
-        else
-        {
-            res.statusCode = 500;
-            log.error('Internal error(%d): %s', res.statusCode, err.message);
-            return res.send({status: 'fail', error: 'Server error'});
-        }
-    });
+    if (!req.body.maps_id || !req.body.userID) {
+        log.info("Market ID or User ID not specified !");
+        return res.send({status: 'fail', error : "No id specified."});
+    } else {
+
+        /*var arr = req.body['loc'].split(',');
+         for (var i=0; i<arr.length; i++) {
+         log.info("LOC: ", arr[i] );
+         }*/
+        var newMarket
+            = new MarketModel({
+            'name'     : req.body.name,
+            'id'       : req.body.maps_id,
+            'provider' : req.body.provider,
+            'vicinity' : req.body.vicinity,
+            'products' : req.body.products,
+            'loc.coordinates'      : req.body['loc'].split(',').reverse()
+        });
+
+        log.info("market: ", newMarket.id);
+        var userID = req.body.userID;
+
+        var respond = {
+            'status' : "OK",
+            'new_products' : 0, // new products associated with the market
+            'coeff_np'     : config.get('coeff_np'),
+            'new_market'   : 0, // is that first check-in for this market?
+            'coeff_nm'     : config.get('coeff_nm'),
+            'products'     : 0,  // how many product updates?
+            'coeff_p'      : config.get('coeff_p')
+        };
+
+        // social ID and type must be entered
+        MarketModel.findOne({'id' : newMarket.id, 'provider' : newMarket.provider}, function (err, market) {
+            if (market) {
+                log.info("Market has already signed up with id: ", market.id);
+
+                for (var i = 0; i < req.body.products.length; i++) {
+
+                    log.info("Incoming product: ", req.body.products[i].barcode, " price: ", req.body.products[i].price);
+                    product = _.find(market.products, function(p) {
+                        return req.body.products[i].barcode == p.barcode;
+                    });
+
+                    if (product) {
+                        log.info("Product already sold in Market, with price: ", product.price, " new: ", req.body.products[i].price);
+                        respond.products += 1;
+                        MarketModel.update({'id' : market.id, 'products.barcode' : product.barcode },
+                            {'$set' : { 'products.$.price' : req.body.products[i].price,
+                                'products.$.user' : req.body.user
+                            } },
+                            function (err) {
+                                if (!err) {
+                                    log.info("Market updated.");
+                                    //return res.send({ status: 'OK', user : market });
+                                } else {
+                                    console.log(err);
+                                    if(err.name == 'ValidationError') {
+                                        res.statusCode = 400;
+                                        res.send({status: 'fail', error: 'Validation error' });
+                                    } else {
+                                        res.statusCode = 500;
+                                        res.send({status: 'fail', error: 'Server error' });
+                                    }
+                                    log.error('Internal error(%d): %s', res.statusCode, err.message);
+                                }
+                            });
+
+                    } else {
+                        log.info("Product new in this market, adding the product..");
+                        req.body.products[i].user = req.body.user;
+                        respond.new_products += 1;
+                        MarketModel.update({ 'id' : market.id },
+                            {'$addToSet' : { 'products' : req.body.products[i] } },
+                            function (err) {
+                                if (!err) {
+                                    log.info("Market updated.");
+                                    //return res.send({ status: 'OK', user : market });
+                                } else {
+                                    console.log(err);
+                                    if(err.name == 'ValidationError') {
+                                        res.statusCode = 400;
+                                        res.send({status: 'fail', error: 'Validation error' });
+                                    } else {
+                                        res.statusCode = 500;
+                                        res.send({status: 'fail', error: 'Server error' });
+                                    }
+                                    log.error('Internal error(%d): %s', res.statusCode, err.message);
+                                }
+                            });
+                    }
+                }
+
+                // return the found and updated market
+                //return res.send({status: 'OK'});
+
+            } else if (!market) {
+                log.info("market not found! Creating new with id: ", newMarket.id);
+                respond.new_market += 1;
+                respond.new_products += newMarket.products.length;
+                newMarket.save(function (err) {
+                    if (!err) {
+                        log.info("Market created.");
+                        //return res.send({ status: 'OK', user : newMarket });
+                    } else {
+                        console.log(err);
+                        if(err.name == 'ValidationError') {
+                            res.statusCode = 400;
+                            res.send({status: 'fail', error: 'Validation error' });
+                        } else {
+                            res.statusCode = 500;
+                            res.send({status: 'fail', error: 'Server error' });
+                        }
+                        log.error('Internal error(%d): %s', res.statusCode, err.message);
+                    }
+                });
+            } else {
+                res.statusCode = 500;
+                log.error('Internal error(%d): %s', res.statusCode, err.message);
+                return res.send({status: 'fail', error: 'Server error'});
+            }
+
+            var points = respond.new_market * config.get('coeff_nm')
+                + respond.new_products * config.get('coeff_np')
+                + respond.products * config.get('coeff_p');
+
+            // Add points to User account
+            UserModel.findByIdAndUpdate(userID,
+                { $inc : { 'points' : points } },
+                {new: true, upsert : false },  // Return updated object, Do not insert if not exists
+                function (err, user) {
+                    if (!err) {
+                        log.info("User: ", user.firstName, " earned ", points, " points.");
+                        log.info("User: ", user._id.toString(), " earned ", points, " points..");
+                        res.send(respond);
+                    } else {
+                        console.log(err);
+                        if(err.name == 'ValidationError') {
+                            res.statusCode = 400;
+                            res.send({status: 'fail', error: 'Validation error' });
+                        } else {
+                            res.statusCode = 500;
+                            res.send({status: 'fail', error: 'Server error' });
+                        }
+                        log.error('Internal error(%d): %s', res.statusCode, err.message);
+                    }
+                });
+        });
+    }
 });
 
 router.post('/follow/', function(req, res) {
+    log.info("Follow a market requested.");
     if (!req.body._id) {
         log.info("User Id is not specified !");
         return res.send({status: 'fail', error: "No Id specified."});

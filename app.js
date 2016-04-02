@@ -39,11 +39,23 @@ app.use(passport.session());
 app.use(flash());
 
 // load our routes and pass in our app and fully configured passport
+// app.use('/mds/api/', require('./routes/api_key'));
+
 require('./routes/login.js')(app, passport);
 
-app.use('/mds/api/users', require('./routes/users'));
+app.use('/mds/api/', require('./routes/products_public'));
+app.use('/mds/api/users', require('./routes/users_public'));
+app.use('/mds/api/markets/', require('./routes/markets_public'));
+/*
+  Token Authentication for rest of the API
+ */
+app.use('/mds/api/', require('./routes/api_auth'));
+/*
+  Now, entering the authenticated API side
+ */
 app.use('/mds/api/', require('./routes/products'));
-app.use('/mds/api/market/', require('./routes/markets'));
+app.use('/mds/api/users', require('./routes/users'));
+app.use('/mds/api/markets/', require('./routes/markets'));
 app.use('/mds/signup/', require('./routes/signup'));
 
 // =====================================

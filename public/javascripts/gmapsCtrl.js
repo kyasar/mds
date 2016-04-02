@@ -37,7 +37,7 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
     });
 
     getNearbyMarkets = function (silent) {
-        var queryURL = $scope.mds + "/mds/api/market/nearby?";
+        var queryURL = $scope.mds + "/mds/api/markets/nearby?";
         var mapCenter = SharedProps.getMapCenter();
         //console.log("Lat: " + mapCenter.lat() + " Long: " + mapCenter.lng());
         //console.log("Range: " + SharedProps.getMaxDist());

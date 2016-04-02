@@ -107,28 +107,36 @@
         </div>
 
         <div id="tab_users" class="tab-pane fade">
-            <h3>Users</h3>
-            <table ng-init="retrieveAllUsers()" st-table="usersCollection" st-safe-src="users" class="table table-striped table-hover">
+            <table st-table="usersCollection" st-safe-src="users" class="table table-striped table-hover">
                 <thead>
                 <tr>
                     <th st-sort="name">Name</th>
                     <th st-sort="email">Email</th>
-                    <th st-sort="role">Photo</th>
+                    <th>Passwd</th>
+                    <th>LoginType</th>
+                    <th>Verification</th>
+                    <th>Points</th>
+                    <th>Role</th>
                     <th>Register Date</th>
                 </tr>
                 <tr>
                     <th colspan="1">
-                        <input ng-model="name" ng-change="retrieveAllByName(name)" class="form-control" placeholder="Search by Name.." type="text"/>
+                        <input ng-model="username" ng-change="filterUsersByName(name)" class="form-control" placeholder="Search by Name.." type="text"/>
                     </th>
                     <th colspan="1">
-                        <input ng-model="email" ng-change="retrieveAllByBarcode(email)" class="form-control" placeholder="Search by Email" type="text"/>
+                        <input ng-model="useremail" ng-change="filterUsersByEmail(email)" class="form-control" placeholder="Search by Email" type="text"/>
                     </th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="user in usersCollection">
-                    <td>{{ user.firstName }}</td>
+                    <td>{{ user.firstName }} {{ user.lastName }}</td>
                     <td>{{ user.email }}</td>
+                    <td>{{ user.password }}</td>
+                    <td>{{ user.loginType }}</td>
+                    <td>{{ user.verification }}</td>
+                    <td>{{ user.points }}</td>
+                    <td>{{ user.role }}</td>
                     <td>{{ user.signDate }}</td>
                     <td>
                         <button type="button" ng-click="updateUser(user)" class="btn btn-md btn-primary">
@@ -146,12 +154,11 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="5" class="text-center">
-                        <!-- <div st-pagination st-items-by-page="itemsByPage" st-displayed-pages="10"></div> -->
-                        <uib-pagination total-items="totalProducts"
-                                        ng-model="currentPage"
-                                        ng-init="pageChanged()"
-                                        ng-change="pageChanged()"
+                    <td colspan="10" class="text-center">
+                        <uib-pagination total-items="totalUsers"
+                                        ng-model="currentUserPage"
+                                        ng-init="userPageChanged()"
+                                        ng-change="userPageChanged()"
                                         max-size="itemsPerPage"
                                         class="pagination-md"
                                         boundary-links="true"
@@ -168,8 +175,7 @@
         </div>
 
         <div id="tab_categories" class="tab-pane fade">
-            <!-- Products -->
-            <table ng-init="retrieveAllCategories()" st-table="categoryCollection" st-safe-src="categories" class="table table-striped table-hover">
+            <!-- <table ng-init="retrieveAllCategories()" st-table="categoryCollection" st-safe-src="categories" class="table table-striped table-hover">
                 <thead>
                 <tr>
                     <th st-sort="name">Name</th>
@@ -197,7 +203,7 @@
                     </td>
                 </tr>
                 </tbody>
-            </table>
+            </table>-->
         </div>
 
     </div>

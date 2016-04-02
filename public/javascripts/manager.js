@@ -78,12 +78,10 @@ managerApp.factory('SharedProps', function ($rootScope, envService) {
 });
 
 managerApp.controller('managerCtrl', function($scope, $rootScope, $http, $uibModal, SharedProps, envService) {
-    $scope.searchText = "";
     $scope.currentPage = 1;
+    $scope.currentUserPage = 1;
     $scope.itemsPerPage = 10;
     $scope.mds = envService.read('apiUrl'); // SharedProps.getServerURL();
-
-    console.log("manager ctrl..");
 
     $scope.retrieveAllCategories = function() {
         val = queryURL = $scope.mds + '/mds/api/category';
@@ -105,26 +103,6 @@ managerApp.controller('managerCtrl', function($scope, $rootScope, $http, $uibMod
             });
     };
 
-    $scope.retrieveAllUsers = function() {
-        val = queryURL = $scope.mds + '/mds/api/users';
-        console.log("Retrieve all users query: " + queryURL);
-        return $http.get(queryURL)
-            .success(function(data) {
-                console.log(data);
-                if (data.status == "OK") {
-                    $scope.users = data.users;
-                } else {
-                    console.log("Cannot retrieve users");
-                }
-            })
-            .error(function(data) {
-                console.log('Error: ' + data);
-            })
-            .then(function(response) {
-                return response.data.users;
-            });
-    };
-
     $scope.retrieveAllProducts = function(page, limit, name, barcode) {
         val = queryURL = $scope.mds + '/mds/api/products/all?api_key=test'
         + '&page=' + page + '&limit=' + limit;
@@ -142,9 +120,9 @@ managerApp.controller('managerCtrl', function($scope, $rootScope, $http, $uibMod
             .success(function(data) {
                 console.log(data);
                 if (data.status == "OK") {
-                    $scope.products = data.product.docs;
-                    $scope.itemsPerPage = data.product.limit;
-                    $scope.totalProducts = data.product.total;
+                    $scope.products = data.products.docs;
+                    $scope.itemsPerPage = data.products.limit;
+                    $scope.totalProducts = data.products.total;
                 } else {
                     console.log("Cannot retrieve products");
                 }
@@ -153,7 +131,7 @@ managerApp.controller('managerCtrl', function($scope, $rootScope, $http, $uibMod
                 console.log('Error: ' + data);
             })
             .then(function(response) {
-                return response.data.product;
+                return response.data.products;
             });
     };
 
@@ -208,27 +186,114 @@ managerApp.controller('managerCtrl', function($scope, $rootScope, $http, $uibMod
             scope: $scope,
             size: 'lg',
             resolve: {
-                product: function() {
+                product: function () {
                     return product;
                 }
             }
         });
 
-        $scope.updateProductModal.result.then(function(productUpdated) {
+        $scope.updateProductModal.result.then(function (productUpdated) {
             //console.log('Update goes to server: ', JSON.stringify(productUpdated));
             return $http({
                     url: $scope.mds + '/mds/api/products/' + product.barcode + '?api_key=test',
                     dataType: "json",
                     method: "PUT",
                     data: {name: productUpdated.name, barcode: productUpdated.barcode},
-                    headers: {'Content-Type': 'application/json'}}
-            ).success(function(data) {
+                    headers: {'Content-Type': 'application/json'}
+                }
+            ).success(function (data) {
                     console.log("data.status: ", data.status);
                     if (data.status == "OK") {
                         console.log("Product updated successfully.");
                         $scope.pageChanged();
                     } else {
                         console.log("Unable to update product: " + productUpdated.barcode + "\nReason: " + data.error);
+                    }
+                })
+                .error(function (data) {
+                    console.log('Error: ' + data);
+                })
+                .then(function (response) {
+                    return response.data;
+                });
+        }, function () {
+            console.log('Update Cancelled');
+        });
+    };
+
+
+    //////////////////////////////////////////////////
+    ///     USERS
+    //////////////////////////////////////////////////
+
+    $scope.retrieveAllUsers = function(page, limit) {
+        var queryURL = $scope.mds + '/mds/api/users/all?api_key=test'
+        + '&page=' + page + '&limit=' + limit;
+
+        console.log("Retrieve all users query: " + queryURL);
+        return $http.get(queryURL)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == "OK") {
+                    $scope.users = data.users.docs;
+                    $scope.itemsPerPage = data.users.limit;
+                    $scope.totalUsers = data.users.total;
+                } else {
+                    console.log("Cannot retrieve users");
+                }
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            })
+            .then(function(response) {
+                return response.data.users;
+            });
+    };
+
+    $scope.userPageChanged = function() {
+        console.log('User Page changed to: ' + $scope.currentUserPage);
+        $scope.retrieveAllUsers($scope.currentUserPage, $scope.itemsPerPage);
+    };
+
+    $scope.updateUser = function(user) {
+        console.log("User: ", user.email, " will be updated.");
+
+        $scope.updateUserModal = $uibModal.open({
+            animation: true,
+            templateUrl: 'templates/update-user.html',
+            controller: 'updateUserModalCtrl',
+            scope: $scope,
+            size: 'lg',
+            resolve: {
+                user: function() {
+                    return user;
+                }
+            }
+        });
+
+        $scope.updateUserModal.result.then(function(userUpdated) {
+            console.log('Update goes to server: ', JSON.stringify(userUpdated));
+            return $http({
+                    url: $scope.mds + '/mds/api/users/' + user.email + '?api_key=test',
+                    dataType: "json",
+                    method: "PUT",
+                    data: {
+                        firstName: userUpdated.firstName,
+                        lastName: userUpdated.lastName,
+                        email: userUpdated.email,
+                        password: userUpdated.password,
+                        verification: userUpdated.verification,
+                        role: userUpdated.role,
+                        points: userUpdated.points
+                    },
+                    headers: {'Content-Type': 'application/json'}}
+            ).success(function(data) {
+                    console.log("data.status: ", data.status);
+                    if (data.status == "OK") {
+                        console.log("User updated successfully.");
+                        $scope.userPageChanged();
+                    } else {
+                        console.log("Unable to update user: " + userUpdated.email + "\nReason: " + data.error);
                     }
                 })
                 .error(function(data) {
@@ -238,8 +303,32 @@ managerApp.controller('managerCtrl', function($scope, $rootScope, $http, $uibMod
                     return response.data;
                 });
         }, function() {
-            console.log('Update Cancelled');
+            console.log('User update Cancelled');
         });
+    };
+
+    $scope.removeUser = function(user) {
+        console.log("User: ", user.email, " will be removed.");
+
+        return $http.delete($scope.mds + '/mds/api/users/' + user.email + '?api_key=test')
+            .success(function(data) {
+                console.log("data.status: ", data.status);
+                if (data.status == "OK") {
+                    var index = $scope.users.indexOf(user);
+                    if (index !== -1) {
+                        $scope.users.splice(index, 1);    // Removed just in client-side
+                    }
+                    console.log("User removed successfully.");
+                } else {
+                    console.log("Unable to remove user: " + user.email + "\nReason: " + data.error);
+                }
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            })
+            .then(function(response) {
+                return response.data;
+            });
     };
 });
 
@@ -261,5 +350,23 @@ managerApp.controller('updateProductModalCtrl', function ($scope, $uibModalInsta
 
     $scope.updateProductCancel = function () {
         $scope.updateProductModal.dismiss('cancel');
+    };
+});
+
+managerApp.controller('updateUserModalCtrl', function ($scope, $uibModalInstance, user) {
+
+    $scope.userToUpdate = {};
+    angular.copy(user, $scope.userToUpdate);
+    //console.log(JSON.stringify(product), " ", JSON.stringify($scope.productToUpdate));
+    /*
+     Update uib Modal (Pop-up dialog)
+     OK/cancel callbacks
+     */
+    $scope.updateUserOK = function () {
+        $scope.updateUserModal.close($scope.userToUpdate);
+    };
+
+    $scope.updateUserCancel = function () {
+        $scope.updateUserModal.dismiss('cancel');
     };
 });

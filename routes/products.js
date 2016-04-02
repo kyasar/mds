@@ -106,7 +106,7 @@ router.get('/products/all', function(req, res) {
     return ProductModel.paginate(queryStr, { page: req.query.page, limit: req.query.limit },
         function(err, products) {
             if (!err) {
-                return res.send({status: 'OK', product: products});
+                return res.send({status: 'OK', products: products});
             } else {
                 res.statusCode = 500;
                 log.error('Internal error(%d): %s', res.statusCode, err.message);

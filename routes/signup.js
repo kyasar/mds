@@ -197,7 +197,7 @@ router.post('/authenticate', function(req, res) {
         });
 
     } else {
-        log.error("Uknown user type !");
+        log.error("Unknown user type !");
         return res.send({status: 'fail', error : "No id specified."});
     }
 });

@@ -80,6 +80,7 @@ managerApp.factory('SharedProps', function ($rootScope, envService) {
 managerApp.controller('managerCtrl', function($scope, $rootScope, $http, $uibModal, SharedProps, envService) {
     $scope.currentPage = 1;
     $scope.currentUserPage = 1;
+    $scope.currentMarketPage = 1;
     $scope.itemsPerPage = 10;
     $scope.mds = envService.read('apiUrl'); // SharedProps.getServerURL();
 
@@ -321,6 +322,116 @@ managerApp.controller('managerCtrl', function($scope, $rootScope, $http, $uibMod
                     console.log("User removed successfully.");
                 } else {
                     console.log("Unable to remove user: " + user.email + "\nReason: " + data.error);
+                }
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            })
+            .then(function(response) {
+                return response.data;
+            });
+    };
+
+
+    //////////////////////////////////////////////////
+    ///     MARKETS
+    //////////////////////////////////////////////////
+
+    $scope.retrieveAllMarkets = function(page, limit) {
+        var queryURL = $scope.mds + '/mds/api/markets/all?api_key=test'
+            + '&page=' + page + '&limit=' + limit;
+
+        console.log("Retrieve all markets query: " + queryURL);
+        return $http.get(queryURL)
+            .success(function(data) {
+                console.log(data);
+                if (data.status == "OK") {
+                    $scope.markets = data.markets.docs;
+                    $scope.itemsPerPage = data.markets.limit;
+                    $scope.totalMarkets = data.markets.total;
+                } else {
+                    console.log("Cannot retrieve markets");
+                }
+            })
+            .error(function(data) {
+                console.log('Error: ' + data);
+            })
+            .then(function(response) {
+                return response.data.markets;
+            });
+    };
+
+    $scope.marketPageChanged = function() {
+        console.log('Market Page changed to: ' + $scope.currentMarketPage);
+        $scope.retrieveAllMarkets($scope.currentMarketPage, $scope.itemsPerPage);
+    };
+
+    $scope.updateMarket = function(user) {
+        console.log("User: ", user.email, " will be updated.");
+
+        $scope.updateUserModal = $uibModal.open({
+            animation: true,
+            templateUrl: 'templates/update-user.html',
+            controller: 'updateUserModalCtrl',
+            scope: $scope,
+            size: 'lg',
+            resolve: {
+                user: function() {
+                    return user;
+                }
+            }
+        });
+
+        $scope.updateUserModal.result.then(function(userUpdated) {
+            console.log('Update goes to server: ', JSON.stringify(userUpdated));
+            return $http({
+                    url: $scope.mds + '/mds/api/users/' + user.email + '?api_key=test',
+                    dataType: "json",
+                    method: "PUT",
+                    data: {
+                        firstName: userUpdated.firstName,
+                        lastName: userUpdated.lastName,
+                        email: userUpdated.email,
+                        password: userUpdated.password,
+                        verification: userUpdated.verification,
+                        role: userUpdated.role,
+                        points: userUpdated.points
+                    },
+                    headers: {'Content-Type': 'application/json'}}
+            ).success(function(data) {
+                    console.log("data.status: ", data.status);
+                    if (data.status == "OK") {
+                        console.log("User updated successfully.");
+                        $scope.userPageChanged();
+                    } else {
+                        console.log("Unable to update user: " + userUpdated.email + "\nReason: " + data.error);
+                    }
+                })
+                .error(function(data) {
+                    console.log('Error: ' + data);
+                })
+                .then(function(response) {
+                    return response.data;
+                });
+        }, function() {
+            console.log('User update Cancelled');
+        });
+    };
+
+    $scope.removeMarket = function(market) {
+        console.log("Market: ", market.email, " will be removed.");
+
+        return $http.delete($scope.mds + '/mds/api/markets/' + market._id + '?api_key=test')
+            .success(function(data) {
+                console.log("data.status: ", data.status);
+                if (data.status == "OK") {
+                    var index = $scope.markets.indexOf(market);
+                    if (index !== -1) {
+                        $scope.markets.splice(index, 1);    // Removed just in client-side
+                    }
+                    console.log("Market removed successfully.");
+                } else {
+                    console.log("Unable to remove market: " + market.name + "\nReason: " + data.error);
                 }
             })
             .error(function(data) {

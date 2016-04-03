@@ -15,7 +15,7 @@ router.get('/all', function(req, res) {
     }
 
     log.info("All markets requested. Page: ", req.query.page, " Limit: ", req.query.limit);
-    return MarketModel.paginate({}, { select: 'name _id id provider vicinity loc',
+    return MarketModel.paginate({}, { select: 'name _id id provider vicinity loc modified',
             page: req.query.page, limit: req.query.limit },
         function(err, markets) {
             if (!err) {

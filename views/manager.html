@@ -170,8 +170,64 @@
         </div>
 
         <div id="tab_markets" class="tab-pane fade">
-            <h3>Markets</h3>
-            <p>Some content in menu 2.</p>
+            <table st-table="marketsCollection" st-safe-src="markets" class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th st-sort="name">Name</th>
+                    <th st-sort="id">ID</th>
+                    <th>Provider</th>
+                    <!-- <th>Provider_ID</th> -->
+                    <th>Vicinity</th>
+                    <th>Coordinates</th>
+                    <th>Modified Date</th>
+                </tr>
+                <tr>
+                    <th colspan="1">
+                        <input ng-model="marketName" ng-change="filterMarketsByName(name)" class="form-control" placeholder="Search by Name.." type="text"/>
+                    </th>
+                    <th colspan="1">
+                        <input ng-model="market_id" ng-change="filterMarketsById(_id)" class="form-control" placeholder="Search by ID" type="text"/>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="market in marketsCollection">
+                    <td>{{ market.name }}</td>
+                    <td>{{ market._id }}</td>
+                    <td>{{ market.provider }}</td>
+                    <!-- <td>{{ market.id }}</td> -->
+                    <td>{{ market.vicinity }}</td>
+                    <td>{{ market.loc.coordinates }}</td>
+                    <td>{{ market.modified }}</td>
+                    <td>
+                        <button type="button" ng-click="updateMarket(market)" class="btn btn-md btn-primary">
+                            <i class="glyphicon glyphicon-edit">
+                            </i>
+                        </button>
+                    </td>
+                    <td>
+                        <button type="button" ng-click="removeMarket(market)" class="btn btn-md btn-danger">
+                            <i class="glyphicon glyphicon-remove">
+                            </i>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="10" class="text-center">
+                        <uib-pagination total-items="totalMarkets"
+                                        ng-model="currentMarketPage"
+                                        ng-init="marketPageChanged()"
+                                        ng-change="marketPageChanged()"
+                                        max-size="itemsPerPage"
+                                        class="pagination-md"
+                                        boundary-links="true"
+                                        force-ellipses="true"></uib-pagination>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
         </div>
 
         <div id="tab_categories" class="tab-pane fade">

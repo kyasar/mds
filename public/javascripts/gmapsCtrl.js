@@ -113,7 +113,8 @@ mainApp.controller('gmapsCtrl', function($scope, $rootScope, $http, $uibModal, S
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         minZoom: 12,
         //maxZoom: 16,
-        mapTypeControl: false
+        mapTypeControl: false,
+        scrollwheel: false
     };
 
     markerInfoWindowGenerator = function (market) {

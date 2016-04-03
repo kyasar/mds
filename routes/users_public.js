@@ -21,6 +21,10 @@ router.get('/', function(req, res) {
 });
 
 router.get('/all', function(req, res) {
+    if (!req.query.page || !req.query.limit) {
+        return res.send({status: 'fail', error: 'No such API usage.' });
+    }
+
     log.info("Page: ", req.query.page, " Limit: ", req.query.limit);
     return UserModel.paginate({}, { page: req.query.page, limit: req.query.limit },
         function(err, users) {

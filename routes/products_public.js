@@ -46,6 +46,9 @@ router.get('/products/', function(req, res) {
 });
 
 router.get('/products/all', function(req, res) {
+    if (!req.query.page || !req.query.limit) {
+        return res.send({status: 'fail', error: 'No such API usage.' });
+    }
     log.info("Page: ", req.query.page, " Limit: ", req.query.limit);
     var queryStr = {};
     if (req.query.name != undefined)

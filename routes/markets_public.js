@@ -9,11 +9,48 @@ var config  = require('../libs/config');
 var express = require('express');
 var router  = express.Router();
 
-router.get('/', function(req, res) {
-    log.info('Searching for markets');
-    return MarketModel.find({ }, function(err, markets) {
+router.get('/all', function(req, res) {
+    if (!req.query.page || !req.query.limit) {
+        return res.send({status: 'fail', error: 'No such API usage.' });
+    }
+
+    log.info("All markets requested. Page: ", req.query.page, " Limit: ", req.query.limit);
+    return MarketModel.paginate({}, { select: 'name _id id provider vicinity loc',
+            page: req.query.page, limit: req.query.limit },
+        function(err, markets) {
+            if (!err) {
+                return res.send({ status: 'OK', markets: markets });
+            } else {
+                res.statusCode = 500;
+                log.error('Internal error(%d): %s', res.statusCode, err.message);
+                return res.send({status: 'fail', error: 'Server error' });
+            }
+        });
+});
+
+router.delete('/:_id', function(req, res) {
+    log.info('Removing market with _id: ', req.params._id);
+    if (req.params._id)
+
+    return MarketModel.findByIdAndRemove(req.params._id, function(err, market) {
         if (!err) {
-            return res.send({status: 'OK', markets: markets});
+            if (market) {
+                log.info("Market found, name: ", market.name, " will be removed from DB.");
+                return res.send({ status: 'OK', market: market });
+                /*market.remove(function (err, user) {
+                    if (!err) {
+                        log.info("market removed in server side (from DB)");
+                        return res.send({status: 'OK'});
+                    } else {
+                        res.statusCode = 500;
+                        log.error('Internal error(%d): %s', res.statusCode, err.message);
+                        return res.send({status: 'fail', error: 'Server error'});
+                    }
+                });*/
+            } else {
+                log.info("No such market (", req.params._id, ") !");
+                return res.send({status: 'fail', error: 'No such market' });
+            }
         } else {
             res.statusCode = 500;
             log.error('Internal error(%d): %s', res.statusCode, err.message);

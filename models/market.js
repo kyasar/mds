@@ -3,8 +3,9 @@
  */
 var mongoose    = require('mongoose');
 var Schema = mongoose.Schema;
+var mongoosePaginate = require('mongoose-paginate');
 
-var Market = new Schema({
+var MarketSchema = new Schema({
     name     : { type: String, required: true },
     id       : { type: String, index: true, required: true },
     provider : { type: String, required: true },
@@ -29,7 +30,8 @@ var Market = new Schema({
     followers: []
 });
 
-Market.index({loc : '2dsphere'});
+MarketSchema.index({loc : '2dsphere'});
+MarketSchema.plugin(mongoosePaginate);
 
-var MarketModel = mongoose.model('Market', Market);
+var MarketModel = mongoose.model('Market', MarketSchema);
 module.exports.MarketModel = MarketModel;

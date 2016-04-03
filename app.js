@@ -7,6 +7,7 @@ var config      = require('./libs/config');
 var log       = require('./libs/log')(module);
 var session      = require('express-session');
 var favicon = require('serve-favicon');
+var cookieSession = require('cookie-session')
 require("babel-polyfill");
 
 var app = express();
@@ -21,6 +22,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+//app.use(cookieSession({ secret: 'mdSecretKey2015', cookie: { maxAge: 60 * 1000 }}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 
@@ -30,6 +32,11 @@ app.use(favicon(__dirname + '/public/images/favicon.ico'));
 // use this code before any route definitions
 var passport = require('passport');
 var flash = require('connect-flash');
+
+app.use(function printSession(req, res, next) {
+  console.log('req.session', req.session);
+  return next();
+});
 
 require('./libs/passport')(passport); // pass passport for configuration
 app.use(session({ secret: config.get('secret'),

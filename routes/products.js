@@ -33,7 +33,7 @@ function base64_decode(base64str) {
     log.info('******** File created from base64 encoded string ********');
 }
 
-router.post('/products/', function(req, res) {
+router.post('/', function(req, res) {
     if (!req.body.name || !req.body.barcode || !req.body.userID) {
         log.info("Product name or barcode not specified !");
         return res.send({status: 'fail', error : "No name or barcode or user specified."});

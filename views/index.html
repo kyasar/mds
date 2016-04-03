@@ -1,7 +1,5 @@
-<!-- index.html -->
-<!doctype html>
-
-<html ng-app="mainApp">
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="mainApp">
 <head>
     <!-- META -->
     <meta charset="utf-8">
@@ -11,15 +9,12 @@
     <title>Markod App</title>
 
     <!-- Stylesheets -->
+    <link href="stylesheets/reset.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/component.css" />
+    <script src="javascripts/modernizr.custom.js"></script>
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="stylesheets/style.css">
     <link rel="stylesheet" href="bower_components/nprogress/nprogress.css">
-
-    <!-- Google Maps API -->
-    <!--
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhujYJ3rPc_91Y5qi0ah7FHMKUkk9AOl0&libraries=geometry"></script>
-    -->
-    <script src='//maps.googleapis.com/maps/api/js?libraries=geometry'></script>
 
     <!-- Dependencies -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
@@ -32,9 +27,23 @@
     <script src="bower_components/angular-ui-map/ui-map.min.js"></script>
     <script src="bower_components/angular-ui-event/dist/event.min.js"></script>
 
+    <!-- Google Maps API -->
+    <!--
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhujYJ3rPc_91Y5qi0ah7FHMKUkk9AOl0&libraries=geometry"></script>
+    -->
+    <!--
+    <script type="text/javascript" src='//maps.googleapis.com/maps/api/js?libraries=geometry'></script>
+    -->
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?libraries=geometry"></script>
+    <script type="text/javascript" src="http://hpneo.github.io/gmaps/gmaps.js"></script>
+    <script type="text/javascript" src="http://hpneo.github.io/gmaps/prettify/prettify.js"></script>
+
     <script src='bower_components/nprogress/nprogress.js'></script>
     <script src="bower_components/angular-environment/dist/angular-environment.min.js"></script>
     <!-- <script src="bower_components/slidereveal/dist/jquery.slidereveal.min.js"></script> -->
+
+    <script src="javascripts/jquery.dlmenu.js"></script>
+    <script src="javascripts/function.js"></script>
 
     <script>
         //NProgress.start();
@@ -47,66 +56,151 @@
     <script src="javascripts/gmapsCtrl.js"></script>
     <!-- <script src="javascripts/ngscrollbar.js"></script> -->
 </head>
-
 <body>
 
-<div id="div-header" class="row col-md-4 col-md-offset-4"
-     style="position: absolute; margin-top: 20px;" ng-controller="productCtrl">
-    <!-- Fixed navbar-->
-    <form role="search" >
-        <!-- uib typeahead autocomplete does not support scrollable suggestion list right now
-         There are some workarounds in uib-bootstrap Js lib but we should wait for a real solution  -->
-        <div class="entry input-group input-group-lg" >
-            <input type="text" id="id_productSearchBox"
-                   class="form-control"
-                   data-toggle="tooltip" data-placement="bottom" title="Enter a product name !"
-                   autocomplete="off"
-                   placeholder="Honey, Tea, Water, Chocolate..."
-                   uib-typeahead="product as product.name for product in queryProducts($viewValue) | limitTo:3"
-                   ng-model="searchText"
-                   typeahead-loading="loadingLocations"
-                   typeahead-template-url="templates/product-tmpl.html"
-                   typeahead-on-select="onProductSelect($item,$model,$label)"
-                   typeahead-min-length="2">
-            <span class="input-group-btn">
-                <button id="search_btn"
-                        class="btn btn-default btn-danger"
-                        type="button"
-                        ng-click="searchProduct()">
-                    <strong>Mar</strong>kod
-                </button>
-            </span>
-        </div>
-        <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
-    </form>
-</div>
-
-<!-- Google Map -->
-<div id="main-div" ng-controller="gmapsCtrl" data-ng-init="initMap()">
-    <!--
-    <div id="left-panel">
-        <div id="left-panel-trigger" class="handle">
-            <span class="glyphicon glyphicon-chevron-right"></span>
-        </div>
-        <div id="left-panel-title">
-
-        </div>
-
-        <div id="results-left-panel" class="list-group" ng-scrollbar scrollbar-x="false" scrollbar-y="true" scrollbar-config="{show: false}">
-            <!-- Here we will list market scan results (with prices)
-            <a href="#" class="list-group-item" ng-repeat="marker in marketMarkers"
-               ng-click="$parent.selected = marker; leftPanelResultClicked(marker)"
-               ng-class="{active:selected==marker}">
-                {{marker.market.name}}
-                <h4>{{marker.market.name}}</h4><br>
-                <h6>{{marker.market.vicinity}}</h6>
-            </a>
+<div class="header" ng-controller="productCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 col-sm-3 clearfix logoAndNav">
+                <a href="javascript:;" class="logo"><img width="100" src="images/logobbb.png" alt="" /></a>
+                <div id="dl-menu" class="dl-menuwrapper">
+                    <button class="dl-trigger">Open Menu</button>
+                    <ul class="dl-menu">
+                        <li>
+                            <a href="#">Fashion</a>
+                            <ul class="dl-submenu">
+                                <li>
+                                    <a href="#">Men</a>
+                                    <ul class="dl-submenu">
+                                        <li><a href="#">Shirts</a></li>
+                                        <li><a href="#">Jackets</a></li>
+                                        <li><a href="#">Chinos &amp; Trousers</a></li>
+                                        <li><a href="#">Jeans</a></li>
+                                        <li><a href="#">T-Shirts</a></li>
+                                        <li><a href="#">Underwear</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">Women</a>
+                                    <ul class="dl-submenu">
+                                        <li><a href="#">Jackets</a></li>
+                                        <li><a href="#">Knits</a></li>
+                                        <li><a href="#">Jeans</a></li>
+                                        <li><a href="#">Dresses</a></li>
+                                        <li><a href="#">Blouses</a></li>
+                                        <li><a href="#">T-Shirts</a></li>
+                                        <li><a href="#">Underwear</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">Children</a>
+                                    <ul class="dl-submenu">
+                                        <li><a href="#">Boys</a></li>
+                                        <li><a href="#">Girls</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#">Electronics</a>
+                            <ul class="dl-submenu">
+                                <li><a href="#">Camera &amp; Photo</a></li>
+                                <li><a href="#">TV &amp; Home Cinema</a></li>
+                                <li><a href="#">Phones</a></li>
+                                <li><a href="#">PC &amp; Video Games</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#">Furniture</a>
+                            <ul class="dl-submenu">
+                                <li>
+                                    <a href="#">Living Room</a>
+                                    <ul class="dl-submenu">
+                                        <li><a href="#">Sofas &amp; Loveseats</a></li>
+                                        <li><a href="#">Coffee &amp; Accent Tables</a></li>
+                                        <li><a href="#">Chairs &amp; Recliners</a></li>
+                                        <li><a href="#">Bookshelves</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">Bedroom</a>
+                                    <ul class="dl-submenu">
+                                        <li>
+                                            <a href="#">Beds</a>
+                                            <ul class="dl-submenu">
+                                                <li><a href="#">Upholstered Beds</a></li>
+                                                <li><a href="#">Divans</a></li>
+                                                <li><a href="#">Metal Beds</a></li>
+                                                <li><a href="#">Storage Beds</a></li>
+                                                <li><a href="#">Wooden Beds</a></li>
+                                                <li><a href="#">Children's Beds</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="#">Bedroom Sets</a></li>
+                                        <li><a href="#">Chests &amp; Dressers</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#">Home Office</a></li>
+                                <li><a href="#">Dining &amp; Bar</a></li>
+                                <li><a href="#">Patio</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#">Jewelry &amp; Watches</a>
+                            <ul class="dl-submenu">
+                                <li><a href="#">Fine Jewelry</a></li>
+                                <li><a href="#">Fashion Jewelry</a></li>
+                                <li><a href="#">Watches</a></li>
+                                <li>
+                                    <a href="#">Wedding Jewelry</a>
+                                    <ul class="dl-submenu">
+                                        <li><a href="#">Engagement Rings</a></li>
+                                        <li><a href="#">Bridal Sets</a></li>
+                                        <li><a href="#">Women's Wedding Bands</a></li>
+                                        <li><a href="#">Men's Wedding Bands</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div><!-- end menu -->
+            </div>
+            <div class="col-md-6 col-sm-5">
+                <div class="searchItem clearfix">
+                    <input type="text" id="id_productSearchBox"
+                           class="form-control"
+                           data-toggle="tooltip" data-placement="bottom" title="Enter a product name !"
+                           autocomplete="off"
+                           placeholder="Honey, Tea, Water, Chocolate..."
+                           uib-typeahead="product as product.name for product in queryProducts($viewValue) | limitTo:3"
+                           ng-model="searchText"
+                           typeahead-loading="loadingLocations"
+                           typeahead-template-url="templates/product-tmpl.html"
+                           typeahead-on-select="onProductSelect($item,$model,$label)"
+                           typeahead-min-length="2">
+                    <button id="search_btn"
+                            type="button"
+                            ng-click="searchProduct()">
+                        Markod
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-4 clearfix">
+                <div class="clearfix registerAndLogin">
+                    <a href="javascript:;">Register</a>
+                    <a href="javascript:;">Login</a>
+                </div>
+            </div>
         </div>
     </div>
-    -->
-    <button type="button" class="btn btn-link btn-lg"
-            ng-click="setMapsToDemo()"
-            style="position: absolute; top: 20px; right: 20px; z-index: 9999;">Go To Demo</button>
+</div>
+<div id="map-canvas" ui-map="myMap" ng-controller="gmapsCtrl" data-ng-init="initMap()"
+     ui-options="mapOptions"
+     ui-event="{'map-idle' : 'onMapIdle()'}"
+     ui-event="{'map-click': 'showMarkets()'}">
+    <!--In addition to creating the markers on the map, div elements with existing google.maps.Marker object should be created to hook up with events -->
+    <div ng-repeat="marker in marketMarkers" ui-map-marker="marketMarkers[$index]">
+    </div>
 
     <div class="span4 offset4 alert-float" ng-show="alertNoMarket.show"
          style="position: absolute; top: 20px; left: 25%; z-index: 9999; width: 50%;">
@@ -123,29 +217,78 @@
             {{ alertNoSuchProduct.msg }}
         </div>
     </div>
-
-    <div id="map-canvas" ui-map="myMap"
-         ui-options="mapOptions"
-         ui-event="{'map-idle' : 'onMapIdle()'}"
-         ui-event="{'map-click': 'showMarkets()'}">
-    </div>
-    <!--In addition to creating the markers on the map, div elements with existing google.maps.Marker object should be created to hook up with events -->
-    <div ng-repeat="marker in marketMarkers" ui-map-marker="marketMarkers[$index]">
-    </div>
-
 </div>
 
-<div id="div-footer">
-    <footer class="footer navbar-default navbar-fixed-bottom">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                </button>
-                <a class="navbar-brand" href="">markod.net</a>
+<div class="footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <div class="col-md-4 col-sm-5 itemOne">
+                    <div class="clearfix">
+                        <div class="heading fancy-heading">
+                            <span>Diğer</span>
+                        </div>
+                        <ul>
+                            <li><a href="javascript:;" target="_blank">Lorem ipsum dolor sit</a></li>
+                            <li><a href="javascript:;" target="_blank">Lorem ipsum dolor sit</a></li>
+                            <li><a href="javascript:;" target="_blank">Lorem ipsum dolor sit</a></li>
+                            <li><a href="javascript:;" target="_blank">Lorem ipsum dolor sit</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-8 col-sm-7 itemTwo">
+                    <ul class="column clearfix">
+                        <li class="clearfix">
+                            <a href="javascript:;">
+                                <img src="images/image1.jpg" alt="" />
+                            </a>
+                            <a href="javascript:;">
+                                Pellentesque in nulla nisl. Praesent eleifend lobortis lectus aliquam dapibus.
+                            </a>
+                        </li>
+                        <li class="clearfix">
+                            <a href="javascript:;">
+                                <img src="images/image2.jpg" alt="" />
+                            </a>
+                            <a href="javascript:;">
+                                Pellentesque in nulla nisl. Praesent eleifend lobortis lectus aliquam dapibus.
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <div class="col-md-5 col-sm-5 itemthree">
+                    <div class="heading fancy-heading">
+                        <span>Bizi Takip Edin</span>
+                    </div>
+                    <div class="social clearfix">
+                        <a href="javascript:;" target="_blank" class="facebook">facebook</a>
+                        <a href="javascript:;" target="_blank" class="twitter">twitter</a>
+                        <a href="javascript:;" target="_blank" class="youtube">youtube</a>
+                        <a href="javascript:;" target="_blank" class="instagram">instagram</a>
+                    </div>
+                </div>
+                <div class="col-md-7 col-sm-7">
+                    <div class="heading fancy-heading">
+                        <span>Uygulamalarımız ile her an yanınızdayız!</span>
+                    </div>
+                    <div class="aplicationMobil">
+                        <p>Aliquam vitae eros arcu. Suspendisse condimentum ipsum mi, in imperdiet lectus aliquam at.</p>
+                        <div class="clearfix">
+                            <a href="javascript:;" target="_blank"><img src="images/image3.jpg" alt="" /></a>
+                            <a href="javascript:;" target="_blank"><img src="images/image4.jpg" alt="" /></a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </footer>
+        <div class="col-md-12 footerText">
+            <img src="images/image5.png" alt="" />
+            <img src="images/image5.png" alt="" />
+            <p>Aliquam vitae eros arcu. Suspendisse condimentum ipsum mi, in imperdiet lectus aliquam at. Duis nec rhoncus massa. Duis in mattis magna. Ut sed vehicula leo. Suspendisse potenti. Nulla tellus nulla, rutrum vel eros in, ullamcorper viverra nulla. Maecenas nunc nulla, placerat eu pellentesque id, dignissim ut nulla. Aliquam feugiat nisl at dapibus vehicula. Nullam pretium mauris quis libero bibendum, eu varius nisl cursus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc dignissim quis risus id tincidunt.</p>
+        </div>
+    </div>
 </div>
 
 </body>

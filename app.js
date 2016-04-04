@@ -7,7 +7,6 @@ var config      = require('./libs/config');
 var log       = require('./libs/log')(module);
 var session      = require('express-session');
 var favicon = require('serve-favicon');
-var cookieSession = require('cookie-session')
 require("babel-polyfill");
 
 var app = express();
@@ -33,10 +32,10 @@ app.use(favicon(__dirname + '/public/images/favicon.ico'));
 var passport = require('passport');
 var flash = require('connect-flash');
 
-app.use(function printSession(req, res, next) {
-  console.log('req.session', req.session);
+/* app.use(function printSession(req, res, next) {
+  console.log('req.session: ', req.session);
   return next();
-});
+}); */
 
 require('./libs/passport')(passport); // pass passport for configuration
 app.use(session({ secret: config.get('secret'),

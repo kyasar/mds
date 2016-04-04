@@ -77,7 +77,7 @@ managerApp.factory('SharedProps', function ($rootScope, envService) {
     };
 });
 
-managerApp.controller('managerCtrl', function($scope, $rootScope, $http, $uibModal, SharedProps, envService) {
+managerApp.controller('managerCtrl', function($scope, $rootScope, $http, $uibModal, $window, SharedProps, envService) {
     $scope.currentPage = 1;
     $scope.currentUserPage = 1;
     $scope.currentMarketPage = 1;
@@ -440,6 +440,37 @@ managerApp.controller('managerCtrl', function($scope, $rootScope, $http, $uibMod
             .then(function(response) {
                 return response.data;
             });
+    };
+
+    $scope.logMeOut = function () {
+        console.log("REQ: " + $scope.mds + "/logout");
+        console.log("Logging OUT");
+
+        return $http({
+            url: $scope.mds + '/logout',
+            dataType: "json",
+            method: "GET",
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .success(function(data) {
+            console.log("data.status: ", data.status);
+            if (data.status == "OK") {
+                console.log("Logout successful.");
+                // TODO: If admin redirect to admin page
+                if (data.redirect != undefined) {
+                    console.log("redirecting to " + data.redirect);
+                    $window.location.href = data.redirect;
+                }
+            } else {
+                console.log("Logout NOT successful.");
+            }
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+        })
+        .then(function(response) {
+            return response.data;
+        });
     };
 });
 

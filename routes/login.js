@@ -8,7 +8,8 @@ module.exports = function(app, passport) {
         if (req.session && req.session.passport.user) {
             console.log("REQ Session: ", req.session, " user id: ", req.session.passport.user);
         }
-        res.sendfile('./views/manager.html');
+        //res.sendfile('./views/manager.html');
+        res.render('manager2', {user: "kadir"});
     });
 
     // =====================================

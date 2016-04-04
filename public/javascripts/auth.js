@@ -12,14 +12,14 @@ mainApp.controller('loginCtrl', function($scope, $rootScope, $http, $window, $ui
         $scope.showLoginError = false;
 
         console.log("REQ: " + $scope.mds + "/login");
-        console.log("Logging with email: ", $scope.username, " password: ", $scope.password);
+        console.log("Logging with email: ", $scope.email, " password: ", $scope.password);
 
         return $http({
                 url: $scope.mds + '/login',
                 dataType: "json",
                 method: "POST",
                 data: {
-                    email: $scope.username,
+                    email: $scope.email,
                     password: $scope.password
                     },
                 headers: {'Content-Type': 'application/json'}

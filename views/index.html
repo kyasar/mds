@@ -52,6 +52,7 @@
     <!-- Our Application Scripts -->
     <script src="javascripts/richmarker.js"></script>
     <script src="javascripts/core.js"></script>
+    <script src="javascripts/auth.js"></script>
     <script src="javascripts/productCtrl.js"></script>
     <script src="javascripts/gmapsCtrl.js"></script>
     <!-- <script src="javascripts/ngscrollbar.js"></script> -->
@@ -187,7 +188,7 @@
             </div>
             <div class="col-md-3 col-sm-4 clearfix">
                 <div class="clearfix registerAndLogin">
-                    <a href="javascript:;">Register</a>
+                    <a data-toggle="modal" data-target = "#loginModal" href="javascript:;">Register</a>
                     <a href="javascript:;">Login</a>
                 </div>
             </div>
@@ -287,6 +288,58 @@
             <img src="images/image5.png" alt="" />
             <img src="images/image5.png" alt="" />
             <p>Aliquam vitae eros arcu. Suspendisse condimentum ipsum mi, in imperdiet lectus aliquam at. Duis nec rhoncus massa. Duis in mattis magna. Ut sed vehicula leo. Suspendisse potenti. Nulla tellus nulla, rutrum vel eros in, ullamcorper viverra nulla. Maecenas nunc nulla, placerat eu pellentesque id, dignissim ut nulla. Aliquam feugiat nisl at dapibus vehicula. Nullam pretium mauris quis libero bibendum, eu varius nisl cursus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nunc dignissim quis risus id tincidunt.</p>
+        </div>
+    </div>
+</div>
+
+<div ng-controller="loginCtrl" class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div id="login-overlay" class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">Login to site.com</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="well">
+                            <form id="loginForm" class="form-signin">
+                                <div class="form-group">
+                                    <label for="username" class="control-label">Username</label>
+                                    <input ng-model="username" type="text" class="form-control" id="username" name="username" value="" required="" autofocus=""  title="Please enter you email" placeholder="example@gmail.com">
+                                    <span class="help-block"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password" class="control-label">Password</label>
+                                    <input ng-model="password" type="password" class="form-control" id="password" name="password" value="" required="" title="Please enter your password">
+                                    <span class="help-block"></span>
+                                </div>
+                                <div id="loginErrorMsg" ng-show="showLoginError" class="alert alert-error">
+                                    <span class="label label-danger">Wrong username or password !</span>
+                                </div>
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="remember" id="remember"> Remember login
+                                    </label>
+                                </div>
+                                <button ng-click="logMeIn()" class="btn btn-success btn-block btn-lg">Login</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- <div class="col-xs-6">
+                        <p class="lead">Register now for <span class="text-success">FREE</span></p>
+                        <ul class="list-unstyled" style="line-height: 2">
+                            <li><span class="fa fa-check text-success"></span> See all your orders</li>
+                            <li><span class="fa fa-check text-success"></span> Fast re-order</li>
+                            <li><span class="fa fa-check text-success"></span> Save your favorites</li>
+                            <li><span class="fa fa-check text-success"></span> Fast checkout</li>
+                            <li><span class="fa fa-check text-success"></span> Get a gift <small>(only new customers)</small></li>
+                            <li><a href="/read-more/"><u>Read more</u></a></li>
+                        </ul>
+                        <p><a href="/new-customer/" class="btn btn-info btn-block">Yes please, register now!</a></p>
+                    </div> -->
+                </div>
+            </div>
         </div>
     </div>
 </div>

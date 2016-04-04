@@ -5,6 +5,9 @@ module.exports = function(app, passport) {
 
     app.get('/manager', isLoggedIn, function(req, res) {
         //res.sendfile('./views/manager.html'); // load the index.ejs file
+        if (req.session && req.session.passport.user) {
+            console.log("REQ Session: ", req.session, " user id: ", req.session.passport.user);
+        }
         res.sendfile('./views/manager.html');
     });
 
@@ -12,10 +15,6 @@ module.exports = function(app, passport) {
     // LOGIN ===============================
     // =====================================
     // show the login form
-    app.get('/login', function(req, res) {
-        res.sendfile('./views/login.html'); // load the index.ejs file
-        // res.send({ret:'login ok', message: req.flash('loginMessage') });
-    });
 
     app.get('/login-fail', function(req, res) {
         res.send({ status:'fail', message: req.flash('loginMessage') });
@@ -27,6 +26,18 @@ module.exports = function(app, passport) {
             return res.send({status: 'OK', user: req.user, redirect: '/manager'});  // req.user comes from strategy return
         } else {
             return res.send({status: 'OK', user: req.user, redirect: '/'});  // req.user comes from strategy return
+        }
+    });
+
+    app.get('/logout', function(req, res) {
+        if (req.session) {
+            req.session.destroy(function (err) {
+                if (!err) {
+                    console.log("Session is destroyed.");
+                    req.logout();
+                    res.send({status: 'OK', message: "logout is successful", redirect: '/'})
+                }
+            });
         }
     });
 
@@ -64,13 +75,6 @@ module.exports = function(app, passport) {
         res.send({ret:'signup ok', message: req.flash('signupMessage')});
     });
 
-    // =====================================
-    // LOGOUT ==============================
-    // =====================================
-    app.get('/logout', function(req, res) {
-        req.logout();
-        res.send({ret:'logout ok.'});
-    });
 };
 
 // route middleware to make sure a user is logged in
@@ -84,6 +88,6 @@ function isLoggedIn(req, res, next) {
     }
 
     // if they aren't redirect them to the home page
-    res.redirect('/login');
+    res.redirect('/');
     //res.send({ret:'auth ok'});
 }

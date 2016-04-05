@@ -7,24 +7,23 @@ var config      = require('./libs/config');
 var log       = require('./libs/log')(module);
 var session      = require('express-session');
 var favicon = require('serve-favicon');
+var mongoose    = require('mongoose');
 require("babel-polyfill");
 
 var app = express();
+const MongoStore = require('connect-mongo')(session);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-//app.use(cookieSession({ secret: 'mdSecretKey2015', cookie: { maxAge: 60 * 1000 }}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
-
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
 // passport middleware initialization
@@ -39,7 +38,16 @@ var flash = require('connect-flash');
 
 require('./libs/passport')(passport); // pass passport for configuration
 app.use(session({ secret: config.get('secret'),
-  cookie:{maxAge: config.get('session-timeout')} })); // session secret
+                  cookie: {
+                    maxAge: config.get('session-timeout')
+                  },
+                  /* Connection will be provided later */
+                  store: new MongoStore({
+                            mongooseConnection: mongoose.connection,
+                            autoRemove: 'interval',
+                            autoRemoveInterval: 10 // In minutes. Default
+                  })
+                })); // session secret
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());

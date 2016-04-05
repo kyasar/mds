@@ -13,17 +13,14 @@
  */
 
 var ProductModel   = require('../libs/mongoose').ProductModel;
-var MarketModel    = require('../libs/mongoose').MarketModel;
 var User    = require('../libs/mongoose').UserModel;
 var CategoryModel    = require('../libs/mongoose').CategoryModel;
 var log     = require('../libs/log')(module);
-var jwt     = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var config  = require('../libs/config');
 var _ = require('underscore');
 var express = require('express');
 var router  = express.Router();
 var async = require('async');
-var sleep = require('sleep');
 
 /*
  Search for products that matches the query string

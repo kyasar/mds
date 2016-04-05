@@ -21,7 +21,6 @@ var _ = require('underscore');
 var express = require('express');
 var router  = express.Router();
 var async = require('async');
-var sleep = require('sleep');
 
 // function to create file from base64 encoded string
 var fs = require('fs');

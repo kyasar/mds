@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="stylesheets/style.css">
     <link rel="stylesheet" href="bower_components/nprogress/nprogress.css">
+    <link rel="stylesheet" href="bower_components/ng-bs-animated-button/ng-bs-animated-button.css">
 
     <!-- Dependencies -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
@@ -40,6 +41,7 @@
 
     <script src='bower_components/nprogress/nprogress.js'></script>
     <script src="bower_components/angular-environment/dist/angular-environment.min.js"></script>
+    <script src="bower_components/ng-bs-animated-button/ng-bs-animated-button.js"></script>
     <!-- <script src="bower_components/slidereveal/dist/jquery.slidereveal.min.js"></script> -->
 
     <script src="javascripts/jquery.dlmenu.js"></script>
@@ -322,7 +324,7 @@
                                         <input type="checkbox" name="remember" id="remember"> Remember login
                                     </label>
                                 </div>
-                                <button ng-click="logMeIn()" class="btn btn-success btn-block btn-lg">Login</button>
+                                <jp-ng-bs-animated-button class="btn btn-success btn-block btn-lg" is-submitting="isSubmitting" ng-click="logMeIn()" result="result" options="options">Login2</jp-ng-bs-animated-button>
                             </form>
                         </div>
                     </div>

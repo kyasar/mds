@@ -120,6 +120,7 @@
 	width: 100%;
 	opacity: 0;
     right:0px;
+    top:-3px;
 	pointer-events: none;
 	-webkit-transform: translateY(10px);
 	transform: translateY(10px);

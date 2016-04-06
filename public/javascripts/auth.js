@@ -17,14 +17,14 @@ mainApp.controller('loginCtrl', function($scope, $rootScope, $http, $window, $ui
         iconsPosition: 'right',
         buttonErrorText: 'Bilgiler hatalı !',
         buttonSubmittingText: 'Giriş yapılıyor..',
-        buttonSuccessText: 'Başarılı !'
+        buttonSuccessText: 'Başarılı !',
+        buttonInitialIcon: 'glyphicon'
     };
 
     console.log("loginCtrl running..");
 
     $scope.logMeIn = function () {
         $scope.isSubmitting = true;
-        $scope.showLoginError = false;
 
         console.log("REQ: " + $scope.mds + "/login");
         console.log("Logging with email: ", $scope.email, " password: ", $scope.password);
@@ -53,7 +53,6 @@ mainApp.controller('loginCtrl', function($scope, $rootScope, $http, $window, $ui
                     }, 2000);
                 } else {
                     console.log("Login NOT successful.");
-                    $scope.showLoginError = true;
                     $scope.result = "error";
                     $scope.isSubmitting = false;
                 }

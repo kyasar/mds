@@ -58,12 +58,16 @@ mainApp.controller('productCtrl', function($scope, $rootScope, $http, $uibModal,
         }
     };
 
-    $rootScope.$on('clearSearchText', function (event) {
-        console.log("Ok cleaning..");
+    $scope.clearProductSearch = function() {
+        console.log("Ok cleaning Product search..");
         $scope.searchText = "";
         //clearMarkers();
-        $rootScope.$emit('getNearby'); // send signal to GMapsCntrl
+        $rootScope.$emit('getNearby'); // send signal to GMapsCtrl
         SharedProps.setProductSearched(false);  // Currently not searching for a product
+    };
+
+    $rootScope.$on('clearSearchText', function (event) {
+        $scope.clearProductSearch();
     });
 
     /*

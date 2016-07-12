@@ -6,25 +6,23 @@ var bodyParser = require('body-parser');
 var config      = require('./libs/config');
 var log       = require('./libs/log')(module);
 var session      = require('express-session');
-var favicon = require('serve-favicon');
 var mongoose    = require('mongoose');
+var cors = require('cors');
 require("babel-polyfill");
 
 var app = express();
 const MongoStore = require('connect-mongo')(session);
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/bower_components',  express.static(__dirname + '/bower_components'));
-app.use(favicon(__dirname + '/public/images/favicon.ico'));
+
+/*
+  Enable Cross-domain Request (cors)
+ */
+app.use(cors());
 
 // passport middleware initialization
 // use this code before any route definitions
@@ -72,14 +70,6 @@ app.use('/mds/api/products', require('./routes/products'));
 app.use('/mds/api/users', require('./routes/users'));
 app.use('/mds/api/markets/', require('./routes/markets'));
 app.use('/mds/signup/', require('./routes/signup'));
-
-// =====================================
-// HOME PAGE (with login links) ========
-// =====================================
-app.get('/', function(req, res) {
-  res.sendfile('./views/index.html'); // load the index.ejs file
-  //res.send({ret:'ok'});
-});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

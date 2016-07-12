@@ -41,7 +41,8 @@
     "passport-oauth2-client-password": "0.1.2",
     "serve-favicon": "~2.2.0",
     "underscore": "1.8.3",
-    "winston": "1.0.0"
+    "winston": "1.0.0",
+    "cors": "latest"
   },
   "description": "market detective API server",
   "main": "app.js",
